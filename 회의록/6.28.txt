@@ -1,9 +1,18 @@
 6.28 회의록
 
-git repository 생성 - timeLine
+- git repository 생성 - timeLine
 
-협업을 위한 Source tree 연동
+- 협업을 위한 Source tree 연동
 
-Spring Project 생성
+- Spring Project 생성
 
-DB는 Mongo DB로 선택 (Nosql)
+- DB는 Mongo DB로 선택 (Nosql)
+
+- 친구소식 등은 nosql ?
+
+- 성능 or 안전성 : 브라우저의 HTML 기능 버전관리
+
+- Ajax, nodejs
+
+- 친구가 많은 사용자 (ex, 연예인, 기업, 캐릭터 ...etc)는 서버에서 cache처럼 따로 저장?
+

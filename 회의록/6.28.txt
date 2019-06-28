@@ -1,0 +1,9 @@
+6.28 회의록
+
+git repository 생성 - timeLine
+
+협업을 위한 Source tree 연동
+
+Spring Project 생성
+
+DB는 Mongo DB로 선택 (Nosql)

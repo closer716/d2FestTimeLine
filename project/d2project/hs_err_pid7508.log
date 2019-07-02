@@ -1,0 +1,59 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffff2f13a05, pid=7508, tid=13456
+#
+# JRE version: OpenJDK Runtime Environment (12.0.1+12) (build 12.0.1+12)
+# Java VM: OpenJDK 64-Bit Server VM (12.0.1+12, mixed mode, sharing, tiered, compressed oops, g1 gc, windows-amd64)
+# Problematic frame:
+# V  [jvm.dll+0x663a05]
+#
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=52333 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost -Dspring.jmx.enabled=true -Dspring.application.admin.enabled=true -Xverify:none -XX:TieredStopAtLevel=1 -Dfile.encoding=MS949 com.wabu.d2project.D2projectApplication --spring.output.ansi.enabled=always
+
+Host: Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz, 4 cores, 7G,  Windows 10 , 64 bit Build 17134 (10.0.17134.753)
+Time: Tue Jul  2 16:05:34 2019 ¢¥eCN©öI¡¾©ö C¡ÍA¨ª¨öA elapsed time: 0 seconds (0d 0h 0m 0s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000002802871d800):  WatcherThread [stack: 0x0000008f96000000,0x0000008f96100000] [id=13456]
+
+Stack: [0x0000008f96000000,0x0000008f96100000],  sp=0x0000008f960ff550,  free space=1021k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x663a05]
+V  [jvm.dll+0x6cb73f]
+V  [jvm.dll+0x71adbd]
+V  [jvm.dll+0x74f4d9]
+V  [jvm.dll+0x748318]
+V  [jvm.dll+0x638276]
+C  [ucrtbase.dll+0x1e3fe]
+C  [KERNEL32.DLL+0x14034]
+C  [ntdll.dll+0x73691]
+
+
+siginfo: EXCEPTION_ACCESS_VIOLATION (0xc0000005), reading address 0x0000000c0000000b
+
+
+Register to memory mapping:
+
+RIP=0x00007ffff2f13a05 jvm.dll
+RAX=0x0000000c0000000b is an unknown value
+RBX=0x0000028028682330 points into unknown readable memory: e0 3d 19 f3 ff 7f 00 00
+RCX=0x00000280286b5d00 points into unknown readable memory: 0b 00 00 00 0c 00 00 00
+RDX=0x0000000000000032 is an unknown value
+RSP=0x0000008f960ff550 points into unknown readable memory: d0 c9 0e 09 80 02 00 00
+RBP=0x0000000000000002 is an unknown value
+RSI=0x00000280286b5ca0 points into unknown readable memory: 00 1f 71 28 80 02 00 00
+RDI=0x0 is NULL
+R8 =0x0 is NULL
+R9 =0x00000280114e0b80 is at begin+0 in a stub
+StubRoutines::atomic_cmpxchg_long [0x00000280114e0b80, 0x00000280114e0b89[ (9 bytes)
+R10=0x0 is NULL
+R11=

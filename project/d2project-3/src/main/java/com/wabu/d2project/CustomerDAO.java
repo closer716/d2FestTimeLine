@@ -8,7 +8,6 @@ public class CustomerDAO {
 	private CustomerRepository repository;
 	
 	public void printDB() {
-		System.out.println("왜 안대는거야");
-		repository.findAll();
+		System.out.println(repository.findAll().toString());
 	}
 }

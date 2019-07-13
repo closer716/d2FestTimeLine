@@ -1,13 +1,14 @@
 package com.wabu.d2project;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection="customer")
 public class Customer {
 
     @Id
-    public String id;
+    public ObjectId _id;
 
     public String address;
     public String name;
@@ -23,7 +24,7 @@ public class Customer {
     public String toString() {
         return String.format(
                 "Customer[id=%s, name='%s', address='%s']",
-                id, name, address);
+                _id, name, address);
     }
 
 }

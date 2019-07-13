@@ -27,8 +27,8 @@ public class homeController {
 		return "contents/profile";
 	}
 	
-	@RequestMapping(value="/delete")
-	protected String deletedb() {
+	@RequestMapping(value="/print")
+	protected String printdb() {
 		CustomerDAO dao=new CustomerDAO();
 		dao.printDB();
 		return "contents/home";

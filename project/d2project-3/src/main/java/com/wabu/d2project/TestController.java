@@ -16,9 +16,11 @@ public class TestController {
 	@Autowired
 	private UserService userService; 
 	
-	@GetMapping("/register")
-	protected String register(@RequestParam("name") String name, @RequestParam("address") String address){
-		System.out.println(userService.addUser(new UserDto(name, address)));
+	@PostMapping("/register")
+	protected String register(@RequestParam("user_id") String user_id, @RequestParam("user_password") String user_password,
+			@RequestParam("user_name") String user_name, @RequestParam("birthday") String birthday){
+		System.out.println(userService.addUser(new UserDto(user_id, user_password, user_name, birthday)));
+		userService.printDB();
 		return "/contents/home";
 	}
 }

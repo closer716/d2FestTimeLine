@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wabu.d2project.user.UserService;
+
 @Controller
 @RequestMapping(value="/")
 public class homeController {
 	@Autowired
-	private CustomerDAO dao;
+	private UserService dao;
 	
 	@RequestMapping(value="/home")
 	protected String home() {
@@ -30,9 +32,8 @@ public class homeController {
 		return "contents/profile";
 	}
 	
-	@RequestMapping(value="/print")
-	protected String printdb() { 
-		dao.printDB();
-		return "contents/home";
+	@RequestMapping(value="/register")
+	protected String register() { 
+		return "contents/register";
 	}
 }

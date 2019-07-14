@@ -1,0 +1,15 @@
+db.createUser(
+{
+user: "admin",
+pwd: "1234",
+roles: [ { role: "userAdminAnyDatabase", db: "admin"}]
+})
+
+db.createUser(
+{
+user: "web",
+pwd: "1234",
+roles: [ { role: "readWrite", db: "web"}, {role: "read", db: "reporting"}]
+})
+
+mongod --bind_ip_all --dbpath C:\APPS\MongoDB\Server\4.0\data

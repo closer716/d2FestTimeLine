@@ -1,4 +1,4 @@
-package com.wabu.d2project;
+package com.wabu.d2project.user;
 
 
 import java.util.Date;

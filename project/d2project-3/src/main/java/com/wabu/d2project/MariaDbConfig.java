@@ -12,7 +12,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
  
 @Configuration
-@MapperScan(basePackages="com.wabu.d2project")
+@MapperScan(basePackages="com.wabu.d2project.user")
 @EnableTransactionManagement
 public class MariaDbConfig {
  

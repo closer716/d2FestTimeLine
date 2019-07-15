@@ -21,13 +21,6 @@ public class PostDto {
 	@NotBlank
     public SimpleDateFormat date;
 	
-	public PostDto(String userId, String contents, SimpleDateFormat date){
-		this.userId = userId;
-	    this.contents = contents;
-	    this.date = date;
-	}
-	
-	
 	public Post toEntity() {
 		return new Post(userId, contents, date);
 	}

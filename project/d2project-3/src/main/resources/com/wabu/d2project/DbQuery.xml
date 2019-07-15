@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wabu.d2project.UserMapper">
-    <select id="getAll" resultType="com.wabu.d2project.User">
+<mapper namespace="com.wabu.d2project.user.UserMapper">
+    <select id="getAll" resultType="com.wabu.d2project.user.User">
         SELECT * FROM user
     </select>
+    <insert id="register" parameterType="com.wabu.d2project.user.User">
+    	INSERT INTO user(user_id,user_name,user_password,birthday) values(#{user_id}, #{user_name}, #{user_password}, #{birthday})
+    </insert>
 </mapper>

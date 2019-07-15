@@ -1,4 +1,4 @@
-package com.wabu.d2project;
+package com.wabu.d2project.user;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -26,8 +26,8 @@ public class User {
     
     @Column(name="birthday")
     private String birthday;
+    
     /*
-
     @Column(name="elm_school")
     private String elm_school;
     

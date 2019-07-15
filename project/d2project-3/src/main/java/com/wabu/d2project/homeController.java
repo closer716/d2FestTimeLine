@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wabu.d2project.user.User;
@@ -42,9 +44,10 @@ public class homeController{
 		return "contents/register";
 	}
 	
-	@RequestMapping("/query")
-    public String query() throws Exception{
-        testService.register("151","2","3","4");
+	@PostMapping("register/confirm")
+    public String query(@RequestParam("user_id") String user_id, @RequestParam("user_password") String user_password, @RequestParam("user_name") String user_name,
+    		@RequestParam("birthday") String birthday) throws Exception{
+        testService.register(user_id, user_password, user_name, birthday);
         return "contents/test";
     }
 	

@@ -1,23 +1,21 @@
-package com.wabu.d2project.user;
+package com.wabu.d2project;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "user")
+@Getter
+@Data
 public class User {
 
     @Id
+    @Column(name="user_id")
     private String user_id;
 
     @Column(name="user_name")
@@ -28,7 +26,8 @@ public class User {
     
     @Column(name="birthday")
     private String birthday;
-    
+    /*
+
     @Column(name="elm_school")
     private String elm_school;
     
@@ -46,15 +45,7 @@ public class User {
     
     @Column(name="office")
     private String office;
-
-    protected User() {}
-
-    public User( String user_id, String user_name, String user_password, String birthday) {
-        this.user_id = user_id;
-        this.user_name = user_name;
-        this.user_password = user_password;
-        this.birthday = birthday;
-    }
+*/
 
     @Override
     public String toString() {

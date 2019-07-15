@@ -1,7 +1,8 @@
-package com.wabu.d2project.user;
+package com.wabu.d2project;
 
 
-import javax.persistence.Column;
+import java.util.Date;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -40,7 +41,7 @@ public class UserDto {
     private String office;
     
 	@NotBlank
-	@Size(min=7,max=15)
+	@Size(min=15,max=30)
     public String address;
 	
 	public UserDto(String user_id, String user_name, String user_password, String birthday){

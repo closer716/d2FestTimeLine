@@ -5,6 +5,6 @@
         SELECT * FROM user
     </select>
     <insert id="register" parameterType="com.wabu.d2project.user.User">
-    	INSERT INTO user(user_id,user_name,user_password,birthday) values(#{user_id}, #{user_name}, #{user_password}, #{birthday})
+    	INSERT INTO user(id,name,password,birthday) values(#{id}, #{name}, #{password}, #{birthday})
     </insert>
 </mapper>

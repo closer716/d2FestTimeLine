@@ -6,5 +6,5 @@ import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper{
 	public List<User> getAll() throws Exception;
-	public void register(@Param("user_id") String user_id, @Param("user_name")String user_name, @Param("user_password")String user_password, @Param("birthday")String birthday);
+	public void register(@Param("id") String id, @Param("name")String name, @Param("password")String password, @Param("birthday")String birthday);
 }

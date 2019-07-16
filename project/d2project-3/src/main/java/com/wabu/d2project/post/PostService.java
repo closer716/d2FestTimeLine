@@ -15,7 +15,7 @@ public class PostService {
 		System.out.println(repository.findAll().toString());
 	}
 	
-	public Post addPost(PostDto userDto) {
-		return repository.save(userDto.toEntity());
+	public Post addPost(PostDto PostDto) {
+		return repository.save(PostDto.toEntity());
 	}
 }

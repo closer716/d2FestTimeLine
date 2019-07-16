@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @Column(name="user_id")
-    private String user_id;
+    @Column(name="id")
+    private String id;
 
-    @Column(name="user_name")
-    private String user_name;
+    @Column(name="name")
+    private String name;
     
-    @Column(name="user_password")
-    private String user_password;
+    @Column(name="password")
+    private String password;
     
     @Column(name="birthday")
     private String birthday;
@@ -51,7 +51,7 @@ public class User {
     public String toString() {
         return String.format(
                 "user[id=%s, name='%s', birthday='%s']",
-                user_id, user_name, birthday);
+                id, name, birthday);
     }
 
 }

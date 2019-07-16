@@ -19,13 +19,13 @@ public class UserDto {
 	
 	@NotBlank
     @Id
-    private String user_id;
+    private String id;
 	
 	@NotBlank
-    private String user_name;
+    private String name;
 	
 	@NotBlank
-    private String user_password;
+    private String password;
 	
 	@NotBlank
     private String birthday;
@@ -45,15 +45,15 @@ public class UserDto {
     public String address;
 	
 	public UserDto(String user_id, String user_name, String user_password, String birthday){
-		this.user_id = user_id;
-        this.user_name = user_name;
-        this.user_password = user_password;
+		this.id = user_id;
+        this.name = user_name;
+        this.password = user_password;
         this.birthday = birthday;
 	}
 	
 	
 	public User toEntity() {
-		return new User(user_id, user_name, user_password, birthday);
+		return new User(id, name, password, birthday);
 	}
     
 }

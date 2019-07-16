@@ -1,7 +1,9 @@
 package com.wabu.d2project.post;
 
 
+import java.util.Date;
 import java.text.SimpleDateFormat;
+import org.bson.BsonTimestamp;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -19,7 +21,7 @@ public class PostDto {
 	@NotBlank
     public String contents;
 	@NotBlank
-    public SimpleDateFormat date;
+    public Date date;
 	
 	public Post toEntity() {
 		return new Post(userId, contents, date);

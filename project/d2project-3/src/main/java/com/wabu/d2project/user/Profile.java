@@ -14,23 +14,21 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Data
-public class User {
-
+public class Profile {
     @Id
     @Column(name="id")
     private String id;
-
-    @Column(name="name")
-    private String name;
     
-    @Column(name="password")
-    private String password;
+    @Column(name="birthday")
+    private String birthday;
+    
+    @Column(name="country")
+    private String country;
     
     @Override
     public String toString() {
         return String.format(
-                "user[id=%s, name='%s']",
-                id, name);
+                "profile[id=%s, country='%s', birthday='%s']",
+                id, country, birthday);
     }
-
 }

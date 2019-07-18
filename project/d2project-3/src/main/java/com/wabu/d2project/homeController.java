@@ -2,9 +2,8 @@ package com.wabu.d2project;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-import org.bson.BsonTimestamp;
+import org.bson.types.BSONTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,24 +51,25 @@ public class homeController{
 	@PostMapping("register/confirm")
     public String query(@RequestParam("user_id") String user_id, @RequestParam("user_password") String user_password, @RequestParam("user_name") String user_name,
     		@RequestParam("birthday") String birthday) throws Exception{
-        userService.register(user_id, user_name, user_password, birthday);
+        userService.register(user_id, user_name, user_password, birthday, "korea");
         return "contents/test";
     }
 	
 	/* 포스트 등록 */
-	@PostMapping("register/post")
-    public String query(@RequestParam("user_id") String user_id, @RequestParam("contents") String user_password) throws Exception{
+	@RequestMapping("register/post")
+    public String query(@RequestParam("userId") String userId, @RequestParam("contents") String contents) throws Exception{
 		Date date = new Date();
-		postService.addPost(new PostDto("user_id","contents",date));
+		SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String a = formattedDate.format(date);
+		Date to = formattedDate.parse(a);
+		postService.addPost(new PostDto("userId","contents",to));
         return "contents/test";
     }
 	
 	/* 포스트 프린트 */
 	@RequestMapping(value="/test")
-	public String test() {
+	public String test() throws Exception{
 		postService.printDB();
 		return "contents/test";
 	}
-	
-	
 }

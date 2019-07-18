@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan(basePackages="com.wabu.d2project.user")
 @EnableTransactionManagement
 public class MariaDbConfig {
- 
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
@@ -30,6 +29,4 @@ public class MariaDbConfig {
       final SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
       return sqlSessionTemplate;
     }
- 
- 
 }

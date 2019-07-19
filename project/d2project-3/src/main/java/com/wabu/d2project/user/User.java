@@ -20,17 +20,14 @@ public class User {
     @Column(name="id")
     private String id;
 
-    @Column(name="name")
-    private String name;
-    
     @Column(name="password")
     private String password;
     
     @Override
     public String toString() {
         return String.format(
-                "user[id=%s, name='%s']",
-                id, name);
+                "user[id=%s]",
+                id);
     }
 
 }

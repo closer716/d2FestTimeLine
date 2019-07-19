@@ -2,8 +2,8 @@ package com.wabu.d2project;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-import org.bson.types.BSONTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,9 +49,9 @@ public class homeController{
 	}
 	
 	@PostMapping("register/confirm")
-    public String query(@RequestParam("user_id") String user_id, @RequestParam("user_password") String user_password, @RequestParam("user_name") String user_name,
-    		@RequestParam("birthday") String birthday) throws Exception{
-        userService.register(user_id, user_name, user_password, birthday, "korea");
+    public String query(@RequestParam("userId") String userId, @RequestParam("password") String password, @RequestParam("name") String name,
+    		@RequestParam("birthday") Date birthday) throws Exception{
+        userService.register(userId, name, password, birthday, "korea");
         return "contents/test";
     }
 	
@@ -66,10 +66,49 @@ public class homeController{
         return "contents/test";
     }
 	
-	/* 포스트 프린트 */
-	@RequestMapping(value="/test")
-	public String test() throws Exception{
-		postService.printDB();
+	@RequestMapping(value="/register/friend")
+	public String friend() throws Exception{
+		userService.addFriend("yoon3784", "un3784");
 		return "contents/test";
 	}
+	
+	@RequestMapping(value="/generateTestCases")
+	public String generateTestCases() throws Exception{
+		int userNum=20;
+		int partnerNum=100;
+		registerUser(userNum);
+		createFriend(partnerNum);
+		//deleteAll();
+		return "contents/test";
+	}
+	
+	public void registerUser(int num) throws Exception{
+		Functions caseGenerator = new Functions();
+		for(int i=0 ; i<num ; i++) {
+			userService.register(caseGenerator.generateUserId(), caseGenerator.generateKoreanName(), caseGenerator.generatePassword(), 
+					caseGenerator.generateBirthday(), caseGenerator.generateCountry());
+		}
+	}
+
+	public void createFriend(int num) throws Exception{
+		String[] userId = userService.getUserId();
+		
+		for(int i=0 ; i<num ;i++) {
+			int a=(int)(Math.random()*userId.length);
+			int b=(int)(Math.random()*userId.length);
+			if(a==b || userService.selectFromTableWhere(userId[a], userId[b]).length != 0) {
+				i--; 
+				continue;
+			}
+			userService.addFriend(userId[a], userId[b]);
+		}
+	}
+	
+	public void deleteAll() throws Exception{
+		String[] userId = userService.getUserId();
+		for(int i=0; i< userId.length; i++) { 
+			userService.deleteUser(userId[i]);
+		}
+	}
+	
 }

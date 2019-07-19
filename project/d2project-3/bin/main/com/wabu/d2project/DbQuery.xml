@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wabu.d2project.user.UserMapper">
     <insert id="userRegister" parameterType="com.wabu.d2project.user.User">
-    	INSERT INTO user(id,name,password) values(#{id}, #{password});
+    	INSERT INTO user(id,password) values(#{id}, #{password});
     </insert>
     
     <insert id="profileRegister" parameterType="com.wabu.d2project.user.Profile">
@@ -20,7 +20,7 @@
     	CREATE TABLE IF NOT EXISTS notification_${id}
     	(
     		notificationId VARCHAR(20) PRIMARY KEY,
-    		friendId VARCHAR(20)
+    		friendId VARCHAR(20),
     		notificationContent VARCHAR(20),
     		isRead TINYINT(1) DEFAULT false
     	);
@@ -36,28 +36,37 @@
     	WHERE notificationId=#{notificationId};
     </update>
     
-    <delete id="deleteNotification" parameterType="java.lang.String">
-    	DELETE FROM notification_${id}
-    	WHERE isRead=true;
-    </delete>
-    
-    <insert id="beFriend" parameterType="java.lang.String">
+    <insert id="addFriend" parameterType="java.lang.String">
     	INSERT INTO friends_${id}(friendId) VALUES(#{friendId});
-    	INSERT INTO friends_${friendId}(friendId) VALUSE(#{id});
     </insert>
-    
-    <delete id="deleteFriend" parameterType="java.lang.String">
-    	DELETE FROM friends_${id}
-    	WHERE friendId=#{friendId};
-    	DELETE FROM friends_${friendId}
-    	WHERE friendId=#{id};
-    </delete>
     
     <select id="getNotificationTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Notification">
     	SELECT * FROM notification_${id};
     </select>
     
+    <insert id="addFriendForTest" parameterType ="java.lang.String">
+    	INSERT IGNORE INTO friends_${id}(friendId) VALUES(#{friendId});
+    </insert>
+    
     <select id="getFriendTable" parameterType="java.lang.String" resultType="java.lang.String" >
     	SELECT friendId FROM friends_${id};
     </select>
+    
+    <select id="selectFromTable" parameterType="java.lang.String" resultType="java.lang.String">
+    	SELECT ${columnName} FROM ${tableName}
+    </select>
+    
+    <select id="selectFromTableWhere" parameterType="java.lang.String" resultType="java.lang.String">
+    	SELECT ${columnName} FROM ${tableName}
+    	WHERE ${columnName} = #{value};
+    </select>
+    
+    <update id="dropTable" parameterType="java.lang.String">
+    	DROP TABLE IF EXISTS ${tableName};
+    </update>
+    
+    <delete id="deleteRecord" parameterType = "java.lang.String">
+    	DELETE FROM ${tableName}
+    	WHERE ${keyColumn}=#{value};
+    </delete>
 </mapper>

@@ -1,5 +1,6 @@
 package com.wabu.d2project.user;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -20,7 +21,7 @@ public interface UserMapper{
 	 * @param country
 	 * @param profile
 	 */
-	public void profileRegister(@Param("id") String id, @Param("name")String name, @Param("birthday") String birthday, @Param("country") String country, 
+	public void profileRegister(@Param("id") String id, @Param("name")String name, @Param("birthday") Date birthday, @Param("country") String country, 
 			@Param("profile") String profile) throws Exception;
 	
 	/**
@@ -42,22 +43,16 @@ public interface UserMapper{
 	 * Check for read notification
 	 */
 	public void readNotification(@Param("id") String id, @Param("notificationId") String notificationId) throws Exception;
-	
-	/**
-	 * Delete all read notifications
-	 */
-	public void deleteNotification(@Param("id") String id) throws Exception;
+
 	
 	/**
 	 * Insert friend into friends table of 'id' and 'friendId'
 	 */
-	public void beFriend(@Param("id") String id, @Param("friendId") String friendId) throws Exception;
+	public void addFriend(@Param("id") String id, @Param("friendId") String friendId) throws Exception;
 	
-	/**
-	 * Delete friend from friends table of 'id' and 'friendId'
-	 */
-	public void deleteFriend(@Param("id") String id, @Param("friendId") String friendId) throws Exception;
+	public void addFriendForTest(@Param("id") String id, @Param("friendId") String friendId) throws Exception;
 	
+
 	/**
 	 * Select notifications from notification table of 'id'
 	 * @return List of notification
@@ -69,4 +64,11 @@ public interface UserMapper{
 	 * @return friendsId
 	 */
 	public List<String> getFriendTable(@Param("id") String id) throws Exception;
+	
+	public void dropTable(@Param("tableName") String tableName) throws Exception;
+	
+	public void deleteRecord(@Param("tableName") String tableName, @Param("keyColumn") String keyColumn, @Param("value") String value)throws Exception;
+	
+	public String[] selectFromTable(@Param("columnName") String columnName, @Param("tableName") String tableName) throws Exception;
+	public String[] selectFromTableWhere(@Param("columnName") String columnName, @Param("tableName") String tableName, @Param("value") String value) throws Exception;
 }

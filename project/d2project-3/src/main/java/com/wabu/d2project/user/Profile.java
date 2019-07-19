@@ -1,5 +1,7 @@
 package com.wabu.d2project.user;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,8 +21,11 @@ public class Profile {
     @Column(name="id")
     private String id;
     
+    @Column(name="name")
+    private String name;
+    
     @Column(name="birthday")
-    private String birthday;
+    private Date birthday;
     
     @Column(name="country")
     private String country;
@@ -29,6 +34,6 @@ public class Profile {
     public String toString() {
         return String.format(
                 "profile[id=%s, country='%s', birthday='%s']",
-                id, country, birthday);
+                id, country, birthday.toString());
     }
 }

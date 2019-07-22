@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -34,12 +34,12 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="timeline.html">Home
+            <a class="nav-link" href="timeline">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="profile.html">Profile</a>
+            <a class="nav-link" href="profile">Profile</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="">Friends</a>
@@ -62,53 +62,20 @@
         </h1>
 
         <!-- TimeLine Post -->
-        <div class="card mb-4">
+        <div class="card mb-4" th:each="post: ${data}" >
           <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
           <div class="card-body">
             <h2 class="card-title">Post Title</h2>
-            <p class="card-text">Post Messageeee</p>
+            <p class="card-text" th:text="${post.contents}">Post Messageeee</p>
             <!--
               <a href="#" class="btn btn-primary">Read More &rarr;</a>
             -->
           </div>
-          <div class="card-footer text-muted">
+          <div class="card-footer text-muted" th:text="${post.date}">
             Posted on when, 2019 by
-            <a href="#">Friends</a>
           </div>
+          <a href="#" th:text="${post.userId}">Friends</a>
         </div>
-
-        <!-- TimeLine Post -->
-        <div class="card mb-4">
-          <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
-          <div class="card-body">
-            <h2 class="card-title">Post Title</h2>
-            <p class="card-text">Post Messageeee</p>
-            <!--
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
-            -->
-          </div>
-          <div class="card-footer text-muted">
-            Posted on when, 2019 by
-            <a href="#">Friends</a>
-          </div>
-        </div>
-
-        <!-- TimeLine Post -->
-        <div class="card mb-4">
-          <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
-          <div class="card-body">
-            <h2 class="card-title">Post Title</h2>
-            <p class="card-text">Post Messageeee</p>
-            <!--
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
-            -->
-          </div>
-          <div class="card-footer text-muted">
-            Posted on when, 2019 by
-            <a href="#">Friends</a>
-          </div>
-        </div>
-
       </div>
 
       <!-- Sidebar Widgets Column -->

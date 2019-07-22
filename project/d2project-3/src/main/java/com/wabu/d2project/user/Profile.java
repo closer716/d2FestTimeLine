@@ -23,6 +23,16 @@ public class Profile {
     
     private String country;
     
+    private String elmSchool;
+    
+    private String midSchool;
+    
+    private String highSchool;
+    
+    private String univSchool;
+    
+    private String office;
+    
     @Override
     public String toString() {
         return String.format(

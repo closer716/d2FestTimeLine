@@ -7,6 +7,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +27,8 @@ public class homeController{
 	private PostService postService;
 
 	@RequestMapping(value="/timeline")
-	protected String home() {
+	protected String home(Model model) {
+		model.addAttribute("data", postService.findAll());
 		return "contents/timeline";
 	}
 	
@@ -76,23 +78,23 @@ public class homeController{
 	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
-		userService.createUserTable();
-		userService.createProfileTable();
-		
+		//userService.createUserTable();
+		//userService.createProfileTable();
+		deleteAllMariaDB();
 		int userNum=20;
 		int partnerNum=50;
-		int notificationNum=1000;
+		int notificationNum=100;
 		int postNum=50;
 		registerUser(userNum);
 		createFriend(partnerNum);
 		createNotification(notificationNum);
-		createPost(postNum);
+		createPosts(postNum);
 		//postService.deleteAll();
 		//deleteAllMariaDB();
 		return "contents/test";
 	}
 	
-	public void registerUser(int num) throws Exception{
+	private void registerUser(int num) throws Exception{
 		Functions caseGenerator = new Functions();
 		for(int i=0 ; i<num ; i++) {
 			userService.register(caseGenerator.generateUserId(), caseGenerator.generateKoreanName(), caseGenerator.generatePassword(), 
@@ -102,15 +104,26 @@ public class homeController{
 		System.out.println("======================================================");
 	}
 	
-	private void createPost(int num)throws Exception{
+	private void createPosts(int num)throws Exception{
 		Functions caseGenerator = new Functions();
 		String[] userId = userService.getUserId();
 		for(int i=0 ; i<num ; i++){
 			int a=(int)(Math.random()*userId.length);
-			postService.addPost(new PostDto(ObjectId.get(), userId[a], caseGenerator.generatePostContent(), new Date()));
+			ObjectId id = ObjectId.get();
+			postService.addPost(new PostDto(id, userId[a], caseGenerator.generatePostContent(), new Date()));
+			registerPostAtTable(userId[a], id.toString());
 		}
 		System.out.println("Creating posts is completed");
 		System.out.println("======================================================");
+	}
+	
+	private void registerPostAtTable(String userId, String postId) throws Exception {
+		userService.postRegister("myPosts_"+userId, postId);
+		userService.postRegister("posts_"+userId, postId);
+		String[] friendsId = userService.getFriendsId(userId);
+		for(int i=0 ; i<friendsId.length ; i++) {
+			userService.postRegister("posts_"+friendsId[i], postId);
+		}
 	}
 
 	private void createFriend(int num) throws Exception{
@@ -148,10 +161,10 @@ public class homeController{
 				i--; 
 				continue;
 			}else if(userService.selectFromTableWhere(userId[a], userId[b]).length != 0) {
-				userService.notify(userId[a],userId[b], 1);
+				userService.notificationRegister(userId[a],userId[b], 1);
 			}
 			else
-				userService.notify(userId[a],userId[b], 0);
+				userService.notificationRegister(userId[a],userId[b], 0);
 		}
 		System.out.println("Creating norifications is completed");
 		System.out.println("======================================================");

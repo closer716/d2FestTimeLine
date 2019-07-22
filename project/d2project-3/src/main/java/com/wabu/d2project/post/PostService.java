@@ -42,4 +42,8 @@ public class PostService {
 	public void deleteAll() {
 		repository.deleteAll();
 	}
+	
+	public List<Post> findAll(){
+		return repository.findAll();
+	}
 }

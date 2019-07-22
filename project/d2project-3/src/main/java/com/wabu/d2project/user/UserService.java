@@ -46,6 +46,10 @@ public class UserService {
 				"isRead TINYINT(1) DEFAULT false");
 		userMapper.createTable("friends_"+id,
 				"friendId VARCHAR(20) PRIMARY KEY");
+		userMapper.createTable("myPosts_"+id,
+				"postId VARCHAR(24) PRIMARY KEY");
+		userMapper.createTable("posts_"+id,
+				"postId VARCHAR(24) PRIMARY KEY");
 	}
 	
 	public List<User> getUserTable(String columns) throws Exception{
@@ -76,7 +80,7 @@ public class UserService {
 		return userMapper.selectFromTableWhere("friendId", "friends_"+id, friendId);
 	}
 	
-	public void notify(String id, String friendId, int notificationContent)throws Exception{
+	public void notificationRegister(String id, String friendId, int notificationContent)throws Exception{
 		String content;
 		if(notificationContent==0)
 			content= "님이 친구 요청을 하였습니다.";
@@ -84,6 +88,10 @@ public class UserService {
 			content= "님이 친구 요청을 수락하였습니다.";
 		List<String> str = Arrays.asList(friendId, content);
 		userMapper.insertIntoTable("notification_"+id, "friendId, notificationContent", makeValues(str));
+	}
+	
+	public void postRegister(String tableName, String postId) throws Exception{
+		userMapper.insertIntoTable(tableName, "postId", "\""+postId+"\"" );
 	}
 	
 	public void readNotification(String id, String notificationId) throws Exception{
@@ -106,13 +114,15 @@ public class UserService {
 		userMapper.deleteRecord("friends_"+friendId, "friendId", id);
 	}
 	
-	public void dropFriendsAndNotificationTable(String id) throws Exception{
+	private void dropUserTables(String id) throws Exception{
 		userMapper.dropTable("friends_"+id);
 		userMapper.dropTable("notification_"+id);
+		userMapper.dropTable("posts_"+id);
+		userMapper.dropTable("myPosts_"+id);
 	}
 	
 	public void deleteUser(String id) throws Exception{
-		dropFriendsAndNotificationTable(id);
+		dropUserTables(id);
 		userMapper.deleteRecord("profile", "id", id);
 		userMapper.deleteRecord("user", "id", id);
 	}
@@ -123,7 +133,6 @@ public class UserService {
 	}
 	
 	private void profileRegister(String id, String name, String birthday, String country) throws Exception{
-		System.out.println(birthday);
 		List<String> str = Arrays.asList(id,name,birthday.toString(),country);
 		userMapper.insertIntoTable("profile", "id, name, birthday, country", makeValues(str));
 	}

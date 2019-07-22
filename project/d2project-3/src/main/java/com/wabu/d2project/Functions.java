@@ -21,23 +21,24 @@ public class Functions {
 			result+=valid[(int)(Math.random()*length)];
 		return result;
 	}
-	public Date generateBirthday() throws Exception{
-		SimpleDateFormat formattedDate = new SimpleDateFormat("yyyyMMdd");
+	public String generateBirthday() throws Exception{
 		String result=new String();
-		int tmp = (int)(Math.random()*120+1899);
-		result+=Integer.toString(tmp);
-		tmp = (int)(Math.random()*12+1);
-		if(tmp<10)
-			result+="0"+Integer.toString(tmp);
+		int year = (int)(Math.random()*120+1899);
+		result+=Integer.toString(year);
+		int month = (int)(Math.random()*12+1);
+		if(month<10)
+			result+="0"+Integer.toString(month);
 		else
-			result+=Integer.toString(tmp);
-		tmp = (int)(Math.random()*30+1);
-		if(tmp<10)
-			result+="0"+Integer.toString(tmp);
-		else
-			result+=Integer.toString(tmp);
+			result+=Integer.toString(month);
+		int date = (int)(Math.random()*30+1);
+		if(date<10)
+			return result+="0"+Integer.toString(date);
+		else if(date>28 && month==2)
+			date-=3;
+		else if(date==31 && (month==1 || month==3 || month==5 ||month==7 || month==8 || month==10 || month==12))
+			date--;
 
-		return formattedDate.parse(result);
+		return result+=Integer.toString(date);
 	}
 	
 	public String generateCountry() {
@@ -90,5 +91,11 @@ public class Functions {
 	    			firstName[(int)(Math.random()*firstName.length)] + firstName[(int)(Math.random()*firstName.length)];
 	    else
 	    	return lastName[(int)(Math.random()*lastName.length)] + firstName[(int)(Math.random()*firstName.length)] + firstName[(int)(Math.random()*firstName.length)];
+	}
+
+	public String generatePostContent() {
+		int count = (int)(Math.random()*900+100);
+		String content = RandomStringUtils.random(count);
+		return content;
 	}
 }

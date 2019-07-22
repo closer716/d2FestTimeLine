@@ -18,24 +18,18 @@ import lombok.NoArgsConstructor;
 public class Post {
 
     @Id
-    public ObjectId _id;
+    public ObjectId id;
 
     public String userId;
     public String contents;
     public Date date;
-
-    public Post(String userId, String contents, Date date) {
-        this.userId = userId;
-        this.contents = contents;
-        this.date = date;
-    }
 
     @Override
     public String toString() {
     	
         return String.format(
                 "post[id=%s, userId=%s, contents='%s', date='%s']",
-                _id, userId, contents, date);
+                id, userId, contents, date);
     }
 
 }

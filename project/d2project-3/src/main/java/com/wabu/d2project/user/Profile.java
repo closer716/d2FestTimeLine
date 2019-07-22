@@ -2,9 +2,7 @@ package com.wabu.d2project.user;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,20 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Entity
 @Data
 public class Profile {
     @Id
-    @Column(name="id")
     private String id;
     
-    @Column(name="name")
     private String name;
     
-    @Column(name="birthday")
     private Date birthday;
     
-    @Column(name="country")
     private String country;
     
     @Override

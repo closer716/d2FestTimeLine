@@ -1,33 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wabu.d2project.user.UserMapper">
-    <insert id="userRegister" parameterType="com.wabu.d2project.user.User">
-    	INSERT INTO user(id,password) values(#{id}, #{password});
-    </insert>
-    
-    <insert id="profileRegister" parameterType="com.wabu.d2project.user.Profile">
-    	INSERT INTO ${profile}(id,name,birthday,country) values(#{id}, #{name}, #{birthday}, #{country});
-    </insert>
-    
-    <update id="createFriendsTable" parameterType="java.lang.String">
-    	CREATE TABLE IF NOT EXISTS friends_${id}
-    	(
-    		friendId VARCHAR(20) PRIMARY KEY
-    	);
-    </update>
-    
-    <update id="createNotificationTable" parameterType="java.lang.String">
-    	CREATE TABLE IF NOT EXISTS notification_${id}
-    	(
-    		notificationId VARCHAR(20) PRIMARY KEY,
-    		friendId VARCHAR(20),
-    		notificationContent VARCHAR(20),
-    		isRead TINYINT(1) DEFAULT false
-    	);
-    </update>
 
-    <insert id="notify" parameterType="java.lang.String">
-    	INSERT INTO notification_${id}(friendId, notificationContent) values(#{friendId}, #{notificationContent});
+    <update id="createTable" parameterType="java.lang.String">
+    	CREATE TABLE IF NOT EXISTS ${tableName}(
+    		${columns}
+    	);
+    </update>
+       
+    <insert id="insertIntoTable" parameterType="java.lang.String">
+    	INSERT INTO ${tableName}(${columns}) VALUES(${values});
     </insert>
     
     <update id="readNotification" parameterType="java.lang.String">
@@ -36,20 +18,20 @@
     	WHERE notificationId=#{notificationId};
     </update>
     
-    <insert id="addFriend" parameterType="java.lang.String">
-    	INSERT INTO friends_${id}(friendId) VALUES(#{friendId});
-    </insert>
-    
-    <select id="getNotificationTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Notification">
-    	SELECT * FROM notification_${id};
+    <select id="getUserTable" resultType="com.wabu.d2project.user.User">
+    	SELECT ${columns} FROM user;
     </select>
     
-    <insert id="addFriendForTest" parameterType ="java.lang.String">
-    	INSERT IGNORE INTO friends_${id}(friendId) VALUES(#{friendId});
-    </insert>
+    <select id="getProfileTable" resultType="com.wabu.d2project.user.Profile">
+    	SELECT ${columns} FROM profile;
+    </select>
     
-    <select id="getFriendTable" parameterType="java.lang.String" resultType="java.lang.String" >
-    	SELECT friendId FROM friends_${id};
+    <select id="getNotificationTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Notification">
+    	SELECT ${columns} FROM notification_${id};
+    </select>
+    
+    <select id="getFriendTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Friend">
+    	SELECT ${columns} FROM friends_${id}; 
     </select>
     
     <select id="selectFromTable" parameterType="java.lang.String" resultType="java.lang.String">

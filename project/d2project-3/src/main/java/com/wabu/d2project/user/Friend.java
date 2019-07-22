@@ -11,17 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Data
-public class User {
-
-    @Id
-    private String id;
-
-    private String password;
-    
-    @Override
-    public String toString() {
-        return String.format(
-                "user[id=%s]",
-                id);
-    }
+public class Friend {
+	@Id
+    private String friendId;
 }

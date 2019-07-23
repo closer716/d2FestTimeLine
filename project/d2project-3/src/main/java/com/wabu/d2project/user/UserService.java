@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wabu.d2project.Functions;
+
 @Service
 public class UserService {
 		
@@ -25,8 +27,10 @@ public class UserService {
 		userMapper.createTable("profile", 
 				"id VARCHAR(20)," +
 				"name VARCHAR(20)," +
+				"sex TINYINT(1)," +
 				"birthday DATE," +
 				"country VARCHAR(50)," +
+				"city VARCHAR(20)," +
 				"elmSchool VARCHAR(20)," +
 				"midSchool VARCHAR(20)," +
 				"highSchool VARCHAR(20)," +
@@ -36,9 +40,10 @@ public class UserService {
 				"references user(id) on update cascade");
 	}
 	
-	public void register(String id, String name, String password, String birthday, String country) throws Exception {
-		userRegister(id, password);
-		profileRegister(id, name, birthday, country);
+	public void register(User user, Profile profile) throws Exception {
+		String id = user.getId();
+		userRegister(user);
+		profileRegister(profile);
 		userMapper.createTable("notification_"+id,
 				"notificationId INT NOT NULL AUTO_INCREMENT PRIMARY KEY," + 
 				"friendId VARCHAR(20)," + 
@@ -46,8 +51,6 @@ public class UserService {
 				"isRead TINYINT(1) DEFAULT false");
 		userMapper.createTable("friends_"+id,
 				"friendId VARCHAR(20) PRIMARY KEY");
-		userMapper.createTable("myPosts_"+id,
-				"postId VARCHAR(24) PRIMARY KEY");
 		userMapper.createTable("posts_"+id,
 				"postId VARCHAR(24) PRIMARY KEY");
 	}
@@ -86,8 +89,8 @@ public class UserService {
 			content= "님이 친구 요청을 하였습니다.";
 		else
 			content= "님이 친구 요청을 수락하였습니다.";
-		List<String> str = Arrays.asList(friendId, content);
-		userMapper.insertIntoTable("notification_"+id, "friendId, notificationContent", makeValues(str));
+		String[] str = {friendId, content};
+		userMapper.insertIntoTable("notification_"+id, "friendId, notificationContent", Functions.makeValues(str));
 	}
 	
 	public void postRegister(String tableName, String postId) throws Exception{
@@ -103,10 +106,8 @@ public class UserService {
 	}
 	
 	public void addFriend(String id, String friendId) throws Exception{
-		List<String> str = Arrays.asList(friendId);
-		userMapper.insertIntoTable("friends_"+id, "friendId", makeValues(str));
-		str = Arrays.asList(id);
-		userMapper.insertIntoTable("friends_"+friendId, "friendId", makeValues(str));
+		userMapper.insertIntoTable("friends_"+id, "friendId", "\""+friendId+"\"");
+		userMapper.insertIntoTable("friends_"+friendId, "friendId", "\""+id+"\"");
 	}
 	
 	public void deleteFriend(String id, String friendId) throws Exception{
@@ -118,7 +119,11 @@ public class UserService {
 		userMapper.dropTable("friends_"+id);
 		userMapper.dropTable("notification_"+id);
 		userMapper.dropTable("posts_"+id);
-		userMapper.dropTable("myPosts_"+id);
+	}
+	
+	public void dropUsreAndProfileTable() throws Exception{
+		userMapper.dropTable("profile");
+		userMapper.dropTable("user");
 	}
 	
 	public void deleteUser(String id) throws Exception{
@@ -127,25 +132,13 @@ public class UserService {
 		userMapper.deleteRecord("user", "id", id);
 	}
 	
-	private void userRegister(String id, String password) throws Exception{
-		List<String> str = Arrays.asList(id,password);
-		userMapper.insertIntoTable("user", "id,password", makeValues(str));
+	private void userRegister(User user) throws Exception{
+		userMapper.insertIntoTable("user", user.toColumns(), user.toValues());
 	}
 	
-	private void profileRegister(String id, String name, String birthday, String country) throws Exception{
-		List<String> str = Arrays.asList(id,name,birthday.toString(),country);
-		userMapper.insertIntoTable("profile", "id, name, birthday, country", makeValues(str));
+	private void profileRegister(Profile profile) throws Exception{
+		userMapper.insertIntoTable("profile", profile.toColumns(), profile.toValues());
 	}
 	
-	private String makeValues(List<String> str) {
-		String result = new String();
-		int i = 0;
-		while(true) {
-			result+="\""+str.get(i++)+"\"";
-			if(i==str.size())
-				break;
-			result+=", ";
-		}
-		return result;
-	}
+
 }

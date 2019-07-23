@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wabu.d2project.post.Post;
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
+import com.wabu.d2project.user.Profile;
+import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
 
 @Controller
@@ -53,9 +55,11 @@ public class homeController{
 	}
 	
 	@PostMapping("register/confirm")
-    public String query(@RequestParam("userId") String userId, @RequestParam("password") String password, @RequestParam("name") String name,
-    		@RequestParam("birthday") String birthday) throws Exception{
-        userService.register(userId, name, password, birthday, "korea");
+    public String query(@RequestParam("id") String id, @RequestParam("password") String password,@RequestParam("sex") boolean sex, @RequestParam("name") String name,
+    		@RequestParam("birthday") String birthday, @RequestParam("country") String country, @RequestParam("city") String city, 
+    		@RequestParam("elmSchool") String elmSchool, @RequestParam("midSchool") String midSchool, @RequestParam("highSchool") String highSchool, @RequestParam("univSchool") String univSchool,
+    		@RequestParam("office") String office) throws Exception{
+        userService.register(new User(id, password), new Profile(id, name, sex, birthday, country, city, elmSchool, midSchool, highSchool, univSchool, office));
         return "contents/test";
     }
 	
@@ -78,17 +82,18 @@ public class homeController{
 	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
+		deleteAllMariaDB();
+		postService.deleteAll();
 		//userService.createUserTable();
 		//userService.createProfileTable();
-		deleteAllMariaDB();
 		int userNum=20;
 		int partnerNum=50;
 		int notificationNum=100;
 		int postNum=50;
-		registerUser(userNum);
-		createFriend(partnerNum);
-		createNotification(notificationNum);
-		createPosts(postNum);
+		//registerUser(userNum);
+		//createFriend(partnerNum);
+		//createNotification(notificationNum);
+		//createPosts(postNum);
 		//postService.deleteAll();
 		//deleteAllMariaDB();
 		return "contents/test";
@@ -97,8 +102,10 @@ public class homeController{
 	private void registerUser(int num) throws Exception{
 		Functions caseGenerator = new Functions();
 		for(int i=0 ; i<num ; i++) {
-			userService.register(caseGenerator.generateUserId(), caseGenerator.generateKoreanName(), caseGenerator.generatePassword(), 
-					caseGenerator.generateBirthday(), caseGenerator.generateCountry());
+			String id = caseGenerator.generateUserId();
+			userService.register(new User(id , caseGenerator.generatePassword()), 
+					new Profile(id, caseGenerator.generateKoreanName(), true,caseGenerator.generateBirthday(), 
+							caseGenerator.generateCountry(),"null","null","null","null","null","null"));
 		}
 		System.out.println("Registing users is completed");
 		System.out.println("======================================================");
@@ -118,7 +125,6 @@ public class homeController{
 	}
 	
 	private void registerPostAtTable(String userId, String postId) throws Exception {
-		userService.postRegister("myPosts_"+userId, postId);
 		userService.postRegister("posts_"+userId, postId);
 		String[] friendsId = userService.getFriendsId(userId);
 		for(int i=0 ; i<friendsId.length ; i++) {
@@ -147,6 +153,7 @@ public class homeController{
 		for(int i=0; i< userId.length; i++) { 
 			userService.deleteUser(userId[i]);
 		}
+		userService.dropUsreAndProfileTable();
 		System.out.println("Deleting all user of mariadb is completed");
 		System.out.println("======================================================");
 	}

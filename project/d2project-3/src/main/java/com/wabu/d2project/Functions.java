@@ -2,6 +2,7 @@ package com.wabu.d2project;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -86,7 +87,7 @@ public class Functions {
 	            "¼Ø", "°ø", "¸é", "Å¹", "¿Â", "µð", "Ç×", "ÈÄ", "·Á", "±Õ", "¹¬", "¼Û", "¿í", "ÈÞ", "¾ð", "·É", "¼¶", "µé", "°ß", "Ãß", "°É", "»ï",
 	            "¿­", "¿õ", "ºÐ", "º¯", "¾ç", "Ãâ", "Å¸", "Èï", "°â", "°ï", "¹ø", "½Ä", "¶õ", "´õ", "¼Õ", "¼ú", "ÈÉ", "¹Ý", "ºó", "½Ç", "Á÷", "Èì",
 	            "Èç", "¾Ç", "¶÷", "¶ä", "±Ç", "º¹", "½É", "Çå", "¿±", "ÇÐ", "°³", "·Õ", "Æò", "´Ã", "´Ì", "¶û", "¾á", "Çâ", "¿ï", "·Ã"};
-	    if(Math.random()*10<1)
+	    if(Math.random()*20<1)
 	    	return lastName[(int)(Math.random()*lastName.length)] + firstName[(int)(Math.random()*firstName.length)] + 
 	    			firstName[(int)(Math.random()*firstName.length)] + firstName[(int)(Math.random()*firstName.length)];
 	    else
@@ -97,5 +98,20 @@ public class Functions {
 		int count = (int)(Math.random()*900+100);
 		String content = RandomStringUtils.random(count);
 		return content;
+	}
+	
+	public static String makeValues(String[] str) {
+		String result = new String();
+		int i = 0;
+		while(true) {
+			if(str[i]=="null")
+				result+=str[i++];
+			else
+				result+="\""+str[i++]+"\"";
+			if(i==str.length)
+				break;
+			result+=", ";
+		}
+		return result;
 	}
 }

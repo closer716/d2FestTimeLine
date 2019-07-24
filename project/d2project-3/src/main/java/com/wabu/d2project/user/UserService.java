@@ -48,39 +48,55 @@ public class UserService {
 				"notificationId INT NOT NULL AUTO_INCREMENT PRIMARY KEY," + 
 				"friendId VARCHAR(20)," + 
 				"notificationContent VARCHAR(20)," + 
-				"isRead TINYINT(1) DEFAULT false");
+				"isRead TINYINT(1) DEFAULT false," +
+				"foreign key(id)");
 		userMapper.createTable("friends_"+id,
-				"friendId VARCHAR(20) PRIMARY KEY");
+				"friendId VARCHAR(20) PRIMARY KEY," +
+				"foreign key(id)\r\n");
 		userMapper.createTable("posts_"+id,
-				"postId VARCHAR(24) PRIMARY KEY");
+				"postId VARCHAR(24) PRIMARY KEY," +
+				"foreign key(id)\r\n");
 	}
 	
-	public List<User> getUserTable(String columns) throws Exception{
+	public User[] getUserTable(String columns) throws Exception{
 		return userMapper.getUserTable(columns);
 	}
 	
-	public List<Profile> getProfleTable(String columns) throws Exception{
+	public Profile[] getProfleTable(String columns) throws Exception{
 		return userMapper.getProfileTable(columns);
 	}
 	
-	public List<Notification> getNotificationTable(String id) throws Exception{
+	public Notification[] getNotificationTable(String id) throws Exception{
 		return userMapper.getNotificationTable("notificationId, friendId, notificationContent, isRead",id);
 	}
 	
-	public List<Friend> getFriendTable(String id) throws Exception{
+	public Friend[] getFriendTable(String id) throws Exception{
 		return userMapper.getFriendTable("friendId", id);
 	}
 	
-	public String[] getFriendsId(String id) throws Exception{
-		return userMapper.selectFromTable("friendId", "friends_"+id);
+	public DataContainer[] getFriendsId(String id) throws Exception{
+		return userMapper.selectFromTable("friendId AS column1", "friends_"+id);
 	}
 	
-	public String[] getUserId()throws Exception{
-		return userMapper.selectFromTable("id", "user");
+	public DataContainer[] getUserId()throws Exception{
+		return userMapper.selectFromTable("id AS column1", "user");
 	}
 	
-	public String[] selectFromTableWhere(String id, String friendId) throws Exception{
-		return userMapper.selectFromTableWhere("friendId", "friends_"+id, friendId);
+	public DataContainer[] selectFromTableWhere(String id, String friendId) throws Exception{
+		return userMapper.selectFromTable("friendId AS column1", "friends_"+id+" WHERE friendId =\""+friendId+"\"");
+	}
+	
+	public DataContainer[] getFriendsFriend(String userId) throws Exception{
+		Friend[] friends = getFriendTable(userId);
+		if(friends.length==0)
+			return null;
+		String str ="(SELECT friendId FROM friends_"+friends[0].getFriendId();
+		for(int i=1 ; i<friends.length; i++) {
+			str+=" UNION ALL SELECT friendId FROM friends_"+friends[i].getFriendId()+" where friendId <> \""+userId+"\"";
+		}
+		str+=")p GROUP BY(friendId) ORDER BY COUNT(friendId) desc";
+		
+		return userMapper.selectFromTable("friendId as column1, count(friendId) as column2",str);
 	}
 	
 	public void notificationRegister(String id, String friendId, int notificationContent)throws Exception{

@@ -2,12 +2,10 @@ package com.wabu.d2project.post;
 
 
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import org.bson.BsonTimestamp;
-import org.bson.types.ObjectId;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+
+import org.bson.types.ObjectId;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -11,11 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.wabu.d2project.post.Post;
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
+import com.wabu.d2project.user.Friend;
+import com.wabu.d2project.user.DataContainer;
 import com.wabu.d2project.user.Profile;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
@@ -29,8 +29,23 @@ public class homeController{
 	private PostService postService;
 
 	@RequestMapping(value="/timeline")
-	protected String home(Model model) {
-		model.addAttribute("data", postService.findAll());
+	protected String home(Model model) throws Exception{
+		/* using column1(userId)*/
+		Profile[] profile = userService.getProfleTable("*");
+		/* using column1(friendId), column2(count(friendId)) */
+		DataContainer[] friendsFriend=null;
+		int i=0;
+		do {
+			 friendsFriend = userService.getFriendsFriend(profile[i++].getId());
+		}while(friendsFriend == null);
+		DataContainer[] recommend = new DataContainer[profile.length];
+		for(int k=1 ; i<profile.length ; k++)
+		{
+			
+		}
+		model.addAttribute("posts", postService.findAll());
+		model.addAttribute("recommend", friendsFriend);
+		
 		return "contents/timeline";
 	}
 	
@@ -82,18 +97,18 @@ public class homeController{
 	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
-		deleteAllMariaDB();
+		//deleteAllMariaDB();
 		postService.deleteAll();
 		//userService.createUserTable();
 		//userService.createProfileTable();
 		int userNum=20;
 		int partnerNum=50;
-		int notificationNum=100;
-		int postNum=50;
+		int notificationNum=5;
+		int postNum=5;
 		//registerUser(userNum);
 		//createFriend(partnerNum);
 		//createNotification(notificationNum);
-		//createPosts(postNum);
+		createPosts(postNum);
 		//postService.deleteAll();
 		//deleteAllMariaDB();
 		return "contents/test";
@@ -113,12 +128,13 @@ public class homeController{
 	
 	private void createPosts(int num)throws Exception{
 		Functions caseGenerator = new Functions();
-		String[] userId = userService.getUserId();
+		/* using column1(userId)*/
+		DataContainer[] userId = userService.getUserId();
 		for(int i=0 ; i<num ; i++){
 			int a=(int)(Math.random()*userId.length);
 			ObjectId id = ObjectId.get();
-			postService.addPost(new PostDto(id, userId[a], caseGenerator.generatePostContent(), new Date()));
-			registerPostAtTable(userId[a], id.toString());
+			postService.addPost(new PostDto(id, userId[a].getColumn1(), caseGenerator.generatePostContent(), new Date()));
+			registerPostAtTable(userId[a].getColumn1(), id.toString());
 		}
 		System.out.println("Creating posts is completed");
 		System.out.println("======================================================");
@@ -126,32 +142,35 @@ public class homeController{
 	
 	private void registerPostAtTable(String userId, String postId) throws Exception {
 		userService.postRegister("posts_"+userId, postId);
-		String[] friendsId = userService.getFriendsId(userId);
+		/* using column1(friendId)*/
+		DataContainer[] friendsId = userService.getFriendsId(userId);
 		for(int i=0 ; i<friendsId.length ; i++) {
-			userService.postRegister("posts_"+friendsId[i], postId);
+			userService.postRegister("posts_"+friendsId[i].getColumn1(), postId);
 		}
 	}
 
 	private void createFriend(int num) throws Exception{
-		String[] userId = userService.getUserId();
+		/* using column1(userId)*/
+		DataContainer[] userId = userService.getUserId();
 		
 		for(int i=0 ; i<num ;i++) {
 			int a=(int)(Math.random()*userId.length);
 			int b=(int)(Math.random()*userId.length);
-			if(a==b || userService.selectFromTableWhere(userId[a], userId[b]).length != 0) {
+			if(a==b || userService.selectFromTableWhere(userId[a].getColumn1(), userId[b].getColumn1()).length != 0) {
 				i--; 
 				continue;
 			}
-			userService.addFriend(userId[a], userId[b]);
+			userService.addFriend(userId[a].getColumn1(), userId[b].getColumn1());
 		}
 		System.out.println("Creating friends is completed");
 		System.out.println("======================================================");
 	}
 	
 	private void deleteAllMariaDB() throws Exception{
-		String[] userId = userService.getUserId();
+		/* using column1(userId)*/
+		DataContainer[] userId = userService.getUserId();
 		for(int i=0; i< userId.length; i++) { 
-			userService.deleteUser(userId[i]);
+			userService.deleteUser(userId[i].getColumn1());
 		}
 		userService.dropUsreAndProfileTable();
 		System.out.println("Deleting all user of mariadb is completed");
@@ -159,7 +178,8 @@ public class homeController{
 	}
 	
 	private void createNotification(int num) throws Exception{
-		String[] userId = userService.getUserId();
+		/* using column1(userId)*/
+		DataContainer[] userId = userService.getUserId();
 		
 		for(int i=0 ; i<num ;i++) {
 			int a=(int)(Math.random()*userId.length);
@@ -167,13 +187,14 @@ public class homeController{
 			if(a==b){
 				i--; 
 				continue;
-			}else if(userService.selectFromTableWhere(userId[a], userId[b]).length != 0) {
-				userService.notificationRegister(userId[a],userId[b], 1);
+			}else if(userService.selectFromTableWhere(userId[a].getColumn1(), userId[b].getColumn1()).length != 0) {
+				userService.notificationRegister(userId[a].getColumn1(),userId[b].getColumn1(), 1);
 			}
 			else
-				userService.notificationRegister(userId[a],userId[b], 0);
+				userService.notificationRegister(userId[a].getColumn1(),userId[b].getColumn1(), 0);
 		}
 		System.out.println("Creating norifications is completed");
 		System.out.println("======================================================");
 	}
+
 }

@@ -57,19 +57,14 @@
         </h1>
 
         <!-- TimeLine Post -->
-        <div class="card mb-4" th:each="post: ${data}" >
-          <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
+        <div class="card mb-4" th:each="post: ${posts}" >
           <div class="card-body">
-            <h2 class="card-title">Post Title</h2>
-            <p class="card-text" th:text="${post.contents}">Post Messageeee</p>
-            <!--
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
-            -->
+            <h2 class="card-title" th:text="${post.userId}">Post Title</h2>
+            <p class="card-text" th:text="${post.contents}">Post Message</p>
           </div>
           <div class="card-footer text-muted" th:text="${post.date}">
             Posted on when, 2019 by
           </div>
-          <a href="#" th:text="${post.userId}">Friends</a>
         </div>
       </div>
 
@@ -97,13 +92,7 @@
               <div class="col-lg-6">
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a href="#">친구1</a>
-                  </li>
-                  <li>
-                    <a href="#">친구2</a>
-                  </li>
-                  <li>
-                    <a href="#">친구3</a>
+                    <a href="#" >친구1</a>
                   </li>
                 </ul>
               </div>
@@ -115,7 +104,15 @@
         <div class="card my-4">
           <h5 class="card-header">친구 추천</h5>
           <div class="card-body">
-            친구 목록?
+            <div class="row">
+              <div class="col-lg-6">
+                <ul class="list-unstyled mb-0" th:each="recommend: ${recommend}">
+                  <li>
+                    <a href="#" th:text="${recommend.column1}">친구1</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 

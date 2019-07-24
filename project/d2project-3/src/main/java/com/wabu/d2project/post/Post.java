@@ -1,15 +1,12 @@
 package com.wabu.d2project.post;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.bson.BsonTimestamp;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor

@@ -9,13 +9,13 @@ public interface UserMapper{
 
 	public void readNotification(@Param("id") String id, @Param("notificationId") String notificationId) throws Exception;
 	
-	public List<User> getUserTable(@Param("columns") String columns);
+	public User[] getUserTable(@Param("columns") String columns);
 	
-	public List<Profile> getProfileTable(@Param("columns") String columns);
+	public Profile[] getProfileTable(@Param("columns") String columns);
 
-	public List<Notification> getNotificationTable(@Param("columns") String columns, @Param("id") String id) throws Exception;
-	
-	public List<Friend> getFriendTable(@Param("columns") String columns, @Param("id") String id) throws Exception;
+	public Notification[] getNotificationTable(@Param("columns") String columns, @Param("id") String id) throws Exception;
+
+	public Friend[] getFriendTable(@Param("columns") String columns, @Param("id") String id) throws Exception;
 	
 	public void dropTable(@Param("tableName") String tableName) throws Exception;
 	
@@ -25,7 +25,7 @@ public interface UserMapper{
 	
 	public void deleteRecord(@Param("tableName") String tableName, @Param("keyColumn") String keyColumn, @Param("value") String value)throws Exception;
 	
-	public String[] selectFromTable(@Param("columnName") String columnName, @Param("tableName") String tableName) throws Exception;
+	public DataContainer[] selectFromTable(@Param("columnName") String columnName, @Param("tableName") String tableName) throws Exception;
 	
-	public String[] selectFromTableWhere(@Param("columnName") String columnName, @Param("tableName") String tableName, @Param("value") String value) throws Exception;
+	public DataContainer[] selectFromTableWhere(@Param("columnName") String columnName, @Param("tableName") String tableName, @Param("value") String value) throws Exception;
 }

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
-import com.wabu.d2project.user.Friend;
 import com.wabu.d2project.user.DataContainer;
+import com.wabu.d2project.user.Friend;
 import com.wabu.d2project.user.Profile;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
@@ -36,18 +36,25 @@ public class homeController{
 		DataContainer[] friendsFriend=null;
 		int i=0;
 		do {
-			 friendsFriend = userService.getFriendsFriend(profile[i++].getId());
+			 friendsFriend = userService.getFriendsFriend(profile[i++].getId(),0, 5);
 		}while(friendsFriend == null);
-		DataContainer[] recommend = new DataContainer[profile.length];
-		for(int k=1 ; i<profile.length ; k++)
-		{
-			
-		}
+		DataContainer[] recommend=recommend(profile[i-1]);
+		System.out.println(profile.length+"  "+friendsFriend.length);
+
 		model.addAttribute("posts", postService.findAll());
-		model.addAttribute("recommend", friendsFriend);
+		model.addAttribute("friendsFriend", friendsFriend);
+		model.addAttribute("recommend", recommend);
 		
 		return "contents/timeline";
 	}
+	
+	public DataContainer[] recommend(Profile userProfile) throws Exception{
+		DataContainer[] result=null;
+
+		return result;
+	}
+	
+	
 	
 	@RequestMapping(value="/login")
 	protected String login() {
@@ -71,10 +78,9 @@ public class homeController{
 	
 	@PostMapping("register/confirm")
     public String query(@RequestParam("id") String id, @RequestParam("password") String password,@RequestParam("sex") boolean sex, @RequestParam("name") String name,
-    		@RequestParam("birthday") String birthday, @RequestParam("country") String country, @RequestParam("city") String city, 
-    		@RequestParam("elmSchool") String elmSchool, @RequestParam("midSchool") String midSchool, @RequestParam("highSchool") String highSchool, @RequestParam("univSchool") String univSchool,
-    		@RequestParam("office") String office) throws Exception{
-        userService.register(new User(id, password), new Profile(id, name, sex, birthday, country, city, elmSchool, midSchool, highSchool, univSchool, office));
+    		@RequestParam("birthday") String birthday, @RequestParam("city") int city, @RequestParam("school") int school, @RequestParam("office") int office
+    		) throws Exception{
+        userService.register(new User(id, password), new Profile(id, name, sex, birthday, city, school, office));
         return "contents/test";
     }
 	
@@ -97,104 +103,24 @@ public class homeController{
 	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
-		//deleteAllMariaDB();
-		postService.deleteAll();
-		//userService.createUserTable();
-		//userService.createProfileTable();
-		int userNum=20;
-		int partnerNum=50;
-		int notificationNum=5;
+		Util util = new Util();
+		//util.deleteAllMariaDB();
+		//util.postService.deleteAll();
+		//util.userService.createUserTable();
+		//util.userService.createProfileTable();
+		int userNum=10;
+		int partnerNum=20;
+		int notificationNum=20;
 		int postNum=5;
-		//registerUser(userNum);
-		//createFriend(partnerNum);
-		//createNotification(notificationNum);
-		createPosts(postNum);
-		//postService.deleteAll();
-		//deleteAllMariaDB();
+		util.registerUser(userNum);
+		util.createFriend(partnerNum);
+		util.createNotification(notificationNum);
+		util.createPosts(postNum);
+		//util.postService.deleteAll();
+		//util.deleteAllMariaDB();
 		return "contents/test";
 	}
 	
-	private void registerUser(int num) throws Exception{
-		Functions caseGenerator = new Functions();
-		for(int i=0 ; i<num ; i++) {
-			String id = caseGenerator.generateUserId();
-			userService.register(new User(id , caseGenerator.generatePassword()), 
-					new Profile(id, caseGenerator.generateKoreanName(), true,caseGenerator.generateBirthday(), 
-							caseGenerator.generateCountry(),"null","null","null","null","null","null"));
-		}
-		System.out.println("Registing users is completed");
-		System.out.println("======================================================");
-	}
-	
-	private void createPosts(int num)throws Exception{
-		Functions caseGenerator = new Functions();
-		/* using column1(userId)*/
-		DataContainer[] userId = userService.getUserId();
-		for(int i=0 ; i<num ; i++){
-			int a=(int)(Math.random()*userId.length);
-			ObjectId id = ObjectId.get();
-			postService.addPost(new PostDto(id, userId[a].getColumn1(), caseGenerator.generatePostContent(), new Date()));
-			registerPostAtTable(userId[a].getColumn1(), id.toString());
-		}
-		System.out.println("Creating posts is completed");
-		System.out.println("======================================================");
-	}
-	
-	private void registerPostAtTable(String userId, String postId) throws Exception {
-		userService.postRegister("posts_"+userId, postId);
-		/* using column1(friendId)*/
-		DataContainer[] friendsId = userService.getFriendsId(userId);
-		for(int i=0 ; i<friendsId.length ; i++) {
-			userService.postRegister("posts_"+friendsId[i].getColumn1(), postId);
-		}
-	}
 
-	private void createFriend(int num) throws Exception{
-		/* using column1(userId)*/
-		DataContainer[] userId = userService.getUserId();
-		
-		for(int i=0 ; i<num ;i++) {
-			int a=(int)(Math.random()*userId.length);
-			int b=(int)(Math.random()*userId.length);
-			if(a==b || userService.selectFromTableWhere(userId[a].getColumn1(), userId[b].getColumn1()).length != 0) {
-				i--; 
-				continue;
-			}
-			userService.addFriend(userId[a].getColumn1(), userId[b].getColumn1());
-		}
-		System.out.println("Creating friends is completed");
-		System.out.println("======================================================");
-	}
-	
-	private void deleteAllMariaDB() throws Exception{
-		/* using column1(userId)*/
-		DataContainer[] userId = userService.getUserId();
-		for(int i=0; i< userId.length; i++) { 
-			userService.deleteUser(userId[i].getColumn1());
-		}
-		userService.dropUsreAndProfileTable();
-		System.out.println("Deleting all user of mariadb is completed");
-		System.out.println("======================================================");
-	}
-	
-	private void createNotification(int num) throws Exception{
-		/* using column1(userId)*/
-		DataContainer[] userId = userService.getUserId();
-		
-		for(int i=0 ; i<num ;i++) {
-			int a=(int)(Math.random()*userId.length);
-			int b=(int)(Math.random()*userId.length);
-			if(a==b){
-				i--; 
-				continue;
-			}else if(userService.selectFromTableWhere(userId[a].getColumn1(), userId[b].getColumn1()).length != 0) {
-				userService.notificationRegister(userId[a].getColumn1(),userId[b].getColumn1(), 1);
-			}
-			else
-				userService.notificationRegister(userId[a].getColumn1(),userId[b].getColumn1(), 0);
-		}
-		System.out.println("Creating norifications is completed");
-		System.out.println("======================================================");
-	}
 
 }

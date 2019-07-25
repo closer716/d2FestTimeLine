@@ -1,8 +1,27 @@
 package com.wabu.d2project;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import java.util.Date;
 
-public class Functions {
+import org.apache.commons.lang3.RandomStringUtils;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.wabu.d2project.post.PostDto;
+import com.wabu.d2project.post.PostService;
+import com.wabu.d2project.user.DataContainer;
+import com.wabu.d2project.user.Profile;
+import com.wabu.d2project.user.User;
+import com.wabu.d2project.user.UserService;
+
+@Component
+public class Util {
+	
+	@Autowired
+	UserService userService;
+	@Autowired
+	PostService postService;
+	
 	public String generateUserId(){
 		int count = (int)(Math.random()*13+8);
 		String userId = RandomStringUtils.randomAlphanumeric(count);
@@ -38,34 +57,6 @@ public class Functions {
 		return result+=Integer.toString(date);
 	}
 	
-	public String generateCountry() {
-		String[] countries = new String[]{"Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", 
-				"Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", 
-				"Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia and Herzegowina", "Botswana", "Bouvet Island", 
-				"Brazil", "British Indian Ocean Territory", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", 
-				"Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", 
-				"Comoros", "Congo", "Congo, the Democratic Republic of the", "Cook Islands", "Costa Rica", "Cote d'Ivoire", "Croatia (Hrvatska)", "Cuba", 
-				"Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", 
-				"Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands (Malvinas)", "Faroe Islands", "Fiji", "Finland", "France", "France Metropolitan", 
-				"French Guiana", "French Polynesia", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", 
-				"Grenada", "Guadeloupe", "Guam", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Heard and Mc Donald Islands", "Holy See (Vatican City State)", 
-				"Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran (Islamic Republic of)", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", 
-				"Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, Democratic People's Republic of", "Korea, Republic of", "Kuwait", "Kyrgyzstan", 
-				"Lao, People's Democratic Republic", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libyan Arab Jamahiriya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", 
-				"Macedonia, The Former Yugoslav Republic of", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", 
-				"Mauritius", "Mayotte", "Mexico", "Micronesia, Federated States of", "Moldova, Republic of", "Monaco", "Mongolia", "Montserrat", "Morocco", "Mozambique", "Myanmar", 
-				"Namibia", "Nauru", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", 
-				"Northern Mariana Islands", "Norway", "Oman", "Palestine", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn", "Poland", 
-				"Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", 
-				"Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Seychelles", "Sierra Leone", "Singapore", "Slovakia (Slovak Republic)", "Slovenia", 
-				"Solomon Islands", "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", "Spain", "Sri Lanka", "St. Helena", "St. Pierre and Miquelon", "Sudan", 
-				"Suriname", "Svalbard and Jan Mayen Islands", "Swaziland", "Sweden", "Switzerland", "Syrian Arab Republic", "Taiwan, Province of China", "Tajikistan", 
-				"Tanzania, United Republic of", "Thailand", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands", 
-				"Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "United States Minor Outlying Islands", "Uruguay", "Uzbekistan", "Vanuatu", 
-				"Venezuela", "Vietnam", "Virgin Islands (British)", "Virgin Islands (U.S.)", "Wallis and Futuna Islands", "Western Sahara", "Yemen", "Yugoslavia", "Zambia", "Zimbabwe"};
-		int index=(int)(Math.random()*countries.length);
-		return countries[index];
-	}
 	
 	public String generateKoreanName() {
 		String[] lastName = new String[]{"김", "이", "박", "최", "정", "강", "조", "윤", "장", "임", "한", "오", "서", "신", "권", "황", "안",
@@ -109,5 +100,86 @@ public class Functions {
 			result+=", ";
 		}
 		return result;
+	}
+	
+	public void registerUser(int num) throws Exception{
+		for(int i=0 ; i<num ; i++) {
+			String id = generateUserId();
+			userService.register(new User(id , generatePassword()), 
+					new Profile(id, generateKoreanName(), true,generateBirthday(), 
+							(int)(Math.random()*100+1),(int)(Math.random()*300+1),(int)(Math.random()*500+1)));
+		}
+		System.out.println("Registing users is completed");
+		System.out.println("======================================================");
+	}
+	
+	public void createPosts(int num)throws Exception{
+		/* using column1(userId)*/
+		DataContainer[] userId = userService.getUserId();
+		for(int i=0 ; i<num ; i++){
+			int a=(int)(Math.random()*userId.length);
+			ObjectId id = ObjectId.get();
+			postService.addPost(new PostDto(id, userId[a].getColumn1(), generatePostContent(), new Date()));
+			registerPostAtTable(userId[a].getColumn1(), id.toString());
+		}
+		System.out.println("Creating posts is completed");
+		System.out.println("======================================================");
+	}
+	
+	public void registerPostAtTable(String userId, String postId) throws Exception {
+		userService.postRegister("posts_"+userId, postId);
+		/* using column1(friendId)*/
+		DataContainer[] friendsId = userService.getFriendsId(userId);
+		for(int i=0 ; i<friendsId.length ; i++) {
+			userService.postRegister("posts_"+friendsId[i].getColumn1(), postId);
+		}
+	}
+
+	public void createFriend(int num) throws Exception{
+		/* using column1(userId)*/
+		DataContainer[] userId = userService.getUserId();
+		
+		for(int i=0 ; i<num ;i++) {
+			int a=(int)(Math.random()*userId.length);
+			int b=(int)(Math.random()*userId.length);
+			if(a==b || userService.isFriend(userId[a].getColumn1(), userId[b].getColumn1())) {
+				i--; 
+				continue;
+			}
+			userService.addFriend(userId[a].getColumn1(), userId[b].getColumn1());
+		}
+		System.out.println("Creating friends is completed");
+		System.out.println("======================================================");
+	}
+	
+	public void deleteAllMariaDB() throws Exception{
+		/* using column1(userId)*/
+		DataContainer[] userId = userService.getUserId();
+		for(int i=0; i< userId.length; i++) { 
+			userService.deleteUser(userId[i].getColumn1());
+		}
+		userService.dropUsreAndProfileTable();
+		System.out.println("Deleting all user of mariadb is completed");
+		System.out.println("======================================================");
+	}
+	
+	public void createNotification(int num) throws Exception{
+		/* using column1(userId)*/
+		DataContainer[] userId = userService.getUserId();
+		
+		for(int i=0 ; i<num ;i++) {
+			int a=(int)(Math.random()*userId.length);
+			int b=(int)(Math.random()*userId.length);
+			if(a==b){
+				i--; 
+				continue;
+			}else if(userService.isFriend(userId[a].getColumn1(), userId[b].getColumn1())) {
+				userService.notificationRegister(userId[a].getColumn1(),userId[b].getColumn1(), 1);
+			}
+			else
+				userService.notificationRegister(userId[a].getColumn1(),userId[b].getColumn1(), 0);
+		}
+		System.out.println("Creating norifications is completed");
+		System.out.println("======================================================");
 	}
 }

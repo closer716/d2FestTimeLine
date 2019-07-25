@@ -23,7 +23,7 @@
     </select>
     
     <select id="getProfileTable" resultType="com.wabu.d2project.user.Profile">
-    	SELECT ${columns} FROM profile;
+    	SELECT ${columns} FROM profile order by id;
     </select>
     
     <select id="getNotificationTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Notification">

@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wabu.d2project.Functions;
+import com.wabu.d2project.Util;
 
 @Service
 public class UserService {
@@ -29,13 +29,9 @@ public class UserService {
 				"name VARCHAR(20)," +
 				"sex TINYINT(1)," +
 				"birthday DATE," +
-				"country VARCHAR(50)," +
-				"city VARCHAR(20)," +
-				"elmSchool VARCHAR(20)," +
-				"midSchool VARCHAR(20)," +
-				"highSchool VARCHAR(20)," +
-				"univSchool VARCHAR(20)," +
-				"office VARCHAR(20)," +
+				"city INT," +
+				"school INT," +
+				"office INT," +
 				"foreign key(id)\r\n" + 
 				"references user(id) on update cascade");
 	}
@@ -49,13 +45,14 @@ public class UserService {
 				"friendId VARCHAR(20)," + 
 				"notificationContent VARCHAR(20)," + 
 				"isRead TINYINT(1) DEFAULT false," +
-				"foreign key(id)");
+				"foreign key(friendId)\r\n" + 
+				"references user(id) on update cascade");
 		userMapper.createTable("friends_"+id,
 				"friendId VARCHAR(20) PRIMARY KEY," +
-				"foreign key(id)\r\n");
+				"foreign key(friendId)\r\n"+ 
+				"references user(id) on update cascade");
 		userMapper.createTable("posts_"+id,
-				"postId VARCHAR(24) PRIMARY KEY," +
-				"foreign key(id)\r\n");
+				"postId VARCHAR(24) PRIMARY KEY");
 	}
 	
 	public User[] getUserTable(String columns) throws Exception{
@@ -82,21 +79,31 @@ public class UserService {
 		return userMapper.selectFromTable("id AS column1", "user");
 	}
 	
-	public DataContainer[] selectFromTableWhere(String id, String friendId) throws Exception{
-		return userMapper.selectFromTable("friendId AS column1", "friends_"+id+" WHERE friendId =\""+friendId+"\"");
+	public boolean isFriend(String id, String friendId) throws Exception{
+		if(userMapper.selectFromTable("friendId AS column1", "friends_"+id+" WHERE friendId =\""+friendId+"\"").length !=0)
+			return true;
+		return false;
 	}
 	
-	public DataContainer[] getFriendsFriend(String userId) throws Exception{
+	public DataContainer[] getFriendsFriend(String userId, int from, int num) throws Exception{
 		Friend[] friends = getFriendTable(userId);
-		if(friends.length==0)
+		String limit="";
+		if(friends.length==0 || num<1)
 			return null;
-		String str ="(SELECT friendId FROM friends_"+friends[0].getFriendId();
-		for(int i=1 ; i<friends.length; i++) {
-			str+=" UNION ALL SELECT friendId FROM friends_"+friends[i].getFriendId()+" where friendId <> \""+userId+"\"";
+		if(from < 0){
+				limit="LIMIT "+Integer.toString(num);
+		}else {
+			limit="LIMIT "+Integer.toString(from)+", "+Integer.toString(num);
 		}
-		str+=")p GROUP BY(friendId) ORDER BY COUNT(friendId) desc";
 		
-		return userMapper.selectFromTable("friendId as column1, count(friendId) as column2",str);
+			
+		String str ="( SELECT friendId as temp1, count(friendId) as temp2 FROM (SELECT friendId FROM friends_"+friends[0].getFriendId();
+		for(int i=1 ; i<friends.length; i++) {
+			str+=" UNION ALL SELECT friendId FROM friends_"+friends[i].getFriendId();
+		}
+		str+=")p GROUP BY(friendId) )temp RIGHT JOIN user ON user.id=temp.temp1"+" where user.id <> \""+userId+"\""+" order by temp2 desc";
+		
+		return userMapper.selectFromTable("user.id as column1, temp2 as column2",str+" "+limit);
 	}
 	
 	public void notificationRegister(String id, String friendId, int notificationContent)throws Exception{
@@ -106,7 +113,7 @@ public class UserService {
 		else
 			content= "님이 친구 요청을 수락하였습니다.";
 		String[] str = {friendId, content};
-		userMapper.insertIntoTable("notification_"+id, "friendId, notificationContent", Functions.makeValues(str));
+		userMapper.insertIntoTable("notification_"+id, "friendId, notificationContent", Util.makeValues(str));
 	}
 	
 	public void postRegister(String tableName, String postId) throws Exception{
@@ -155,6 +162,4 @@ public class UserService {
 	private void profileRegister(Profile profile) throws Exception{
 		userMapper.insertIntoTable("profile", profile.toColumns(), profile.toValues());
 	}
-	
-
 }

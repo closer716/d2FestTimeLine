@@ -2,7 +2,7 @@ package com.wabu.d2project.user;
 
 import org.springframework.data.annotation.Id;
 
-import com.wabu.d2project.Functions;
+import com.wabu.d2project.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,25 +23,17 @@ public class Profile {
     
     private String birthday;
     
-    private String country;
+    private int city;
     
-    private String city;
+    private int school;
     
-    private String elmSchool;
-    
-    private String midSchool;
-    
-    private String highSchool;
-    
-    private String univSchool;
-    
-    private String office;
+    private int office;
     
     @Override
     public String toString() {
         return String.format(
-                "profile[id=%s, country='%s', birthday='%s']",
-                id, country, birthday.toString());
+                "profile[id=%s, birthday='%s']",
+                id, birthday.toString());
     }
     
     public String toValues() {
@@ -50,11 +42,11 @@ public class Profile {
     		strSex="1";
     	else
     		strSex="0";
-    	String[] str = {id, name, strSex, birthday.toString(), country, city, elmSchool, midSchool, highSchool, univSchool, office};
-    	return Functions.makeValues(str);
+    	String[] str = {id, name, strSex, birthday.toString(), Integer.toString(city), Integer.toString(school), Integer.toString(office)};
+    	return Util.makeValues(str);
     }
     
     public String toColumns() {
-    	return "id, name, sex, birthday, country, city, elmSchool, midSchool, highSchool, univSchool, office";
+    	return "id, name, sex, birthday, city, school, office";
     }
 }

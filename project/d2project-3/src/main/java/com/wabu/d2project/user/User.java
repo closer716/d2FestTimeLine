@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
-import com.wabu.d2project.Functions;
+import com.wabu.d2project.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +32,7 @@ public class User {
     
     public String toValues() {
     	String[] str = {id,password};
-    	return Functions.makeValues(str);
+    	return Util.makeValues(str);
     }
     
     public String toColumns() {

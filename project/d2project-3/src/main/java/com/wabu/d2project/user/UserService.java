@@ -23,22 +23,21 @@ public class UserService {
 		
 		userMapper.createTable("tables",
 				"tableName VARCHAR(20) PRIMARY KEY");
-		
+		createBaseTable();
 		String yearMonth=Util.makeSuffix(new Date());
 		String suffix="";
 		for(int i=97; i<123 ; i++){
 			suffix= yearMonth+Character.toString((char)i);
-			createBaseTable(Character.toString((char)i));
+
 			createPostWithSuffix(suffix);
 		}
 		for(int i=48; i<58; i++){
 			suffix=yearMonth+Character.toString((char)i);
-			createBaseTable(Character.toString((char)i));
 			createPostWithSuffix(suffix);
 		}
 	}
-	public void createBaseTable(String suffix) throws Exception{
-		userMapper.createTable("user_"+suffix, 
+	public void createBaseTable() throws Exception{
+		userMapper.createTable("user", 
 				"id VARCHAR(20) PRIMARY KEY," +
 				"password VARCHAR(16)," +
 				"name VARCHAR(20)," +
@@ -48,22 +47,22 @@ public class UserService {
 				"school INT," +
 				"office INT," +
 				"registrationDate DATE");
-		userMapper.insertIntoTable("tables", "tableName", "\""+"user_"+suffix+"\"");
-		userMapper.createTable("friend_"+suffix,
+		userMapper.insertIntoTable("tables", "tableName", "\"user\"");
+		userMapper.createTable("friend",
 				"id VARCHAR(20)," +
 				"friendId VARCHAR(20)," +
 				"foreign key(id)\r\n"+ 
-				"references user_"+suffix+"(id) on update cascade on delete cascade");	
-		userMapper.insertIntoTable("tables", "tableName", "\""+"friend_"+suffix+"\"");
-		userMapper.createTable("notification_"+suffix,
+				"references user(id) on update cascade on delete cascade");	
+		userMapper.insertIntoTable("tables", "tableName", "\"friend\"");
+		userMapper.createTable("notification",
 				"id VARCHAR(20) NOT NULL," +
 				"notificationId INT AUTO_INCREMENT NOT NULL key," +
 				"friendId VARCHAR(20)," + 
 				"content TINYINT(1)," + 
 				"date DATETIME," +
 				"foreign key(id)\r\n" + 
-				"references user_"+suffix+"(id) on update cascade on delete cascade");
-		userMapper.insertIntoTable("tables", "tableName", "\""+"notification_"+suffix+"\"");
+				"references user(id) on update cascade on delete cascade");
+		userMapper.insertIntoTable("tables", "tableName", "\"notification\"");
 	}
 	
 	public void createPostWithSuffix(String suffix) throws Exception{
@@ -86,15 +85,14 @@ public class UserService {
 	}
 	
 	public void notificationRegister(Notification notification)throws Exception{
-		userMapper.insertIntoTable("notification_"+notification.getId().substring(0,frontIdIndex), 
+		userMapper.insertIntoTable("notification", 
 				notification.toColumns(), notification.toValues());
 	}
 	
 	public void addPost(PostDto mongoPost) throws Exception{
 		String suffix=Util.makeSuffix(mongoPost.getDate());
-		UserPost post = new UserPost(mongoPost.getUserId(), mongoPost.getId().toString());
-		System.out.println(mongoPost.getId().toString().toString());
-		Friend[] friend = getFriendTable("*", "friend_"+post.getId().substring(0,frontIdIndex)+" WHERE id="+"\""+post.getId()+"\"");
+		UserPost post = new UserPost(mongoPost.getUserId(), Util.objectIdtoString(mongoPost.getId()));
+		Friend[] friend = getFriendTable("*", "friend WHERE id="+"\""+post.getId()+"\"");
 		for(int i=0 ; i<friend.length ; i++) {
 			String[] str={friend[i].getFriendId(), post.getPostId()};
 			userMapper.insertIntoTable("post_"+suffix+friend[i].getFriendId().substring(0,frontIdIndex), post.toColumns(), Util.makeValues(str));
@@ -102,35 +100,32 @@ public class UserService {
 	}
 	
 	public void deleteNotification(String id, String notificationId) throws Exception{
-		userMapper.deleteRecord("notification_"+id.substring(0,frontIdIndex), "notificationId= \""+notificationId+"\"");
+		userMapper.deleteRecord("notification", "notificationId= \""+notificationId+"\"");
 	}
 	
 	public void addFriend(Friend friendA, Friend friendB) throws Exception{
 		if(!isFriend(friendA.getId(), friendA.getFriendId())) {
-			userMapper.insertIntoTable("friend_"+friendA.getId().substring(0,frontIdIndex), friendA.toColumns(), friendA.toValues());
-			userMapper.insertIntoTable("friend_"+friendB.getId().substring(0,frontIdIndex), friendB.toColumns(), friendB.toValues());
+			userMapper.insertIntoTable("friend", friendA.toColumns(), friendA.toValues());
+			userMapper.insertIntoTable("friend",  friendB.toColumns(), friendB.toValues());
 		}
 	}
 	public boolean isFriend(String idA, String idB) throws Exception{
-		Friend[] tmp = getFriendTable("id, friendId", "friend_"+idA.substring(0,frontIdIndex)+ 
-				" WHERE id=\""+idA+"\""+" AND id=\""+idB+"\"");
+		Friend[] tmp = getFriendTable("id, friendId", "friend WHERE id=\""+idA+"\""+" AND id=\""+idB+"\"");
 		if(tmp.length!=0)
 			return true;
 		return false;
 	}
 	
 	public void deleteFriend(String id, String friendId) throws Exception{
-		userMapper.deleteRecord("friend_"+id.substring(0,frontIdIndex), 
-				"id="+"\""+id+"\""+"AND id="+"\""+friendId+"\"");
-		userMapper.deleteRecord("friend_"+id.substring(0,frontIdIndex), 
-				"id="+"\""+friendId+"\""+"AND id="+"\""+id+"\"");
+		userMapper.deleteRecord("friend", "id="+"\""+id+"\""+"AND id="+"\""+friendId+"\"");
+		userMapper.deleteRecord("friend", "id="+"\""+friendId+"\""+"AND id="+"\""+id+"\"");
 	}
 
 	public void dropAllTable() throws Exception{
 		if(!isTableExist("d2", "tables"))
 			return;
 		Tables[] tables = userMapper.getTableTable("tableName", 
-				"tables WHERE tableName like \"post%\" OR tableName like \"notification%\" OR tableName like \"friend%\"");
+				"tables WHERE tableName like \"post%\" OR tableName = \"notification\" OR tableName = \"friend\"");
 		for(int i=0 ; i<tables.length ; i++){
 			userMapper.dropTable(tables[i].getTableName());
 		}
@@ -147,11 +142,10 @@ public class UserService {
 		int presentYear = cal.get(Calendar.YEAR);
 		int presentMonth = cal.get(Calendar.MONTH);
 		cal.setTime(user.getRegistrationDate());
-		
 		int year=cal.get(Calendar.YEAR), month=cal.get(Calendar.MONTH);	
+		userMapper.deleteRecord("notification", "id="+"\""+user.getId()+"\"");
 		while(true){
 			suffix=Integer.toString(100*(year-2000)+month)+user.getId().substring(0,frontIdIndex);
-			userMapper.deleteRecord("notification_"+suffix, "id="+"\""+user.getId()+"\"");
 			userMapper.deleteRecord("post_"+suffix, "id="+"\""+user.getId()+"\"");
 			if(year==presentYear && month==presentMonth)
 				break;
@@ -166,8 +160,8 @@ public class UserService {
 	}
 	
 	public void userRegister(User user) throws Exception{
-		User[] tmp = getUserTable("id", "user_"+user.getId().substring(0,frontIdIndex)+" WHERE id=\""+user.getId()+"\"");
+		User[] tmp = getUserTable("id", "user WHERE id=\""+user.getId()+"\"");
 		if(tmp.length==0)
-			userMapper.insertIntoTable("user_"+user.getId().substring(0,frontIdIndex), user.toColumns(), user.toValues());
+			userMapper.insertIntoTable("user", user.toColumns(), user.toValues());
 	}
 }

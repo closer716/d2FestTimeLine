@@ -31,5 +31,5 @@ public interface PostRepository extends MongoRepository<Post, String> {
     void deleteByUserId(String userId);
      
     @DeleteQuery("{'_id': ?0}")
-    void deleteBy_id(ObjectId _id);
+    List<Post> findBy_id(ObjectId _id);
 }

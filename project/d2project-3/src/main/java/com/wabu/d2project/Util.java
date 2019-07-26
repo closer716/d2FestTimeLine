@@ -116,6 +116,19 @@ public class Util {
 		return Integer.toString(100*(year-2000)+month);
 	}
 	
-	
-
+	public static String objectIdtoString(ObjectId id)
+	{
+		char[] HEX_CHARS = new char[] {
+			      '0', '1', '2', '3', '4', '5', '6', '7',
+			      '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+		char[] chars = new char[24];
+		int i = 0;
+		for (byte b : id.toByteArray()) {
+			chars[i++] = HEX_CHARS[b >> 4 & 0xF];
+			if(i==23)
+				b += (byte)0x01;
+			chars[i++] = HEX_CHARS[b & 0xF];
+		}
+		return new String(chars);
+	}	
 }

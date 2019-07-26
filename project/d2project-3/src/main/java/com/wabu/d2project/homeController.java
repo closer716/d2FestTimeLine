@@ -33,15 +33,16 @@ public class homeController{
 	protected String home(Model model) throws Exception{
 
 		model.addAttribute("posts", postService.findAll());
-
+		
 		
 		return "contents/timeline";
 	}
 	
-	public DataContainer[] recommend(User userProfile) throws Exception{
-		DataContainer[] result=null;
-
-		return result;
+	public void recommend() throws Exception{
+		String userId="";
+		User[] user = userService.getUserTable("fr2.friendId as userId, COUNT(fr2.friendId) as password", 
+				"(SELECT * FROM friend as fr WHERE fr.id=\""+userId+"\") "+
+				"AS result1 JOIN friend AS fr2 ON result1.friendId=fr2.id AND fr2.friendId <> result1.id GROUP BY fr2.friendId");
 	}
 
 	
@@ -94,14 +95,14 @@ public class homeController{
 		deleteAllMariaDB();
 		postService.deleteAll();
 		userService.createTable();
-		int userNum=40;
-		int partnerNum=400;
-		int notificationNum=20;
-		int postNum=1;
+		int userNum=200;
+		int partnerNum=1000;
+		//int notificationNum=20;
+		//int postNum=1;
 		registerUser(userNum);
 		createFriend(partnerNum);
-		createNotification(notificationNum);
-		createPosts(postNum);
+		//createNotification(notificationNum);
+		//createPosts(postNum);
 		//util.postService.deleteAll();
 		//util.deleteAllMariaDB();
 		return "contents/test";
@@ -117,7 +118,7 @@ public class homeController{
 	}
 	
 	public void createPosts(int num)throws Exception{
-		User[] user = getAllUserId();
+		User[] user = userService.getUserTable("id", "user");
 		for(int i=0 ; i<num ; i++){
 			int a=(int)(Math.random()*user.length);
 			addPost(user[a].getId(), util.generatePostContent());
@@ -128,14 +129,14 @@ public class homeController{
 
 	public void createFriend(int num) throws Exception{
 		/* using column1(userId)*/
-		User[] user = getAllUserId();
+		User[] user = userService.getUserTable("id", "user");
 		
 		for(int i=0 ; i<num ;i++) {
 			int a=(int)(Math.random()*user.length);
 			int b=(int)(Math.random()*user.length);
-			Friend[] tmp = userService.getFriendTable("id, friendId", "friend_"+user[a].getId().substring(0,UserService.frontIdIndex)+ 
-					" WHERE id=\""+user[a].getId()+"\""+" AND id=\""+user[b].getId()+"\"");
-			if(a==b || tmp.length!=0) {
+			Friend[] tmp = userService.getFriendTable("id, friendId", "friend WHERE (id=\""+user[a].getId()+"\"" +
+															" AND friendId=\""+user[b].getId()+"\")");
+			if(a==b || tmp.length>0) {
 				i--;
 				continue;
 			}
@@ -152,7 +153,7 @@ public class homeController{
 	}
 	
 	public void createNotification(int num) throws Exception{
-		User[] user = getAllUserId();
+		User[] user = userService.getUserTable("id", "user");
 
 		for(int i=0 ; i<num ;i++) {
 			int a=(int)(Math.random()*user.length);
@@ -176,18 +177,6 @@ public class homeController{
 		PostDto post = new PostDto(ObjectId.get(), id, contents,formattedDate.parse(a));
 		postService.addPost(post);
 		userService.addPost(post);
-	}
-	
-	public User[] getAllUserId() throws Exception{
-		String str="(SELECT id FROM user_a";
-		for(int i=98; i<123 ; i++){
-			str+=" union SELECT id FROM user_"+Character.toString((char)i);
-		}
-		for(int i=48; i<58; i++){
-			str+=" union SELECT id FROM user_"+Character.toString((char)i);
-		}
-		str+=")p";
-		return userService.getUserTable("id", str );
 	}
 
 }

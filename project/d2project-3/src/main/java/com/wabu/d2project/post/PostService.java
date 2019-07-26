@@ -38,8 +38,8 @@ public class PostService {
 		return findByUserIdAndDateBetween(userId, to, from);
 	}
 	
-	public void deleteBy_id(ObjectId _id) {
-		repository.deleteBy_id(_id);
+	public List<Post> findBy_id(ObjectId _id) {
+		return repository.findBy_id(_id);
 	}
 	
 	public void deleteByUserId(String userId) {

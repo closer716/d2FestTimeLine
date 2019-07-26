@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,11 @@ public class PostService {
 	
 	public List<Post> findByUserId(String userId) {
 		return repository.findByUserId(userId);
+	}
+	
+	
+	public List<PostDto> findLast2ByUserId(String userId) {
+		return repository.findLast2ByUserId(userId);
 	}
 	
 	public void printDB() {

@@ -12,35 +12,36 @@
     	INSERT INTO ${tableName}(${columns}) VALUES(${values});
     </insert>
     
-    <update id="readNotification" parameterType="java.lang.String">
-    	UPDATE notification_${id} SET
-    		isRead = true
-    	WHERE notificationId=#{notificationId};
+    <update id="updateRecord" parameterType="java.lang.String">
+    	UPDATE ${tableName} SET
+    		${set}
+    	WHERE ${suffix};
     </update>
     
-    <select id="getUserTable" resultType="com.wabu.d2project.user.User">
-    	SELECT ${columns} FROM user;
-    </select>
-    
-    <select id="getProfileTable" resultType="com.wabu.d2project.user.Profile">
-    	SELECT ${columns} FROM profile order by id;
+    <select id="getUserTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.User">
+    	SELECT ${columns} FROM ${suffix};
     </select>
     
     <select id="getNotificationTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Notification">
-    	SELECT ${columns} FROM notification_${id};
+    	SELECT ${columns} FROM ${suffix};
     </select>
     
     <select id="getFriendTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Friend">
-    	SELECT ${columns} FROM friends_${id}; 
+    	SELECT ${columns} FROM ${suffix}; 
+    </select>
+    
+    <select id="getTableTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Tables">
+    	SELECT ${columns} FROM ${suffix}; 
     </select>
     
     <select id="selectFromTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.DataContainer">
-    	SELECT ${columnName} FROM ${tableName}
+    	SELECT ${columnName} FROM ${suffix}
     </select>
-    
-    <select id="selectFromTableWhere" parameterType="java.lang.String" resultType="com.wabu.d2project.user.DataContainer">
-    	SELECT ${columnName} FROM ${tableName}
-    	WHERE ${columnName} = #{value};
+    <select id="isExist" parameterType="java.lang.String" resultType="java.lang.String">
+    	SELECT 1
+    	FROM Information_schema.tables
+    	WHERE table_schema = #{dbName}
+    	AND table_name = #{tableName}
     </select>
     
     <update id="dropTable" parameterType="java.lang.String">
@@ -49,6 +50,7 @@
     
     <delete id="deleteRecord" parameterType = "java.lang.String">
     	DELETE FROM ${tableName}
-    	WHERE ${keyColumn}=#{value};
+    	WHERE ${suffix};
     </delete>
+  
 </mapper>

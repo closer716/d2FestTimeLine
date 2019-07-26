@@ -1,5 +1,7 @@
 package com.wabu.d2project;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.DataContainer;
-import com.wabu.d2project.user.Profile;
+import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
 
@@ -24,14 +26,19 @@ public class Util {
 	
 	public String generateUserId(){
 		int count = (int)(Math.random()*13+8);
-		String userId = RandomStringUtils.randomAlphanumeric(count);
-	    return userId;
+		String result = new String();
+		String[] valid = new String[] {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
+				"0","1","2","3","4","5","6","7","8","9"};
+		int length = valid.length;
+		for(int i=0 ; i<count ; i++)
+			result+=valid[(int)(Math.random()*length)];
+		return result;
 	}
 	public String generatePassword() {
 		int count = (int)(Math.random()*8+9);
 		String result = new String();
 		String[] valid = new String[] {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-				"1","2","3","4","5","6","7","8","9","!","@","#","$","%","^","&","*"};
+				"0","1","2","3","4","5","6","7","8","9","!","@","#","$","%","^","&","*"};
 		int length = valid.length;
 		for(int i=0 ; i<count ; i++)
 			result+=valid[(int)(Math.random()*length)];
@@ -74,7 +81,7 @@ public class Util {
 	            "¼Ø", "°ø", "¸é", "Å¹", "¿Â", "µð", "Ç×", "ÈÄ", "·Á", "±Õ", "¹¬", "¼Û", "¿í", "ÈÞ", "¾ð", "·É", "¼¶", "µé", "°ß", "Ãß", "°É", "»ï",
 	            "¿­", "¿õ", "ºÐ", "º¯", "¾ç", "Ãâ", "Å¸", "Èï", "°â", "°ï", "¹ø", "½Ä", "¶õ", "´õ", "¼Õ", "¼ú", "ÈÉ", "¹Ý", "ºó", "½Ç", "Á÷", "Èì",
 	            "Èç", "¾Ç", "¶÷", "¶ä", "±Ç", "º¹", "½É", "Çå", "¿±", "ÇÐ", "°³", "·Õ", "Æò", "´Ã", "´Ì", "¶û", "¾á", "Çâ", "¿ï", "·Ã"};
-	    if(Math.random()*20<1)
+	    if(Math.random()*50<1)
 	    	return lastName[(int)(Math.random()*lastName.length)] + firstName[(int)(Math.random()*firstName.length)] + 
 	    			firstName[(int)(Math.random()*firstName.length)] + firstName[(int)(Math.random()*firstName.length)];
 	    else
@@ -101,85 +108,14 @@ public class Util {
 		}
 		return result;
 	}
-	
-	public void registerUser(int num) throws Exception{
-		for(int i=0 ; i<num ; i++) {
-			String id = generateUserId();
-			userService.register(new User(id , generatePassword()), 
-					new Profile(id, generateKoreanName(), true,generateBirthday(), 
-							(int)(Math.random()*100+1),(int)(Math.random()*300+1),(int)(Math.random()*500+1)));
-		}
-		System.out.println("Registing users is completed");
-		System.out.println("======================================================");
+	public static String makeSuffix(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH);
+		return Integer.toString(100*(year-2000)+month);
 	}
 	
-	public void createPosts(int num)throws Exception{
-		/* using column1(userId)*/
-		DataContainer[] userId = userService.getUserId();
-		for(int i=0 ; i<num ; i++){
-			int a=(int)(Math.random()*userId.length);
-			ObjectId id = ObjectId.get();
-			postService.addPost(new PostDto(id, userId[a].getColumn1(), generatePostContent(), new Date()));
-			registerPostAtTable(userId[a].getColumn1(), id.toString());
-		}
-		System.out.println("Creating posts is completed");
-		System.out.println("======================================================");
-	}
 	
-	public void registerPostAtTable(String userId, String postId) throws Exception {
-		userService.postRegister("posts_"+userId, postId);
-		/* using column1(friendId)*/
-		DataContainer[] friendsId = userService.getFriendsId(userId);
-		for(int i=0 ; i<friendsId.length ; i++) {
-			userService.postRegister("posts_"+friendsId[i].getColumn1(), postId);
-		}
-	}
 
-	public void createFriend(int num) throws Exception{
-		/* using column1(userId)*/
-		DataContainer[] userId = userService.getUserId();
-		
-		for(int i=0 ; i<num ;i++) {
-			int a=(int)(Math.random()*userId.length);
-			int b=(int)(Math.random()*userId.length);
-			if(a==b || userService.isFriend(userId[a].getColumn1(), userId[b].getColumn1())) {
-				i--; 
-				continue;
-			}
-			userService.addFriend(userId[a].getColumn1(), userId[b].getColumn1());
-		}
-		System.out.println("Creating friends is completed");
-		System.out.println("======================================================");
-	}
-	
-	public void deleteAllMariaDB() throws Exception{
-		/* using column1(userId)*/
-		DataContainer[] userId = userService.getUserId();
-		for(int i=0; i< userId.length; i++) { 
-			userService.deleteUser(userId[i].getColumn1());
-		}
-		userService.dropUsreAndProfileTable();
-		System.out.println("Deleting all user of mariadb is completed");
-		System.out.println("======================================================");
-	}
-	
-	public void createNotification(int num) throws Exception{
-		/* using column1(userId)*/
-		DataContainer[] userId = userService.getUserId();
-		
-		for(int i=0 ; i<num ;i++) {
-			int a=(int)(Math.random()*userId.length);
-			int b=(int)(Math.random()*userId.length);
-			if(a==b){
-				i--; 
-				continue;
-			}else if(userService.isFriend(userId[a].getColumn1(), userId[b].getColumn1())) {
-				userService.notificationRegister(userId[a].getColumn1(),userId[b].getColumn1(), 1);
-			}
-			else
-				userService.notificationRegister(userId[a].getColumn1(),userId[b].getColumn1(), 0);
-		}
-		System.out.println("Creating norifications is completed");
-		System.out.println("======================================================");
-	}
 }

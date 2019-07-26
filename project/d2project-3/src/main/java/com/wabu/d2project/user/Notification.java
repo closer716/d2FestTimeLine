@@ -1,6 +1,11 @@
 package com.wabu.d2project.user;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
+
+import com.wabu.d2project.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,18 +18,31 @@ import lombok.NoArgsConstructor;
 @Data
 public class Notification {
 	@Id
-    private String notificationId;
-    
+    private String id;
+
     private String friendId;
     
-    private String notificationContent;
+    private int content;
     
-    private boolean isRead;
+    private Date date;
     
-    @Override
-    public String toString() {
-        return String.format(
-                "notification[id=%s, friendId=%s, notificationContent='%s', isRead='%s']",
-                notificationId, friendId, notificationContent, isRead);
+    private String notificationId;
+    
+    public Notification(String id, String friendId, int content, Date date){
+    	this.id = id;
+    	this.friendId = friendId;
+    	this.content = content;
+    	this.date = date;
+    }
+    
+    public String toColumns() {
+    	return "id, friendId, content, date";
+    }
+    public String toValues() {
+		SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String strDate = formattedDate.format(date);
+		
+    	String[] str = {id, friendId, Integer.toString(content),strDate};
+    	return Util.makeValues(str);
     }
 }

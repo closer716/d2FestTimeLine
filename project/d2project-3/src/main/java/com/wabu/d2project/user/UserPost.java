@@ -1,6 +1,6 @@
 package com.wabu.d2project.user;
 
-import org.springframework.data.annotation.Id;
+import java.util.Date;
 
 import com.wabu.d2project.Util;
 
@@ -13,16 +13,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Data
-public class Friend {
-	@Id
+public class UserPost {
 	private String id;
-    private String friendId;
-    
+	private String postId;
+	
     public String toColumns() {
-    	return "id, friendId";
+    	return "id, postId";
     }
     public String toValues() {
-    	String[] str = {id, friendId};
+    	String[] str = {id, postId};
     	return Util.makeValues(str);
     }
 }

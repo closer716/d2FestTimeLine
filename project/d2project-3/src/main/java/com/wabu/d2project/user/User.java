@@ -1,7 +1,7 @@
 package com.wabu.d2project.user;
 
-import java.util.Arrays;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 
@@ -17,25 +17,44 @@ import lombok.NoArgsConstructor;
 @Getter
 @Data
 public class User {
-
     @Id
     private String id;
-
+    
     private String password;
+    
+    private String name;
+    
+    private boolean sex;
+    
+    private String birthday;
+    
+    private int city;
+    
+    private int school;
+    
+    private int office;
+    
+    private Date registrationDate;
     
     @Override
     public String toString() {
         return String.format(
-                "user[id=%s]",
-                id);
+                "profile[id=%s, birthday='%s']",
+                id, birthday.toString());
     }
     
     public String toValues() {
-    	String[] str = {id,password};
+    	String strSex;
+    	SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd");
+    	if(sex=true)
+    		strSex="1";
+    	else
+    		strSex="0";
+    	String[] str = {id, password, name, strSex, birthday.toString(), Integer.toString(city), Integer.toString(school), Integer.toString(office), formattedDate.format(registrationDate)};
     	return Util.makeValues(str);
     }
     
     public String toColumns() {
-    	return "id,password";
+    	return "id, password, name, sex, birthday, city, school, office, registrationDate";
     }
 }

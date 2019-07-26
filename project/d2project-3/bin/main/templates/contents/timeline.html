@@ -12,8 +12,57 @@
 
   <link rel="stylesheet" href="/static/webjars/bootstrap/css/bootstrap.min.css" >
   <script src="/static/webjars/bootstrap/js/bootstrap.min.js" ></script>
-  <script src="/static/webjars/js/jquery/jquery.slim.min.js" ></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>>
+  <script src="/static/js/jquery/jquery.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(
+			function() {
+
+				// GET REQUEST
+				$("#getPosts").click(function(event) {
+					event.preventDefault();
+					ajaxGet();
+				});
+				$(window).scroll(function(){
+		  			var scrollHeight=$(window).scrollTop()+$(window).height();
+		  			var documentHeight=$(document).height();
+		  			
+		  			if(scrollHeight==documentHeight)
+		  			{
+						ajaxGet();
+		  			}
+		  		});
+				// DO GET
+				function ajaxGet() {
+					$.ajax({
+						type : "GET",
+						url : "getPosts",
+						success : function(result) {
+							if (result.status == "success") {
+								$('#getResultDiv ul').empty();
+								var custList = "";
+								$.each(result.data,
+										function(i, post) {
+											var user = " contents  = " + post.contents
+													+ "<br>";
+											$('#getResultDiv .list-group').append(
+													user)
+										});
+								console.log("Success: ", result);
+							} else {
+								$("#getResultDiv").html("<strong>Error</strong>");
+								console.log("Fail: ", result);
+							}
+						},
+						error : function(e) {
+							$("#getResultDiv").html("<strong>Error</strong>");
+							console.log("ERROR: ", e);
+						}
+					});
+				}
+			});
+  </script>
 </head>
 
 <body>
@@ -57,7 +106,7 @@
         </h1>
 
         <!-- TimeLine Post -->
-        <div class="card mb-4" th:each="post: ${posts}" >
+        <div class="card mb-4" id="post" th:each=" post: ${posts}">
           <div class="card-body">
             <h2 class="card-title" th:text="${post.userId}">Post Title</h2>
             <p class="card-text" th:text="${post.contents}">Post Message</p>
@@ -66,8 +115,59 @@
             Posted on when, 2019 by
           </div>
         </div>
-      </div>
+        
+        <div class="col-sm-7" style="margin: 20px 0px 20px 0px">
+			<button id="getPosts" type="button" class="btn btn-primary">More</button>
+			<div id="getResultDiv" style="padding: 20px 10px 20px 50px">
+				<ul class="list-group">
+				</ul>
+			</div>
+		</div>
+		
+		<script>
+		
+		
+		$(document).ready(
+				function() {
 
+					// GET REQUEST
+					$("#getPosts").click(function(event) {
+						event.preventDefault();
+						ajaxGet();
+					});
+
+					// DO GET
+					function ajaxGet() {
+						$.ajax({
+							type : "GET",
+							url : "getPosts",
+							success : function(result) {
+								if (result.status == "success") {
+									$('#getResultDiv ul').empty();
+									var custList = "";
+									$.each(result.data,
+											function(i, post) {
+												var user = " contents  = " + post.contents
+														+ "<br>";
+												$('#getResultDiv .list-group').append(
+														user)
+											});
+									console.log("Success: ", result);
+								} else {
+									$("#getResultDiv").html("<strong>Error</strong>");
+									console.log("Fail: ", result);
+								}
+							},
+							error : function(e) {
+								$("#getResultDiv").html("<strong>Error</strong>");
+								console.log("ERROR: ", e);
+							}
+						});
+					}
+				});
+		</script>
+      </div>
+	  
       <!-- Sidebar Widgets Column -->
       <div class="col-md-4">
 
@@ -143,14 +243,14 @@
 
   </div>
   <!-- /.container -->
-
+  
   <!-- Footer 
   <footer class="py-5 bg-dark">
     
   </footer>
 
   -->
-
+  
 </body>
 
 </html>

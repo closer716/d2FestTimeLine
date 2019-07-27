@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>TimeLine</title>
+
+  <link rel="stylesheet" href="/static/webjars/bootstrap/css/bootstrap.min.css" >
+  <script src="/static/webjars/bootstrap/js/bootstrap.min.js" ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>>
+  <script src="/static/js/jquery/jquery.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(
+			function() {
+
+				// GET REQUEST
+				
+				
+				$(window).on("scroll", function() {
+					var scrollHeight = $(document).height();
+					var scrollPosition = $(window).height() + $(window).scrollTop();		
+
+					$("#scrollHeight").text(scrollHeight);
+					$("#scrollPosition").text(scrollPosition);
+					$("#bottom").text(scrollHeight - scrollPosition);
+
+					if (scrollPosition > scrollHeight - 200) {			
+						
+						ajaxGet();
+					}
+				});
+				
+				// DO GET
+				function ajaxGet() {
+					$.ajax({
+						type : "GET",
+						url : "getPosts",
+						success : function(result) {
+							if (result.status == "success") {
+								$('#getResultDiv ul').empty();
+								var custList = "";
+								$.each(result.data,
+										function(i, post) {
+											var user = "이름 : " + post.name + "<br>" + " contents  = " + post.contents+ "<br>";
+											$('#getResultDiv .list-group').append(user)
+										});
+								console.log("Success: ", result);
+							} else {
+								$("#getResultDiv").html("<strong>Error</strong>");
+								console.log("Fail: ", result);
+							}
+						},
+						error : function(e) {
+							$("#getResultDiv").html("<strong>Error</strong>");
+							console.log("ERROR: ", e);
+						}
+					});
+				}
+			});
+  </script>
+  
+<style>
+  #first {display:none;}
+  #first ~ div:nth-of-type(1) {display: none;}
+  #first ~ div:nth-of-type(1)	{display: block;}
+   			
+  #second {display:none;}
+  #second ~ div:nth-of-type(2) {display: none;}
+  #second ~ div:nth-of-type(2) {display: block;}
+  
+  section.buttons {overflow: hidden;}
+  section.buttons > label{
+  	display:block; float: elft;
+  	width:100px; height: 30px;
+  	line-height: 30px;
+  	text-aign: center;
+  	box-sizing: border-box;
+  	border: 1px solid black;
+  	backgraound: black;
+  	color: white;
+  }
+  #first:checked ~ section.buttons > label:nth-of-type(1){
+  background: white;
+  color: black;
+  }
+  #first:checked ~ section.buttons > label:nth-of-type(1){
+  background: white;
+  color: black;
+  }
+</style>
+</head>
+
+
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="timeline">D2project</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- nav var -->
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="timeline">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="profile">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="friendList">Friends</a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+</nav>
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row top-buffer">
+
+      <!-- Entries Column -->
+      <div class="col-md-8">
+
+        <h1 class="my-4">
+        </h1>
+
+        <!-- TimeLine Post -->
+        <div class="card mb-4" id="post" th:each=" post: ${posts}">
+          <div class="card-body">
+            <h2 class="card-title" th:text="${post.name}">Post Title</h2>
+            <p class="card-text" th:text="${post.contents}">Post Message</p>
+          </div>
+          <div class="card-footer text-muted" th:text="${post.date}">
+            Posted on when, 2019 by
+          </div>
+        </div>
+        
+        <div class="col-sm-7" style="margin: 20px 0px 20px 0px">
+			<button id="getPosts" type="button" class="btn btn-primary">More</button>
+			<div id="getResultDiv">
+				<ul class="list-group">
+				</ul>
+			</div>
+		</div>
+		
+		
+      </div>
+	  
+      <!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+
+        <!-- Search Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">Search</h5>
+          <div class="card-body">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search for...">
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button">Go!</button>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Friends Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">Friends</h5>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a href="#" >친구1</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+<div id="friend_recommend">
+        <!-- Side Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">친구 추천</h5>
+          <input class="recommend_button" id="first" type="radio" name="tab" checked="checked"/>
+          <input class="recommend_button" id="second" type="radio" name="tab"/>
+          <section class="buttons">
+          	<label for="first">친구의 친구들</label>
+          	<label for="second">알 수도 있는 사람들</label>
+          </section>
+          <div class="tab_item">
+          	<div class="card-body">
+              <div class="row">
+              	<div class="col-lg-6">
+                  <ul class="list-unstyled mb-0" th:each="recommend: ${friendsFriend}">
+                  	<li>
+                      <a href="#" th:text="${recommend.getId()}">친구1</a>
+                  	</li>
+                  </ul>
+              	</div>
+              </div>
+          	</div>
+       	  </div>
+       	  <div class="tab_item">
+          	<div class="card-body">
+              <div class="row">
+              	<div class="col-lg-6">
+                  <ul class="list-unstyled mb-0" th:each="recommend: ${mayFriend}">
+                  	<li>
+                      <a href="#" th:text="${recommend.getId()}">친구1</a>
+                  	</li>
+                  </ul>
+              	</div>
+              </div>
+          	</div>
+       	  </div>
+ 
+
+        </div>
+</div>
+        <div class="card my-4">
+          <h5 class="card-header">친구 요청</h5>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a href="#">친구1</a>
+                  </li>
+                  <li>
+                    <a href="#">친구2</a>
+                  </li>
+                  <li>
+                    <a href="#">친구3</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.row -->
+
+  </div>
+  <!-- /.container -->
+  
+  <!-- Footer 
+  <footer class="py-5 bg-dark">
+    
+  </footer>
+
+  -->
+  
+</body>
+
+</html>

@@ -1,5 +1,6 @@
 package com.wabu.d2project.post;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,15 +22,13 @@ public interface PostRepository extends MongoRepository<Post, String> {
     @Query()
     List<PostDto> findLast2ByUserId(String userId);
     
-    @Query("{'userId':{'$in':?0},'date':{'$lt':?1,'$gt':?2}}")
-    List<PostDto> findByUserIdAndDateBetween(List<String> userId, Date to, Date from);
-    
-    @Query("{'date':{'$gt':?0}}")
-    List<PostDto> findByDateGreaterThan(Date from);
+    @Query(value="{'_id':{'$in':?0}}", sort="{date:-1}")
+    List<PostDto> findBy_id(List<String> _id);
     
     @Query("{'userId': ?0}")
     void deleteByUserId(String userId);
      
     @DeleteQuery("{'_id': ?0}")
     List<Post> findBy_id(ObjectId _id);
+
 }

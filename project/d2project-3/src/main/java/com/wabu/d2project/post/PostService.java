@@ -1,5 +1,6 @@
 package com.wabu.d2project.post;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class PostService {
 		return findByUserIdAndDateBetween(userId, to, from);
 	}
 	
-	public List<Post> findBy_id(ObjectId _id) {
+	public List<PostDto> findBy_id(ArrayList<String> _id) {
 		return repository.findBy_id(_id);
 	}
 	

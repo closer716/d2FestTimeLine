@@ -16,7 +16,7 @@ public class Post {
 
     @Id
     public ObjectId id;
-
+    public String name;
     public String userId;
     public String contents;
     public Date date;

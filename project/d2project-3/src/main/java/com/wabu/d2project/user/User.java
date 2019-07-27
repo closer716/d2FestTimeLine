@@ -39,8 +39,8 @@ public class User {
     @Override
     public String toString() {
         return String.format(
-                "profile[id=%s, birthday='%s']",
-                id, birthday.toString());
+                "user[id=%s, password='%s']",
+                id, password);
     }
     
     public String toValues() {

@@ -1,11 +1,13 @@
 package com.wabu.d2project;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
-import com.wabu.d2project.user.DataContainer;
 import com.wabu.d2project.user.Friend;
 import com.wabu.d2project.user.Notification;
 import com.wabu.d2project.user.User;
@@ -28,27 +29,34 @@ public class homeController{
 	@Autowired
 	private PostService postService;
 	private Util util = new Util();
+	
+	public static final int pageNum=10;
+	public static final int recommendNum=10;
 
 	@RequestMapping(value="/timeline")
 	protected String home(Model model) throws Exception{
-
-		model.addAttribute("posts", postService.findAll());
 		
+		User user=userService.getUserById("3ny7nktgjibq3");
+		int from = 0;
+		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, recommendNum);
+		ArrayList<User> mayFriend = userService.getMayFriend(user, from, recommendNum);
+		ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), from, pageNum);
+		
+		model.addAttribute("posts", postService.findBy_id(postId));
+		model.addAttribute("friendsFriend", friendsFriend);
+		model.addAttribute("mayFriend", mayFriend);
 		
 		return "contents/timeline";
 	}
 	
-	public void recommend() throws Exception{
-		String userId="";
-		User[] user = userService.getUserTable("fr2.friendId as userId, COUNT(fr2.friendId) as password", 
-				"(SELECT * FROM friend as fr WHERE fr.id=\""+userId+"\") "+
-				"AS result1 JOIN friend AS fr2 ON result1.friendId=fr2.id AND fr2.friendId <> result1.id GROUP BY fr2.friendId");
-	}
-
-	
 	@RequestMapping(value="/login")
-	protected String login() {
+	protected String login(@AuthenticationPrincipal LoginDetails userDetails) {
 		return "contents/login";
+	}
+	
+	@RequestMapping(value="/please")
+	protected String please( ) {
+		return "contents/test";
 	}
 	
 	@RequestMapping(value="/friendSearch")
@@ -76,8 +84,8 @@ public class homeController{
 	
 	/* 포스트 등록 */
 	@RequestMapping("register/post")
-    public String registerPost(@RequestParam("id") String id, @RequestParam("contents") String contents) throws Exception{
-		addPost(id, contents);
+    public String registerPost(@RequestParam("id") String id,@RequestParam("name") String name, @RequestParam("contents") String contents) throws Exception{
+		addPost(id, name,contents);
 		System.out.println("registing poster is complete");
 		System.out.println("======================================================");
         return "contents/test";
@@ -92,36 +100,52 @@ public class homeController{
 	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
-		deleteAllMariaDB();
-		postService.deleteAll();
+		//deleteAllMariaDB();
+		//postService.deleteAll();
 		userService.createTable();
-		int userNum=200;
-		int partnerNum=1000;
-		//int notificationNum=20;
-		//int postNum=1;
-		registerUser(userNum);
-		createFriend(partnerNum);
+		int userNum= 1000;
+		int partnerNum=30000;
+		int notificationNum=3000;
+		int postNum=1000;
+		//registerUser(userNum);
+		//createFriend(partnerNum);
 		//createNotification(notificationNum);
 		//createPosts(postNum);
 		//util.postService.deleteAll();
 		//util.deleteAllMariaDB();
 		return "contents/test";
 	}
+	
+	public void addPost(String id, String name, String contents) throws Exception{
+		Date date = new Date();
+		SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String a = formattedDate.format(date);
+		PostDto post = new PostDto(ObjectId.get(), id, name, contents,formattedDate.parse(a));
+		postService.addPost(post);
+		userService.addPost(post);
+	}
+	
+	/* Local functions to make test case */
+	
 	public void registerUser(int num) throws Exception{
 		for(int i=0 ; i<num ; i++) {
 			String id = util.generateUserId();
 			userService.userRegister(new User(id , util.generatePassword(), util.generateKoreanName(), true,util.generateBirthday(), 
 							(int)(Math.random()*100+1),(int)(Math.random()*300+1),(int)(Math.random()*500+1), new Date()));
+			if(i%100 == 0)
+				System.out.println("registering now "+i);
 		}
 		System.out.println("Registing users is completed");
 		System.out.println("======================================================");
 	}
 	
 	public void createPosts(int num)throws Exception{
-		User[] user = userService.getUserTable("id", "user");
+		ArrayList<User> user = userService.getUserTable("id, name", "user");
 		for(int i=0 ; i<num ; i++){
-			int a=(int)(Math.random()*user.length);
-			addPost(user[a].getId(), util.generatePostContent());
+			int a=(int)(Math.random()*user.size());
+			addPost(user.get(a).getId(), user.get(a).getName(),util.generatePostContent());
+			if(i%500 == 0)
+				System.out.println("creating posts now "+i);
 		}
 		System.out.println("Creating posts is completed");
 		System.out.println("======================================================");
@@ -129,18 +153,21 @@ public class homeController{
 
 	public void createFriend(int num) throws Exception{
 		/* using column1(userId)*/
-		User[] user = userService.getUserTable("id", "user");
+		ArrayList<User> user = userService.getUserTable("id", "user");
 		
 		for(int i=0 ; i<num ;i++) {
-			int a=(int)(Math.random()*user.length);
-			int b=(int)(Math.random()*user.length);
-			Friend[] tmp = userService.getFriendTable("id, friendId", "friend WHERE (id=\""+user[a].getId()+"\"" +
-															" AND friendId=\""+user[b].getId()+"\")");
-			if(a==b || tmp.length>0) {
+			int a=(int)(Math.random()*user.size());
+			int b=(int)(Math.random()*user.size());
+			ArrayList<Friend> tmp = userService.getFriendTable("id, friendId", "friend WHERE (id=\""+user.get(a).getId()+"\"" +
+															" AND friendId=\""+user.get(b).getId()+"\")");
+			if(a==b || tmp.size()>0) {
 				i--;
 				continue;
 			}
-			userService.addFriend(new Friend(user[a].getId(), user[b].getId()), new Friend(user[b].getId(), user[a].getId()));
+			userService.addFriend(new Friend(user.get(a).getId(), user.get(b).getId()), new Friend(user.get(b).getId(), user.get(a).getId()));
+			if(i%500 == 0)
+				System.out.println("creating now "+i);
+			
 		}
 		System.out.println("Creating friends is completed");
 		System.out.println("======================================================");
@@ -153,30 +180,23 @@ public class homeController{
 	}
 	
 	public void createNotification(int num) throws Exception{
-		User[] user = userService.getUserTable("id", "user");
+		ArrayList<User> user = userService.getUserTable("id", "user");
 
 		for(int i=0 ; i<num ;i++) {
-			int a=(int)(Math.random()*user.length);
-			int b=(int)(Math.random()*user.length);
+			int a=(int)(Math.random()*user.size());
+			int b=(int)(Math.random()*user.size());
 			if(a==b){
 				i--; 
 				continue;
-			}else if(userService.isFriend(user[a].getId(), user[b].getId())) {
-				userService.notificationRegister(new Notification(user[a].getId(),user[b].getId(), 1, new Date()));
+			}else if(userService.isFriend(user.get(a).getId(), user.get(b).getId())) {
+				userService.notificationRegister(new Notification(user.get(a).getId(),user.get(b).getId(), 1, new Date()));
 			}
 			else
-				userService.notificationRegister(new Notification(user[a].getId(),user[b].getId(), 0, new Date()));
+				userService.notificationRegister(new Notification(user.get(a).getId(),user.get(b).getId(), 0, new Date()));
+			if(i%100 == 0)
+				System.out.println("Creating notification now "+i);
 		}
-		System.out.println("Creating norifications is completed");
+		System.out.println("Creating nortfications is completed");
 		System.out.println("======================================================");
 	}
-	public void addPost(String id, String contents) throws Exception{
-		Date date = new Date();
-		SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String a = formattedDate.format(date);
-		PostDto post = new PostDto(ObjectId.get(), id, contents,formattedDate.parse(a));
-		postService.addPost(post);
-		userService.addPost(post);
-	}
-
 }

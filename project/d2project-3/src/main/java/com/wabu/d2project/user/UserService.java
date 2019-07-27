@@ -1,6 +1,7 @@
 package com.wabu.d2project.user;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -28,7 +29,6 @@ public class UserService {
 		String suffix="";
 		for(int i=97; i<123 ; i++){
 			suffix= yearMonth+Character.toString((char)i);
-
 			createPostWithSuffix(suffix);
 		}
 		for(int i=48; i<58; i++){
@@ -71,16 +71,38 @@ public class UserService {
 				"postId VARCHAR(25)");
 		userMapper.insertIntoTable("tables", "tableName", "\""+"post_"+suffix+"\"");
 	}
+	public ArrayList<String> getPostId(String id, Date registrationDate, int from, int num) throws Exception{
+		String suffix;
+		cal.setTime(new Date());
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH);
+		cal.setTime(registrationDate);
+		int registrationYear=cal.get(Calendar.YEAR), registrationMonth=cal.get(Calendar.MONTH);
+		ArrayList<String> result=new ArrayList<String>();
+		ArrayList<String> tmp;
+		
+		for(int i=num; i>0;) {
+			suffix=Integer.toString(100*(year-2000)+month)+id.substring(0,frontIdIndex);
+			tmp = userMapper.getPostId("postId", "post_"+suffix+" where id=\""+id+"\" limit "+from+", "+i);
+			result.addAll(tmp);
+			i -= tmp.size();
+			if(year==registrationYear && month==registrationMonth)
+				break;
+			cal.add(Calendar.MONTH, -1);
+		}
+		
+		return result;
+	}
 
-	public User[] getUserTable(String columns, String suffix) throws Exception{
+	public ArrayList<User> getUserTable(String columns, String suffix) throws Exception{
 		return userMapper.getUserTable(columns, suffix);
 	}
 	
-	public Notification[] getNotificationTable(String columns, String suffix) throws Exception{
+	public ArrayList<Notification> getNotificationTable(String columns, String suffix) throws Exception{
 		return userMapper.getNotificationTable(columns,suffix);
 	}
 	
-	public Friend[] getFriendTable(String columns, String suffix) throws Exception{
+	public ArrayList<Friend> getFriendTable(String columns, String suffix) throws Exception{
 		return userMapper.getFriendTable(columns,suffix);
 	}
 	
@@ -92,10 +114,13 @@ public class UserService {
 	public void addPost(PostDto mongoPost) throws Exception{
 		String suffix=Util.makeSuffix(mongoPost.getDate());
 		UserPost post = new UserPost(mongoPost.getUserId(), Util.objectIdtoString(mongoPost.getId()));
-		Friend[] friend = getFriendTable("*", "friend WHERE id="+"\""+post.getId()+"\"");
-		for(int i=0 ; i<friend.length ; i++) {
-			String[] str={friend[i].getFriendId(), post.getPostId()};
-			userMapper.insertIntoTable("post_"+suffix+friend[i].getFriendId().substring(0,frontIdIndex), post.toColumns(), Util.makeValues(str));
+		ArrayList<Friend> friend = getFriendTable("*", "friend WHERE id="+"\""+post.getId()+"\"");
+		for(int i=0 ; i<friend.size(); i++) {
+			String[] str={friend.get(i).getFriendId(), post.getPostId()};
+			if(!isTableExist("d2", "post_"+suffix+friend.get(i).getFriendId().substring(0,frontIdIndex))){
+				createPostWithSuffix(suffix+friend.get(i).getFriendId().substring(0,frontIdIndex));
+			}
+			userMapper.insertIntoTable("post_"+suffix+friend.get(i).getFriendId().substring(0,frontIdIndex), post.toColumns(), Util.makeValues(str));
 		}
 	}
 	
@@ -110,8 +135,8 @@ public class UserService {
 		}
 	}
 	public boolean isFriend(String idA, String idB) throws Exception{
-		Friend[] tmp = getFriendTable("id, friendId", "friend WHERE id=\""+idA+"\""+" AND id=\""+idB+"\"");
-		if(tmp.length!=0)
+		ArrayList<Friend> tmp = getFriendTable("id, friendId", "friend WHERE id=\""+idA+"\""+" AND id=\""+idB+"\"");
+		if(tmp.size()!=0)
 			return true;
 		return false;
 	}
@@ -124,14 +149,14 @@ public class UserService {
 	public void dropAllTable() throws Exception{
 		if(!isTableExist("d2", "tables"))
 			return;
-		Tables[] tables = userMapper.getTableTable("tableName", 
+		ArrayList<Tables> tables = userMapper.getTableTable("tableName", 
 				"tables WHERE tableName like \"post%\" OR tableName = \"notification\" OR tableName = \"friend\"");
-		for(int i=0 ; i<tables.length ; i++){
-			userMapper.dropTable(tables[i].getTableName());
+		for(int i=0 ; i<tables.size() ; i++){
+			userMapper.dropTable(tables.get(i).getTableName());
 		}
 		tables = userMapper.getTableTable("tableName", "tables");
-		for(int i=0 ; i<tables.length ; i++){
-			userMapper.dropTable(tables[i].getTableName());
+		for(int i=0 ; i<tables.size() ; i++){
+			userMapper.dropTable(tables.get(i).getTableName());
 		}
 		userMapper.dropTable("tables");
 	}
@@ -160,8 +185,59 @@ public class UserService {
 	}
 	
 	public void userRegister(User user) throws Exception{
-		User[] tmp = getUserTable("id", "user WHERE id=\""+user.getId()+"\"");
-		if(tmp.length==0)
+		ArrayList<User> tmp = getUserTable("id", "user WHERE id=\""+user.getId()+"\"");
+		if(tmp.size()==0)
 			userMapper.insertIntoTable("user", user.toColumns(), user.toValues());
+	}
+	
+	public ArrayList<User> getFriendsFriend (String userId, int from, int num) throws Exception{
+		String str="(SELECT fr.friendId ,COUNT(fr.friendId) AS cnt FROM "+ 
+				" (SELECT *  FROM friend WHERE friend.id="+"\""+userId+"\")us " + 
+				"	JOIN friend AS fr " + 
+				"	ON  us.friendId=fr.id AND fr.friendId <> us.id " + 
+				"	GROUP BY fr.friendId " + 
+				" )result JOIN user\r\n " + 
+				" ON user.id=result.friendId " + 
+				" ORDER BY result.cnt DESC " + 
+				" LIMIT "+from+", "+num;
+		ArrayList<User> user = userMapper.getUserTable("user.id, user.name, user.birthday, user.city, user.school, user.office", str);
+		return user;
+	}
+	public ArrayList<User> getMayFriend(User user, int from, int num)throws Exception{
+		String birthyear = user.getBirthday().substring(0,4);
+		String last = Integer.toString(Integer.parseInt(birthyear)-1);
+		String next = Integer.toString(Integer.parseInt(birthyear)+1);
+		String str="(SELECT id, NAME, birthday, city, school, office, " + 
+				" case when office=\""+user.getOffice()+"\" then \"4\"" + 
+				" 	when birthday BETWEEN \""+birthyear+"-01-01\" AND \""+birthyear+"-12-31\" and school=\""+user.getSchool()+"\" then \"4\"" + 
+				" 	when birthday BETWEEN \""+last+"-01-01\" AND \""+next+"-12-31\" and school=\""+user.getSchool()+"\" then \"3\"" + 
+				" 	when birthday BETWEEN \""+last+"-01-01\" AND \""+next+"-12-31\" and city=\""+user.getCity()+"\" then \"2\"" + 
+				" 	when city = \"92\" then \"1\"" + 
+				" ELSE \"0\" END AS cnt" + 
+				" FROM user" + 
+				" )result" + 
+				" WHERE result.cnt<>\"0\"" + 
+				" LIMIT "+from+", "+num;
+		ArrayList<User> result = userMapper.getUserTable("id, name, birthday, city, school, office", str);
+		return result;
+	}
+	public ArrayList<User> getRecommendFriend(User user, int from, int num) throws Exception{
+		ArrayList<User> list1 = getFriendsFriend(user.getId(), from, num);
+		ArrayList<User> list2 = getMayFriend(user,from,num);
+		for(int i=0 ; i<num ;i++) {
+			for(int j=0; j<num ; j++) {
+				if(list1.get(i).getId().equals(list2.get(j).getId()))
+					list2.remove(j);
+			}
+		}
+		list1.addAll(list2);
+		return list1;
+	}
+	public User getUserById(String id) throws Exception{
+		ArrayList<User> user = userMapper.getUserTable("*", "user where id="+"\""+id+"\"");
+		if(user.size()==0)
+			return null;
+		else
+			return user.get(0);
 	}
 }

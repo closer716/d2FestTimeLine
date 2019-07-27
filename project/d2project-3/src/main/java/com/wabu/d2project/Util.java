@@ -1,6 +1,5 @@
 package com.wabu.d2project;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -9,11 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
-import com.wabu.d2project.user.DataContainer;
-import com.wabu.d2project.user.User;
-import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
 
 @Component

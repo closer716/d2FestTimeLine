@@ -34,9 +34,10 @@
     	SELECT ${columns} FROM ${suffix}; 
     </select>
     
-    <select id="selectFromTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.DataContainer">
-    	SELECT ${columnName} FROM ${suffix}
+    <select id="getPostId" parameterType="java.lang.String" resultType="java.lang.String">
+    	SELECT ${columns} FROM ${suffix}; 
     </select>
+    
     <select id="isExist" parameterType="java.lang.String" resultType="java.lang.String">
     	SELECT 1
     	FROM Information_schema.tables

@@ -10,8 +10,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ServiceResponse<T> {
-	
 	private String status;
 	private T data;
-
 }

@@ -16,11 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostDto {
 	public ObjectId id;
-	@NotBlank
 	public String userId;
-	@NotBlank
+	public String name;
     public String contents;
-	@NotBlank
     public Date date;
 	
 	public String toString() {
@@ -29,7 +27,7 @@ public class PostDto {
 	                id, userId, contents, date);
 	}
 	public Post toEntity() {
-		return new Post(ObjectId.get(), userId, contents, date);
+		return new Post(ObjectId.get(), name, userId, contents, date);
 	}
     
 }

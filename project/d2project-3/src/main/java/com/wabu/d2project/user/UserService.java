@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.wabu.d2project.Util;
 import com.wabu.d2project.post.PostDto;
+import com.wabu.d2project.user.dataContainer.Friend;
+import com.wabu.d2project.user.dataContainer.Notification;
+import com.wabu.d2project.user.dataContainer.Tables;
 
 @Service
 public class UserService {
@@ -18,8 +21,12 @@ public class UserService {
 	@Autowired
 	private UserMapper userMapper;
 	public static final int frontIdIndex = 1;
-	Calendar cal = Calendar.getInstance();
-
+	Calendar cal;
+	/**
+	 * Create all tables
+	 * for construct database system
+	 * @throws Exception
+	 */
 	public void createTable() throws Exception{
 		
 		userMapper.createTable("tables",
@@ -36,6 +43,10 @@ public class UserService {
 			createPostWithSuffix(suffix);
 		}
 	}
+	/**
+	 * Create user, friend, notification tables
+	 * @throws Exception
+	 */
 	public void createBaseTable() throws Exception{
 		userMapper.createTable("user", 
 				"id VARCHAR(20) PRIMARY KEY," +
@@ -64,13 +75,28 @@ public class UserService {
 				"references user(id) on update cascade on delete cascade");
 		userMapper.insertIntoTable("tables", "tableName", "\"notification\"");
 	}
-	
+	/**
+	 * Create Post Table (Post_yymma)
+	 * which 'a' is the first word of user id 
+	 * @param suffix
+	 * @throws Exception
+	 */
 	public void createPostWithSuffix(String suffix) throws Exception{
 		userMapper.createTable("post_"+suffix,
 				"id VARCHAR(20)," +
 				"postId VARCHAR(25)");
 		userMapper.insertIntoTable("tables", "tableName", "\""+"post_"+suffix+"\"");
 	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @param registrationDate
+	 * @param from
+	 * @param num
+	 * @return 'num' numbers of postId from 'from'
+	 * @throws Exception
+	 */
 	public ArrayList<String> getPostId(String id, Date registrationDate, int from, int num) throws Exception{
 		String suffix;
 		cal.setTime(new Date());
@@ -93,24 +119,51 @@ public class UserService {
 		
 		return result;
 	}
-
+	/**
+	 * For getting data in User type
+	 * @param columns
+	 * @param suffix
+	 * @return ArrayList<User>
+	 * @throws Exception
+	 */
 	public ArrayList<User> getUserTable(String columns, String suffix) throws Exception{
 		return userMapper.getUserTable(columns, suffix);
 	}
-	
+	/**
+	 * 
+	 * @param columns
+	 * @param suffix
+	 * @return
+	 * @throws Exception
+	 */
 	public ArrayList<Notification> getNotificationTable(String columns, String suffix) throws Exception{
 		return userMapper.getNotificationTable(columns,suffix);
 	}
-	
+	/**
+	 * For getting data in Friend type
+	 * @param columns
+	 * @param suffix
+	 * @return
+	 * @throws Exception
+	 */
 	public ArrayList<Friend> getFriendTable(String columns, String suffix) throws Exception{
 		return userMapper.getFriendTable(columns,suffix);
 	}
-	
+	/**
+	 * For getting data in Notification type
+	 * @param notification
+	 * @throws Exception
+	 */
 	public void notificationRegister(Notification notification)throws Exception{
 		userMapper.insertIntoTable("notification", 
 				notification.toColumns(), notification.toValues());
 	}
 	
+	/**
+	 * Add post into post table
+	 * @param mongoPost
+	 * @throws Exception
+	 */
 	public void addPost(PostDto mongoPost) throws Exception{
 		String suffix=Util.makeSuffix(mongoPost.getDate());
 		UserPost post = new UserPost(mongoPost.getUserId(), Util.objectIdtoString(mongoPost.getId()));
@@ -125,16 +178,35 @@ public class UserService {
 		}
 	}
 	
+	/**
+	 * Delete Notification by Id
+	 * @param id
+	 * @param notificationId
+	 * @throws Exception
+	 */
 	public void deleteNotification(String id, String notificationId) throws Exception{
 		userMapper.deleteRecord("notification", "notificationId= \""+notificationId+"\"");
 	}
 	
+	/**
+	 * Insert friend relationship into friend table
+	 * @param friendA
+	 * @param friendB
+	 * @throws Exception
+	 */
 	public void addFriend(Friend friendA, Friend friendB) throws Exception{
 		if(!isFriend(friendA.getId(), friendA.getFriendId())) {
 			userMapper.insertIntoTable("friend", friendA.toColumns(), friendA.toValues());
 			userMapper.insertIntoTable("friend",  friendB.toColumns(), friendB.toValues());
 		}
 	}
+	/**
+	 * Check given two id are in friendship
+	 * @param idA
+	 * @param idB
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean isFriend(String idA, String idB) throws Exception{
 		ArrayList<Friend> tmp = getFriendTable("id, friendId", "friend WHERE id=\""+idA+"\""+" AND id=\""+idB+"\"");
 		if(tmp.size()!=0)
@@ -142,11 +214,22 @@ public class UserService {
 		return false;
 	}
 	
+	/**
+	 * Sever two id connection
+	 * @param id
+	 * @param friendId
+	 * @throws Exception
+	 */
 	public void deleteFriend(String id, String friendId) throws Exception{
 		userMapper.deleteRecord("friend", "id="+"\""+id+"\""+"AND id="+"\""+friendId+"\"");
 		userMapper.deleteRecord("friend", "id="+"\""+friendId+"\""+"AND id="+"\""+id+"\"");
 	}
-
+	
+	
+	/**
+	 * Drop all tables
+	 * @throws Exception
+	 */
 	public void dropAllTable() throws Exception{
 		if(!isTableExist("d2", "tables"))
 			return;
@@ -162,6 +245,11 @@ public class UserService {
 		userMapper.dropTable("tables");
 	}
 	
+	/**
+	 * Delete user from databases
+	 * @param user
+	 * @throws Exception
+	 */
 	public void deleteUser(User user) throws Exception{
 		String suffix;
 		cal.setTime(new Date());
@@ -178,6 +266,13 @@ public class UserService {
 			cal.add(Calendar.MONTH, 1);
 		}
 	}
+	/**
+	 * Check the table is exist
+	 * @param dbName
+	 * @param tableName
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean isTableExist(String dbName, String tableName) throws Exception{
 		if(userMapper.isExist(dbName,tableName)== null) {
 			return false;
@@ -185,6 +280,12 @@ public class UserService {
 		return true;
 	}
 	
+	/**
+	 * insert user into user table
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
 	public User userRegister(User user) throws Exception{
 		ArrayList<User> tmp = getUserTable("id", "user WHERE id=\""+user.getId()+"\"");
 		if(tmp.size()==0)
@@ -192,6 +293,14 @@ public class UserService {
 		return user;
 	}
 	
+	/**
+	 * Get Friend's friends for recommend 
+	 * @param userId
+	 * @param from
+	 * @param num
+	 * @return
+	 * @throws Exception
+	 */
 	public ArrayList<User> getFriendsFriend (String userId, int from, int num) throws Exception{
 		String str="(SELECT fr.friendId ,COUNT(fr.friendId) AS cnt FROM "+ 
 				" (SELECT *  FROM friend WHERE friend.id="+"\""+userId+"\")us " + 
@@ -205,6 +314,15 @@ public class UserService {
 		ArrayList<User> user = userMapper.getUserTable("user.id, user.name, user.birthday, user.city, user.school, user.office", str);
 		return user;
 	}
+	
+	/**
+	 * Get people who have common things with user
+	 * @param user
+	 * @param from
+	 * @param num
+	 * @return
+	 * @throws Exception
+	 */
 	public ArrayList<User> getMayFriend(User user, int from, int num)throws Exception{
 		String birthyear = user.getBirthday().substring(0,4);
 		String last = Integer.toString(Integer.parseInt(birthyear)-1);
@@ -219,22 +337,18 @@ public class UserService {
 				" FROM user" + 
 				" )result" + 
 				" WHERE result.cnt<>\"0\"" + 
+				" AND id <> \""+user.getId()+"\""+
 				" LIMIT "+from+", "+num;
 		ArrayList<User> result = userMapper.getUserTable("id, name, birthday, city, school, office", str);
 		return result;
 	}
-	public ArrayList<User> getRecommendFriend(User user, int from, int num) throws Exception{
-		ArrayList<User> list1 = getFriendsFriend(user.getId(), from, num);
-		ArrayList<User> list2 = getMayFriend(user,from,num);
-		for(int i=0 ; i<num ;i++) {
-			for(int j=0; j<num ; j++) {
-				if(list1.get(i).getId().equals(list2.get(j).getId()))
-					list2.remove(j);
-			}
-		}
-		list1.addAll(list2);
-		return list1;
-	}
+	
+	/**
+	 * Get a user information by Id
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 	public User getUserById(String id) throws Exception{
 		ArrayList<User> user = userMapper.getUserTable("*", "user where id="+"\""+id+"\"");
 		if(user.size()==0)

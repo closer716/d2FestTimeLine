@@ -1,4 +1,4 @@
-package com.wabu.d2project.user;
+package com.wabu.d2project.user.dataContainer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

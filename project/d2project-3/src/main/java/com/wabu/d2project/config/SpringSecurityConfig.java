@@ -19,7 +19,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	public void configure(WebSecurity web) throws Exception
 	{
-		web.ignoring().antMatchers("/generateTestCases");
+		web.ignoring().antMatchers("/test/generateTestCases");
 		web.ignoring().antMatchers("/register");
 		web.ignoring().antMatchers("/create");
 		web.ignoring().antMatchers("/static/**");

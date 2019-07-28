@@ -22,15 +22,15 @@
     	SELECT ${columns} FROM ${suffix};
     </select>
     
-    <select id="getNotificationTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Notification">
+    <select id="getNotificationTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.dataContainer.Notification">
     	SELECT ${columns} FROM ${suffix};
     </select>
     
-    <select id="getFriendTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Friend">
+    <select id="getFriendTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.dataContainer.Friend">
     	SELECT ${columns} FROM ${suffix}; 
     </select>
     
-    <select id="getTableTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.Tables">
+    <select id="getTableTable" parameterType="java.lang.String" resultType="com.wabu.d2project.user.dataContainer.Tables">
     	SELECT ${columns} FROM ${suffix}; 
     </select>
     

@@ -1,6 +1,7 @@
-package com.wabu.d2project;
+package com.wabu.d2project.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +13,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wabu.d2project.ServiceResponse;
 import com.wabu.d2project.post.Post;
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
+import com.wabu.d2project.user.dataContainer.Friend;
+import com.wabu.d2project.user.dataContainer.Notification;
 
 @RestController
 public class PostController {
 
 	List<Post> posting = new ArrayList<>();
-	private static final int pageNum=10;
+	public static final int pageNum=10;
 	
 	@Autowired
 	PostService postService;

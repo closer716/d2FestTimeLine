@@ -1,5 +1,6 @@
 package com.wabu.d2project;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -9,16 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
+import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
 
 @Service
 public class Util {
-	
-	@Autowired
-	UserService userService;
-	@Autowired
-	PostService postService;
 	
 	public String generateUserId(){
 		int count = (int)(Math.random()*13+8);
@@ -127,4 +125,14 @@ public class Util {
 		}
 		return new String(chars);
 	}	
+	
+	public void addPost(String id, String name, String contents, UserService userService, PostService postService) throws Exception{
+		Date date = new Date();
+		SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String a = formattedDate.format(date);
+		PostDto post = new PostDto(ObjectId.get(), id, name, contents,formattedDate.parse(a));
+		postService.addPost(post);
+		userService.addPost(post);
+	}
+	
 }

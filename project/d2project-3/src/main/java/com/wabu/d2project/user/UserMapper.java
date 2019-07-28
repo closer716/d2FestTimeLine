@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.wabu.d2project.user.dataContainer.Friend;
+import com.wabu.d2project.user.dataContainer.Notification;
+import com.wabu.d2project.user.dataContainer.Tables;
+
 public interface UserMapper{
 
 	public void updateRecord(@Param("tableName") String tableName, @Param("set") String set, @Param("suffix") String suffix) throws Exception;

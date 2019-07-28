@@ -1,4 +1,6 @@
-package com.wabu.d2project.user;
+package com.wabu.d2project.user.dataContainer;
+
+import org.springframework.data.annotation.Id;
 
 import com.wabu.d2project.Util;
 
@@ -11,14 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Data
-public class Tables {
-	private String tableName;
-	
+public class Friend {
+	@Id
+	private String id;
+    private String friendId;
+    
     public String toColumns() {
-    	return "tableName";
+    	return "id, friendId";
     }
     public String toValues() {
-    	String[] str = {tableName};
+    	String[] str = {id, friendId};
     	return Util.makeValues(str);
     }
 }

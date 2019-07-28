@@ -44,7 +44,7 @@
               	<div class="col-lg-6">
                   <ul class="list-unstyled mb-0" th:each="recommend: ${friendsFriend}">
                   	<li>
-                      <a href="#" th:text="${recommend.getId()}">친구1</a>
+                      <a href="#" th:text="${recommend.getName()}">친구1</a>
                   	</li>
                   </ul>
               	</div>
@@ -57,7 +57,7 @@
               	<div class="col-lg-6">
                   <ul class="list-unstyled mb-0" th:each="recommend: ${mayFriend}">
                   	<li>
-                      <a href="#" th:text="${recommend.getId()}">친구1</a>
+                      <a href="#" th:text="${recommend.getName()}">친구1</a>
                   	</li>
                   </ul>
               	</div>

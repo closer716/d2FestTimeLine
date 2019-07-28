@@ -15,8 +15,6 @@
   <script src="/static/js/jquery/jquery.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript">
-  var from=0;
-  var allData = { "from": from};
   $(document).ready(
 			function() {
 
@@ -31,20 +29,18 @@
 					$("#scrollPosition").text(scrollPosition);
 					$("#bottom").text(scrollHeight - scrollPosition);
 
-					if (scrollPosition > scrollHeight - 500) {			
+					if (scrollPosition > scrollHeight - 200) {			
 						
 						ajaxGet();
 					}
 				});
-				
 				
 				// DO GET
 				function ajaxGet() {
 					$.ajax({
 						type : "GET",
 						url : "getPosts",
-						data : allData ,
-						success : function(result, data) {
+						success : function(result) {
 							if (result.status == "success") {
 								var custList = "";
 								$.each(result.data,
@@ -57,7 +53,6 @@
 											$('#getResultDiv').append(user)
 										});
 								console.log("Success: ", result);
-								allData.from+=10;
 							} else {
 								$("#getResultDiv").html("<strong>Error</strong>");
 								console.log("Fail: ", result);
@@ -69,7 +64,38 @@
 						}
 					});
 				}
+				// SUBMIT FORM
+				$("#post").submit(function(event) {
+					// Prevent the form from submitting via the browser.
+					event.preventDefault();
+					ajaxPost();
+				});
+
+				function ajaxPost() {
+					var contents = $("#contents").val()
+						
+					// DO POST
+					$.ajax({
+						type : "POST",
+						url : "savePost",
+						data : contents,
+						success : function(result) {
+							if (result.status == "success") {
+								$("#mainPOST").replaceWith($('#mainPOST'));
+							} else {
+								
+							}
+							console.log(result);
+						},
+						error : function(e) {
+							alert("Error!")
+							console.log("ERROR: ", e);
+						}
+					});
+				}
 			});
+  			
+
   </script>
   
 <style>
@@ -112,18 +138,26 @@
   </div>
 
   <!-- Page Content -->
-  <div class="container">
+  <div class="container" >
 
+	
     <div class="row top-buffer">
-
+	  
       <!-- Entries Column -->
-      <div class="col-md-8">
-
+      <div name="mainPOST"id ="mainPOST" class="col-md-8">
+      
+        <div class= "card mb-4 row top-buffer" id="main">
+			<form name="posting" action="#" th:action="@{/savePost}" method="POST">
+	         <input type="text" id="contents" name="contents" style=" width:95%; height:200px; margin: 10px;" required>
+	         <button type="submit" name ="post" id="post" class="btn btn-success" style=" float: right; width:100px; height:60px; margin: 10px;">Post</button>
+	       </form>
+		</div>
+		
         <h1 class="my-4">
         </h1>
 
         <!-- TimeLine Post -->
-        <div class="card mb-4" id="post" th:each="post: ${posts}">
+        <div class="card mb-4" id="post" th:each=" post: ${posts}">
           <div class="card-body">
             <h2 class="card-title" th:text="${post.name}">Post Title</h2>
             <p class="card-text" th:text="${post.contents}">Post Message</p>

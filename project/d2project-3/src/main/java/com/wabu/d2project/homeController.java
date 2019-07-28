@@ -127,7 +127,11 @@ public class homeController{
 		System.out.println("======================================================");
         return "contents/test";
     }
-
+	@RequestMapping(value="/addPost", method=RequestMethod.GET)
+	public String addPost(@AuthenticationPrincipal User user, Model model, @RequestParam("contents") String contents) throws Exception{
+		addPost(user.getId(),user.getName(),contents);
+		return "contents/timeline";
+	}
 	
 	@RequestMapping(value="/register/friend")
 	public String addFriend(@RequestParam("id") String id, @RequestParam("friendId") String friendId) throws Exception{

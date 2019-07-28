@@ -16,6 +16,8 @@
   <script src="/static/js/jquery/jquery.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript">
+  var from=0;
+  var allData = { "from": from};
   $(document).ready(
 			function() {
 
@@ -36,12 +38,14 @@
 					}
 				});
 				
+				
 				// DO GET
 				function ajaxGet() {
 					$.ajax({
 						type : "GET",
 						url : "getPosts",
-						success : function(result) {
+						data : allData ,
+						success : function(result, data) {
 							if (result.status == "success") {
 								$('#getResultDiv ul').empty();
 								var custList = "";
@@ -51,6 +55,7 @@
 											$('#getResultDiv .list-group').append(user)
 										});
 								console.log("Success: ", result);
+								allData.from+=10;
 							} else {
 								$("#getResultDiv").html("<strong>Error</strong>");
 								console.log("Fail: ", result);
@@ -116,7 +121,7 @@
         </h1>
 
         <!-- TimeLine Post -->
-        <div class="card mb-4" id="post" th:each=" post: ${posts}">
+        <div class="card mb-4" id="post" th:each="post: ${posts}">
           <div class="card-body">
             <h2 class="card-title" th:text="${post.name}">Post Title</h2>
             <p class="card-text" th:text="${post.contents}">Post Message</p>

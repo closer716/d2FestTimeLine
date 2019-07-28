@@ -14,6 +14,12 @@
   <script src="/static/webjars/bootstrap/js/bootstrap.min.js" ></script>
   <script src="/static/webjars/bootstrap/jquery/jquery.slim.min.js" ></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  
+  <script>
+  	var msg="";
+  	function test(){
+  	}
+  </script>
 </head>
 
 <body>
@@ -35,12 +41,15 @@
         <!-- TimeLine Post -->
         <div class="card mb-4">
           
-          <div class="card-body" th:each=" friend: ${searchResult}">
-            <h2 class="card-title" th:if="${friend.getName()}" th:text="${friend.getName()} +'_'+ ${friend.getId()}">친구1</h2>
-            <p class="card-text" th:if="${friend.getSchool()}" th:text="'school: '+${friend.getSchool()}"  >학교</p>
-            <p class="card-text" th:if="${friend.getCity()}" th:text="'city: '+${friend.getCity()}" >지역</p>
-            <p class="card-text" th:if="${friend.getOffice()}" th:text="'office: '+${friend.getOffice()}">회사</p>
-            <p class="card-text" th:if="${friend.getBirthday()}" th:text="'birthday: '+${friend.getBirthday()}">생년월일</p>
+          <div class="card-body" id="search" th:each=" friend: ${searchResult}">
+	          <div id="test">
+	            <h2 class="card-title" th:if="${friend.getName()}" th:text="${friend.getName()} +'_'+ ${friend.getId()}">친구1</h2>
+	            <p class="card-text" th:if="${friend.getSchool()}" th:text="'school: '+${friend.getSchool()}"  >학교</p>
+	            <p class="card-text" th:if="${friend.getCity()}" th:text="'city: '+${friend.getCity()}" >지역</p>
+	            <p class="card-text" th:if="${friend.getOffice()}" th:text="'office: '+${friend.getOffice()}">회사</p>
+	            <p class="card-text" th:if="${friend.getBirthday()}" th:text="'birthday: '+${friend.getBirthday()}">생년월일</p>
+	            <input type="button" onClick="test()" value="친구요청"/>
+              </div>
           </div>
           
         </div>

@@ -21,7 +21,7 @@ public class UserService {
 	@Autowired
 	private UserMapper userMapper;
 	public static final int frontIdIndex = 1;
-	Calendar cal;
+	Calendar cal=Calendar.getInstance();
 	/**
 	 * Create all tables
 	 * for construct database system

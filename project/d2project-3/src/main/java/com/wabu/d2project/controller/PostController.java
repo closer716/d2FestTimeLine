@@ -27,8 +27,7 @@ import com.wabu.d2project.user.UserService;
 public class PostController {
 
    List<Post> posting = new ArrayList<>();
-   private int from=0;
-   private static final int pageNum=10;
+   public static final int pageNum=20;
    
    @Autowired
    PostService postService;
@@ -36,8 +35,7 @@ public class PostController {
    UserService userService;
 
    @GetMapping("/getPosts")
-   public ResponseEntity<Object> getPosts(@AuthenticationPrincipal User user, Model model) throws Exception{
-      from+=pageNum;
+   public ResponseEntity<Object> getPosts(@AuthenticationPrincipal User user, Model model, @RequestParam(value="from") int from) throws Exception{
       ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), from, pageNum);
       ServiceResponse<List<PostDto>> response = new ServiceResponse<>("success", postService.findBy_id(postId));
       return new ResponseEntity<Object>(response, HttpStatus.OK);

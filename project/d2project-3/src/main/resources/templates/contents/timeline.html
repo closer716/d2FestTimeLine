@@ -15,6 +15,10 @@
   <script src="/static/js/jquery/jquery.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript">
+  var from=10;
+  var prevFrom=0;
+  var getPost = false;
+  var allData={"from" : from};
   $(document).ready(
 			function() {
 
@@ -29,9 +33,11 @@
 					$("#scrollPosition").text(scrollPosition);
 					$("#bottom").text(scrollHeight - scrollPosition);
 
-					if (scrollPosition > scrollHeight - 500) {			
-						
-						ajaxGet();
+					if (scrollPosition > scrollHeight - 2500) {			
+						if(!getPost){
+							getPost=true;
+							ajaxGet();
+						}
 					}
 				});
 				
@@ -40,8 +46,10 @@
 					$.ajax({
 						type : "GET",
 						url : "getPosts",
-						success : function(result) {
+						data : allData,
+						success : function(result, data) {
 							if (result.status == "success") {
+								allData.from +=10;
 								var custList = "";
 								$.each(result.data,
 										function(i, post) {
@@ -53,6 +61,7 @@
 											$('#getResultDiv').append(user)
 										});
 								console.log("Success: ", result);
+								getPost=false;
 							} else {
 								$("#getResultDiv").html("<strong>Error</strong>");
 								console.log("Fail: ", result);
@@ -81,7 +90,9 @@
 						data : contents,
 						success : function(result) {
 							if (result.status == "success") {
-								$("#mainPOST").replaceWith($('#mainPOST'));
+								//$("#mainPOST").replaceWith($('#mainPOST'));
+								allData.from=0;
+								$("mainPOST").html(response);
 							} else {
 								
 							}
@@ -92,6 +103,7 @@
 							console.log("ERROR: ", e);
 						}
 					});
+					return false;
 				}
 			});
   			

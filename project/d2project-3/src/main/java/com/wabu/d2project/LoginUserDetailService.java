@@ -1,9 +1,16 @@
 package com.wabu.d2project;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.wabu.d2project.user.User;
@@ -13,22 +20,27 @@ import com.wabu.d2project.user.UserService;
 public class LoginUserDetailService implements UserDetailsService{
 	@Autowired
 	UserService userService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException
 	{
-		// 기존해시와 신규해시가 다를경우 이런식으로 받아 처리할 수 있음.
-		// 위 @Autowired HttpServletRequest request;
-		// request 처리
-		System.out.println("LoginUserDetailService 들어옴 "+id);
 		User user=null;
 		try {
 			user = userService.getUserById(id);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(user.toString());
 		
-		return new LoginDetails(user);
+		return user;
+
 	}
+	public User save(User user) throws Exception{
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		return userService.userRegister(user);
+	}
+	
 }

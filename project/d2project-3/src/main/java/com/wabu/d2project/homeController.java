@@ -1,18 +1,25 @@
 package com.wabu.d2project;
 
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
@@ -28,15 +35,15 @@ public class homeController{
 	private UserService userService;
 	@Autowired
 	private PostService postService;
+	@Autowired
+	private LoginUserDetailService loginService;
 	private Util util = new Util();
 	
 	public static final int pageNum=10;
 	public static final int recommendNum=10;
 
 	@RequestMapping(value="/timeline")
-	protected String home(Model model) throws Exception{
-		
-		User user=userService.getUserById("3ny7nktgjibq3");
+	protected String home(@AuthenticationPrincipal User user, Model model) throws Exception{
 		int from = 0;
 		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, recommendNum);
 		ArrayList<User> mayFriend = userService.getMayFriend(user, from, recommendNum);
@@ -49,13 +56,21 @@ public class homeController{
 		return "contents/timeline";
 	}
 	
-	@RequestMapping(value="/login")
-	protected String login(@AuthenticationPrincipal LoginDetails userDetails) {
+	@RequestMapping(value="/login", method=RequestMethod.GET)
+	public String loginByGet(Model model,HttpServletRequest req){
+		model.addAttribute("message",req.getServletContext());
 		return "contents/login";
 	}
 	
+	@RequestMapping(value="/loginSuccess", method=RequestMethod.GET)
+	public String loginSuccess(HttpServletRequest req){
+		return "contents/timeline";
+		
+	}
+
 	@RequestMapping(value="/please")
-	protected String please( ) {
+	protected String please(@AuthenticationPrincipal User user) {
+		System.out.println(user.toString());
 		return "contents/test";
 	}
 	
@@ -78,7 +93,8 @@ public class homeController{
     public String query(@RequestParam("id") String id, @RequestParam("password") String password,@RequestParam("sex") boolean sex, @RequestParam("name") String name,
     		@RequestParam("birthday") String birthday, @RequestParam("city") int city, @RequestParam("school") int school, @RequestParam("office") int office
     		) throws Exception{
-        userService.userRegister(new User(id, password, name, sex, birthday, city, school, office, new Date()));
+		User user = new User(id, password, name, sex, birthday, city, school, office, new Date());
+        userService.userRegister(loginService.save(user));
         return "contents/test";
     }
 	
@@ -102,11 +118,13 @@ public class homeController{
 	public String generateTestCases() throws Exception{
 		//deleteAllMariaDB();
 		//postService.deleteAll();
-		userService.createTable();
-		int userNum= 1000;
-		int partnerNum=30000;
-		int notificationNum=3000;
-		int postNum=1000;
+		//userService.createTable();
+		int userNum= 99;
+		int partnerNum= 2000;
+		int notificationNum=100;
+		int postNum=3000;
+		//User user = new User("yoon3784", "1234", "È«¼®À±", false, "1995-06-01", 1 , 1, 1, new Date());
+        //userService.userRegister(loginService.save(user));
 		//registerUser(userNum);
 		//createFriend(partnerNum);
 		//createNotification(notificationNum);
@@ -129,9 +147,12 @@ public class homeController{
 	
 	public void registerUser(int num) throws Exception{
 		for(int i=0 ; i<num ; i++) {
-			String id = util.generateUserId();
-			userService.userRegister(new User(id , util.generatePassword(), util.generateKoreanName(), true,util.generateBirthday(), 
-							(int)(Math.random()*100+1),(int)(Math.random()*300+1),(int)(Math.random()*500+1), new Date()));
+			String id = util.generateUserId(); 
+			if(userService.getUserById(id)!=null) {i--;continue;}
+			User user = new User(id , util.generatePassword(), util.generateKoreanName(), true,util.generateBirthday(), 
+					(int)(Math.random()*100+1),(int)(Math.random()*300+1),(int)(Math.random()*500+1), new Date());
+			loginService.save(user);
+			userService.userRegister(user);
 			if(i%100 == 0)
 				System.out.println("registering now "+i);
 		}

@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -19,9 +20,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	public void configure(WebSecurity web) throws Exception
 	{
-		web.ignoring().antMatchers("/login");
-		web.ignoring().antMatchers("/timeline");
+		web.ignoring().antMatchers("/generateTestCases");
 		web.ignoring().antMatchers("/register");
+		web.ignoring().antMatchers("/create");
 		web.ignoring().antMatchers("/static/**");
 	}
 	
@@ -34,15 +35,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 		http
 			.formLogin()
 			.loginPage("/login")
-			.loginProcessingUrl("/login")
+			.loginProcessingUrl("/loginProcess")
+       		.defaultSuccessUrl("/please", true) 
 			.usernameParameter("id") 
-			.passwordParameter("pw")
-			.permitAll()
-			.defaultSuccessUrl("/timeline");
+			.passwordParameter("password")
+			.permitAll();
 		http
 			.logout()
 			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-			.logoutSuccessUrl("/login");
+			.logoutSuccessUrl("/login")
+			.permitAll();
 	}
 	
 	@Configuration
@@ -54,7 +56,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 		@Bean
 		PasswordEncoder passwordEncoder()
 		{
-			return new BCryptPasswordEncoder();
+			return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		}
 		
 		@Override

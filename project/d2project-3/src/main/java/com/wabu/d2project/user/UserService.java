@@ -39,7 +39,7 @@ public class UserService {
 	public void createBaseTable() throws Exception{
 		userMapper.createTable("user", 
 				"id VARCHAR(20) PRIMARY KEY," +
-				"password VARCHAR(16)," +
+				"password VARCHAR(70)," +
 				"name VARCHAR(20)," +
 				"sex TINYINT(1)," +
 				"birthday DATE," +
@@ -117,10 +117,11 @@ public class UserService {
 		ArrayList<Friend> friend = getFriendTable("*", "friend WHERE id="+"\""+post.getId()+"\"");
 		for(int i=0 ; i<friend.size(); i++) {
 			String[] str={friend.get(i).getFriendId(), post.getPostId()};
-			if(!isTableExist("d2", "post_"+suffix+friend.get(i).getFriendId().substring(0,frontIdIndex))){
+			String tableName = "post_"+suffix+friend.get(i).getFriendId().substring(0,frontIdIndex);
+			if(!isTableExist("d2", tableName)){
 				createPostWithSuffix(suffix+friend.get(i).getFriendId().substring(0,frontIdIndex));
 			}
-			userMapper.insertIntoTable("post_"+suffix+friend.get(i).getFriendId().substring(0,frontIdIndex), post.toColumns(), Util.makeValues(str));
+			userMapper.insertIntoTable(tableName, post.toColumns(), Util.makeValues(str));
 		}
 	}
 	
@@ -184,10 +185,11 @@ public class UserService {
 		return true;
 	}
 	
-	public void userRegister(User user) throws Exception{
+	public User userRegister(User user) throws Exception{
 		ArrayList<User> tmp = getUserTable("id", "user WHERE id=\""+user.getId()+"\"");
 		if(tmp.size()==0)
 			userMapper.insertIntoTable("user", user.toColumns(), user.toValues());
+		return user;
 	}
 	
 	public ArrayList<User> getFriendsFriend (String userId, int from, int num) throws Exception{

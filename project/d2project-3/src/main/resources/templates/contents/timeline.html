@@ -12,7 +12,6 @@
 
   <link rel="stylesheet" href="/static/webjars/bootstrap/css/bootstrap.min.css" >
   <script src="/static/webjars/bootstrap/js/bootstrap.min.js" ></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>>
   <script src="/static/js/jquery/jquery.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript">
@@ -47,12 +46,15 @@
 						data : allData ,
 						success : function(result, data) {
 							if (result.status == "success") {
-								$('#getResultDiv ul').empty();
 								var custList = "";
 								$.each(result.data,
 										function(i, post) {
-											var user = "이름 : " + post.name + "<br>" + " contents  = " + post.contents+ "<br>";
-											$('#getResultDiv .list-group').append(user)
+											
+											var user = "<div class='card mb-4'>" + "<div class='card-body'>" +
+								            "<h2 class='card-title'>" + post.name + "</h2>" + "<p class='card-text'>" + post.contents +  "</p>" + "</div>"
+								            + "<div class='card-footer text-muted'>" + post.date + "</div>"
+											//"이름 : " + post.name + "<br>" + " contents  = " + post.contents+ "<br>";
+											$('#getResultDiv').append(user)
 										});
 								console.log("Success: ", result);
 								allData.from+=10;
@@ -62,7 +64,7 @@
 							}
 						},
 						error : function(e) {
-							$("#getResultDiv").html("<strong>Error</strong>");
+							          
 							console.log("ERROR: ", e);
 						}
 					});
@@ -131,13 +133,7 @@
           </div>
         </div>
         
-        <div class="col-sm-7" style="margin: 20px 0px 20px 0px">
-			<button id="getPosts" type="button" class="btn btn-primary">More</button>
-			<div id="getResultDiv">
-				<ul class="list-group">
-				</ul>
-			</div>
-		</div>
+        <p id="getResultDiv"></p>
 		
 		
       </div>

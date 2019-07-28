@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -18,31 +18,9 @@
 
 <body>
 
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#">D2project</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <!-- nav var -->
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="timeline">Home
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="profile">Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="friendList">Friends</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-</nav>
+<!-- Navigation -->
+  <div th:block th:replace="contents/fragments/navigationBar :: navBar">
+  </div>
 
  <!-- Page Content -->
  <div class="container">
@@ -56,118 +34,24 @@
         </h1>
 
         <!-- TimeLine Post -->
-        <div class="card mb-4">
+      	<div class="card mb-4">
           
-          <div class="card-body">
-            <h2 class="card-title">친구1</h2>
-            <p class="card-text">학교/지역/성별</p>
-            <!--
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
-            -->
-          </div>
-          
-        </div>
-
-        <!-- TimeLine Post -->
-        <div class="card mb-4">
-          
-          <div class="card-body">
-            <h2 class="card-title">친구2</h2>
-            <p class="card-text">학교/지역/성별</p>
-            <!--
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
-            -->
+          <div class="card-body" th:each=" friend: ${friends}">
+            <h2 class="card-title" th:if="${friend.getName()}" th:text="${friend.getName()} +'_'+ ${friend.getId()}">친구1</h2>
+            <p class="card-text" th:if="${friend.getSchool()}" th:text="'school: '+${friend.getSchool()}"  >학교</p>
+            <p class="card-text" th:if="${friend.getCity()}" th:text="'city: '+${friend.getCity()}" >지역</p>
+            <p class="card-text" th:if="${friend.getOffice()}" th:text="'office: '+${friend.getOffice()}">회사</p>
+            <p class="card-text" th:if="${friend.getBirthday()}" th:text="'birthday: '+${friend.getBirthday()}">생년월일</p>
           </div>
           
         </div>
-
-        <!-- TimeLine Post -->
-        <div class="card mb-4">
-          
-          <div class="card-body">
-            <h2 class="card-title">친구3</h2>
-            <p class="card-text">학교/지역/성별</p>
-            <!--
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
-            -->
-          </div>
-          
-        </div>
-
-      </div>
-
-      <!-- Sidebar Widgets Column -->
-      <div class="col-md-4">
-
-        <!-- Search Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">Search</h5>
-          <div class="card-body">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search for...">
-              <span class="input-group-btn">
-                <button class="btn btn-secondary" type="button">Go!</button>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Friends Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">Friends</h5>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-lg-6">
-                <ul class="list-unstyled mb-0">
-                  <li>
-                    <a href="#">친구1</a>
-                  </li>
-                  <li>
-                    <a href="#">친구2</a>
-                  </li>
-                  <li>
-                    <a href="#">친구3</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Side Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">친구 추천</h5>
-          <div class="card-body">
-            친구 목록?
-          </div>
-        </div>
-
-        <div class="card my-4">
-          <h5 class="card-header">친구 요청</h5>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-lg-6">
-                <ul class="list-unstyled mb-0">
-                  <li>
-                    <a href="#">친구1</a>
-                  </li>
-                  <li>
-                    <a href="#">친구2</a>
-                  </li>
-                  <li>
-                    <a href="#">친구3</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
     </div>
+    <!-- Sidebar Widgets Column -->
+      <div th:block th:replace="contents/fragments/sideBar :: sideBar"></div>
     <!-- /.row -->
-
-  </div>
+    </div>
+</div>
   <!-- /.container -->
 
   <!-- Footer 

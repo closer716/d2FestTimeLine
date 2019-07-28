@@ -7,11 +7,12 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.UserService;
 
-@Component
+@Service
 public class Util {
 	
 	@Autowired

@@ -3,8 +3,10 @@ package com.wabu.d2project;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,10 +43,11 @@ public class homeController{
 	
 	public static final int pageNum=10;
 	public static final int recommendNum=10;
+	public static int from = 0;
 
 	@RequestMapping(value="/timeline")
 	protected String home(@AuthenticationPrincipal User user, Model model) throws Exception{
-		int from = 0;
+		from = 0;
 		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, recommendNum);
 		ArrayList<User> mayFriend = userService.getMayFriend(user, from, recommendNum);
 		ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), from, pageNum);
@@ -64,18 +67,36 @@ public class homeController{
 	
 	@RequestMapping(value="/loginSuccess", method=RequestMethod.GET)
 	public String loginSuccess(HttpServletRequest req){
-		return "contents/timeline";
-		
+		return "contents/timeline";	
 	}
-
+	@RequestMapping(value="/friendList", method=RequestMethod.GET)
+	public String friendList(@AuthenticationPrincipal User user, Model model)throws Exception{
+		ArrayList<User> friends = userService.getUserTable("id, NAME, sex, birthday, city, school, office", 
+				"(SELECT friendId FROM friend WHERE id=\""+user.getId()+"\")fr"+
+				" JOIN user AS us ON fr.friendId=us.id");
+		model.addAttribute("friends", friends);
+		return "contents/friendList";
+	}
 	@RequestMapping(value="/please")
 	protected String please(@AuthenticationPrincipal User user) {
 		System.out.println(user.toString());
 		return "contents/test";
 	}
 	
-	@RequestMapping(value="/friendSearch")
-	protected String friendSearch() {
+	@RequestMapping(value="/friendSearch", method=RequestMethod.GET)
+	protected String friendSearch(@AuthenticationPrincipal User user, @RequestParam("search") String search, Model model) throws Exception{
+		ArrayList<User> result = userService.getUserTable("id, name, sex, birthday, city, school, office", "user WHERE id LIKE \"%"+search+"%\" OR name LIKE \"%"+search+"%\"");
+		result.get(0).setCity(0);
+		
+		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, recommendNum);
+		ArrayList<User> mayFriend = userService.getMayFriend(user, from, recommendNum);
+		ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), from, pageNum);
+		
+		model.addAttribute("posts", postService.findBy_id(postId));
+		model.addAttribute("friendsFriend", friendsFriend);
+		model.addAttribute("mayFriend", mayFriend);
+		
+		model.addAttribute("searchResult", result);
 		return "contents/friendSearch";
 	}
 	
@@ -116,9 +137,9 @@ public class homeController{
 	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
-		//deleteAllMariaDB();
-		//postService.deleteAll();
-		//userService.createTable();
+		deleteAllMariaDB();
+		postService.deleteAll();
+		userService.createTable();
 		int userNum= 99;
 		int partnerNum= 2000;
 		int notificationNum=100;

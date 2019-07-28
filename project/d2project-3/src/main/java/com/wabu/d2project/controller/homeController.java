@@ -78,11 +78,6 @@ public class homeController{
 		model.addAttribute("friends", friends);
 		return "contents/friendList";
 	}
-	@RequestMapping(value="/please")
-	protected String please(@AuthenticationPrincipal User user) {
-		System.out.println(user.toString());
-		return "contents/test";
-	}
 	
 	@RequestMapping(value="/friendSearch", method=RequestMethod.GET)
 	protected String friendSearch(@AuthenticationPrincipal User user, @RequestParam("search") String search, Model model) throws Exception{
@@ -119,6 +114,7 @@ public class homeController{
         userService.userRegister(loginService.save(user));
         return "contents/test";
     }
+	
 	
 	/* 포스트 등록 */
 	@RequestMapping(value="/addPost", method=RequestMethod.GET)

@@ -28,7 +28,7 @@ public class PostController {
 
    List<Post> posting = new ArrayList<>();
    private int from=0;
-   private static final int pageNum=10;
+   public static final int pageNum=10;
    
    @Autowired
    PostService postService;

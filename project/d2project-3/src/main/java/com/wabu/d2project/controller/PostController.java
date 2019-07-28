@@ -27,7 +27,12 @@ import com.wabu.d2project.user.UserService;
 public class PostController {
 
    List<Post> posting = new ArrayList<>();
+<<<<<<< HEAD
    public static final int pageNum=20;
+=======
+   private int from=0;
+   public static final int pageNum=10;
+>>>>>>> d5935f51f10a69f7487fa06609c73786b1c26adc
    
    @Autowired
    PostService postService;

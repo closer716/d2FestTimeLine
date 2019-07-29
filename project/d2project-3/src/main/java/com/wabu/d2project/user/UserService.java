@@ -43,6 +43,7 @@ public class UserService {
 			suffix=yearMonth+Character.toString((char)i);
 			createPostWithSuffix(suffix);
 		}
+		userMapper.insertIntoTable("tables", "tableName", "\"tables\"");
 	}
 	/**
 	 * Create user, friend, notification tables
@@ -174,7 +175,7 @@ public class UserService {
 		for(int i=0 ; i<friend.size(); i++) {
 			String[] str={friend.get(i).getFriendId(), post.getPostId(), post.getDate()};
 			String tableName = "post_"+suffix+friend.get(i).getFriendId().substring(0,frontIdIndex);
-			if(!isTableExist("d2", tableName)){
+			if(!isTableExist(tableName)){
 				createPostWithSuffix(suffix+friend.get(i).getFriendId().substring(0,frontIdIndex));
 			}
 			userMapper.insertIntoTable(tableName, post.toColumns(), Util.makeValues(str));
@@ -234,7 +235,7 @@ public class UserService {
 	 * @throws Exception
 	 */
 	public void dropAllTable() throws Exception{
-		if(!isTableExist("d2", "tables"))
+		if(!isTableExist("tables"))
 			return;
 		ArrayList<Tables> tables = userMapper.getTableTable("tableName", 
 				"tables WHERE tableName like \"post%\" OR tableName = \"notification\" OR tableName = \"friend\"");
@@ -275,7 +276,7 @@ public class UserService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean isTableExist(String dbName, String tableName) throws Exception{
+	public boolean isTableExist(String tableName) throws Exception{
 		ArrayList<Tables> tables = userMapper.getTableTable("tableName", 
 				"tables WHERE tableName = \""+tableName+"\"");
 		
@@ -325,7 +326,7 @@ public class UserService {
 				" ON user.id=result2.friendId " + 
 				" ORDER BY result2.cnt DESC " + 
 				" LIMIT "+from+", "+num;
-		ArrayList<User> user = userMapper.getUserTable("user.id, user.name, user.birthday, user.city, user.school, user.office", str);
+		ArrayList<User> user = userMapper.getUserTable("user.id, result2.cnt as password, user.name, user.birthday, user.city, user.school, user.office", str);
 		return user;
 	}
 	

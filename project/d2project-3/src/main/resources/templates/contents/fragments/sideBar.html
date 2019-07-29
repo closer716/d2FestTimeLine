@@ -12,8 +12,8 @@
 		<div class="card-body">
 			<div class="input-group">
 				<form th:action="@{/friend/friendSearch}" method="get">
-					<input type="text" class="form-control" name="search" placeholder="Search for..."> 
-					<span class="input-group-btn">
+					<input type="text" class="form-control" name="search"
+						placeholder="Search for..."> <span class="input-group-btn">
 						<input class="btn btn-secondary" type="submit">
 					</span>
 				</form>
@@ -32,28 +32,36 @@
 							<div class="card mb-4" style="width: 210%"
 								th:each="notification: ${notification}">
 								<div class="card-body">
-									
-										<div th:if="${notification.getContent()}==1">
-											<h5 class="card-text" th:text="${notification.getId()}">이름</h5>
-											<p>님이 친구 요청 수락하셨습니다.</p>
-										</div>
-										<div class="test" th:if="${notification.getContent()}==0">
-											<h5 class="card-text" th:text="${notification.getId()}">이름</h5>
-											<p>님이 친구 요청을 하셨습니다.</p>
-										</div>
-										<div class="test2">
-											<form>
-												<button type="submit" onclick="ajaxAccept(this)"class="btn btn-primary btn" th:if="${notification.getContent()}==0">수락</button>
-											</form>
-											<form>
-											    <button type="submit" onclick="ajaxReject(this)" class="btn btn-danger" th:if="${notification.getContent()}==0">거절</button>
-											</form>
-											<form>
-											    <button type="submit" onclick="ajaxOk(this)" class="btn btn-danger" th:if="${notification.getContent()}==1">확인</button>
-											</form>
-										</div>
-										<input type="hidden" name="notificationId" th:value="${notification.getNotificationId()}"> 
-										<input type="hidden" name="friendId" th:value="${notification.getFriendId()}">
+
+									<div class="test" th:if="${notification.getContent()}==1">
+										<h5 class="card-text" th:text="${notification.getId()}">이름</h5>
+										<p>님이 친구 요청 수락하셨습니다.</p>
+									</div>
+									<div class="test" th:if="${notification.getContent()}==0">
+										<h5 class="card-text" th:text="${notification.getId()}">이름</h5>
+										<p>님이 친구 요청을 하셨습니다.</p>
+									</div>
+									<div class="test2">
+										<form>
+											<button type="submit" onclick="ajaxAccept(this)"
+												class="btn btn-primary btn"
+												th:if="${notification.getContent()}==0">수락</button>
+										</form>
+										<form>
+											<button type="submit" onclick="ajaxReject(this)"
+												class="btn btn-danger"
+												th:if="${notification.getContent()}==0">거절</button>
+										</form>
+										<form>
+											<button type="submit" onclick="ajaxOk(this)"
+												class="btn btn-danger"
+												th:if="${notification.getContent()}==1">확인</button>
+										</form>
+									</div>
+									<input type="hidden" name="notificationId"
+										th:value="${notification.getNotificationId()}"> <input
+										type="hidden" name="friendId"
+										th:value="${notification.getFriendId()}">
 								</div>
 							</div>
 						</li>
@@ -65,30 +73,61 @@
 	<div id="friend_recommend">
 		<!-- Side Widget -->
 		<div class="card my-4">
-			<h5 class="card-header">친구 추천</h5>
-			<div class="tab_item">
+			<h5 class="card-header">친구의 친구들</h5>
 				<div class="card-body">
 					<div class="row">
 						<div class="col-lg-6">
-							<ul class="list-unstyled mb-0"
-								th:each="recommend: ${friendsFriend}">
-								<li><a href="#" th:text="${recommend.getName()}">친구1</a></li>
+							<ul class="list-unstyled mb-0">
+								<li>
+									<div class="card mb-4 test" style="width: 210%" >
+										<div class="card-body" th:each="recommend: ${friendsFriend}">
+											<div class="test">
+												<h5 class="card-text" th:text="${recommend.getName()}">이름</h5>
+													<p th:text="|${recommend.getPassword()}명의 친구를 함께 알고 있습니다.|"></p>
+											</div>
+											<div class="test2">
+												<form>
+													<button type="submit" onclick="ajaxOk(this)" class="btn btn-danger" >친구요청 </button>
+												</form>
+											</div>
+											<input type="hidden" name="friendId" th:value="${recommend.getId()}">
+										</div>
+									</div>
+
+								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="tab_item">
+		</div>
+		<div class="card my-4">
+			<h5 class="card-header">알 수도 있는 사람</h5>
 				<div class="card-body">
 					<div class="row">
 						<div class="col-lg-6">
-							<ul class="list-unstyled mb-0" th:each="recommend: ${mayFriend}">
-								<li><a href="#" th:text="${recommend.getName()}">친구1</a></li>
+							<ul class="list-unstyled mb-0">
+								<li>
+									<div class="card mb-4 test" style="width: 210%" >
+										<div class="card-body" th:each="mayFriend: ${mayFriend}">
+											<div class="test">
+												<h5 class="card-text" th:text="${mayFriend.getName()}">이름</h5>
+												<p th:if="${mayFriend.getCity()}!=0">같은 지역에 살고 있습니다.</p>
+												<p th:if="${mayFriend.getSchool()}!=0">같은 학교를 다니고 있습니다.</p>
+												<p th:if="${mayFriend.getOffice()}!=0">같은 회사를 다니고 있습니다..</p>
+											</div>
+											<div class="test2">
+												<form>
+													<button type="submit" onclick="ajaxOk(this)" class="btn btn-danger" >친구요청 </button>
+												</form>
+											</div>
+											<input type="hidden" name="friendId" th:value="${mayFriend.getId()}">
+										</div>
+									</div>
+								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
-			</div>
 		</div>
 	</div>
 </div>

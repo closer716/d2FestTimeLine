@@ -46,15 +46,11 @@ public class homeController{
 	@Autowired
 	private LoginUserDetailService loginService;
 	private Util util = new Util();
-	
-	public static final int recommendNum=10;
-	public static int from = 0;
 
 	@RequestMapping(value="/timeline")
 	protected String home(@AuthenticationPrincipal User user, Model model) throws Exception{
-		from = 0;
-		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), 0, recommendNum);
-		ArrayList<User> mayFriend = userService.getMayFriend(user, 0, recommendNum);
+		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), 0, Constant.recommendNum);
+		ArrayList<User> mayFriend = userService.getMayFriend(user, 0, Constant.recommendNum);
 		ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), 0, Constant.pageNum);
 		ArrayList<Notification> notification = userService.getNotificationTable("user.name AS id, notificationId, content, friendId", "(SELECT friendId, notificationId, content, date FROM "
 				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit 5");
@@ -74,7 +70,6 @@ public class homeController{
 		
 		return "contents/timeline";
 	}
-	
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public String loginByGet(Model model,HttpServletRequest req){
 		model.addAttribute("message",req.getServletContext());

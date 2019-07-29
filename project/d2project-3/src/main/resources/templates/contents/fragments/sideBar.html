@@ -43,17 +43,17 @@
 									</div>
 									<div class="test2">
 										<form>
-											<button type="submit" onclick="ajaxAccept(this)"
+											<button type="button" onclick="ajaxAccept(this)"
 												class="btn btn-primary btn"
 												th:if="${notification.getContent()}==0">수락</button>
 										</form>
 										<form>
-											<button type="submit" onclick="ajaxReject(this)"
+											<button type="button" onclick="ajaxReject(this)"
 												class="btn btn-danger"
 												th:if="${notification.getContent()}==0">거절</button>
 										</form>
 										<form>
-											<button type="submit" onclick="ajaxOk(this)"
+											<button type="button" onclick="ajaxOk(this)"
 												class="btn btn-danger"
 												th:if="${notification.getContent()}==1">확인</button>
 										</form>
@@ -87,7 +87,7 @@
 											</div>
 											<div class="test2">
 												<form>
-													<button type="submit" onclick="ajaxRequest(this)" class="btn btn-danger" >친구요청 </button>
+													<button type="button" onclick="ajaxRequest(this)" class="btn btn-danger" >친구요청 </button>
 												</form>
 											</div>
 											<input type="hidden" name="friendId" th:value="${recommend.getId()}">
@@ -117,7 +117,7 @@
 											</div>
 											<div class="test2">
 												<form>
-													<button type="submit" onclick="ajaxRequest(this)" class="btn btn-danger" >친구요청 </button>
+													<button type="button" onclick="ajaxRequest(this)" class="btn btn-danger" >친구요청 </button>
 												</form>
 											</div>
 											<input type="hidden" name="friendId" th:value="${mayFriend.getId()}">

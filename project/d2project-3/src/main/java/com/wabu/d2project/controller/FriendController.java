@@ -129,6 +129,7 @@ public class FriendController {
 		model.addAttribute("mayFriend", mayFriend);
 		
 		model.addAttribute("searchResult", result);
+		
 		return "contents/friendSearch";
 	}
 	

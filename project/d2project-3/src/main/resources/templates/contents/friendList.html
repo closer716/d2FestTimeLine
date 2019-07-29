@@ -12,9 +12,106 @@
   
   <link rel="stylesheet" href="/static/webjars/bootstrap/css/bootstrap.min.css" >
   <link rel="stylesheet" href="/static/css/friendsButton.css">
-  <script src="/static/webjars/bootstrap/js/bootstrap.min.js" ></script>
-  <script src="/static/webjars/bootstrap/jquery/jquery.slim.min.js" ></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="/static/webjars/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/static/js/jquery/jquery.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  function ajaxAccept(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
+				contents : 1},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+
+function ajaxReject(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
+				contents : 2},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+
+function ajaxOk(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
+				contents : 0},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+  
+function ajaxRequest(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendRequest",
+			data : {
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value')
+				},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+  </script>
 </head>
 
 <body>

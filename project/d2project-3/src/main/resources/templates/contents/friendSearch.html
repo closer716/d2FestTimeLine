@@ -31,6 +31,7 @@
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -54,6 +55,7 @@
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -78,6 +80,7 @@ function ajaxReject(obj) {
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -102,6 +105,7 @@ function ajaxOk(obj) {
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -126,6 +130,7 @@ function ajaxRequest(obj) {
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -146,7 +151,7 @@ function ajaxRequest(obj) {
   <div th:block th:replace="contents/fragments/navigationBar :: navBar">
   </div>
   <!-- Page Content -->
-  	<div class="container" id="result">
+  	<div class="container" id="mainPost">
 
     <div class="row top-buffer">
 

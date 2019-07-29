@@ -28,6 +28,7 @@
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -52,6 +53,7 @@ function ajaxReject(obj) {
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -76,6 +78,7 @@ function ajaxOk(obj) {
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -100,6 +103,7 @@ function ajaxRequest(obj) {
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");
+					$('#mainPost').load('#mainPost');
 				} else {
 				}
 				console.log(result);
@@ -121,7 +125,7 @@ function ajaxRequest(obj) {
   </div>
 
  <!-- Page Content -->
- <div class="container">
+ <div class="container" id="mainPost">
 
     <div class="row top-buffer">
 

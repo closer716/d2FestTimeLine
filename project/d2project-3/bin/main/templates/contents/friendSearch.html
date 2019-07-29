@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -12,14 +12,131 @@
  
   <link rel="stylesheet" href="/static/webjars/bootstrap/css/bootstrap.min.css" >
   <link rel="stylesheet" href="/static/css/friendsButton.css">
-  <script src="/static/webjars/bootstrap/js/bootstrap.min.js" ></script>
-  <script src="/static/webjars/bootstrap/jquery/jquery.slim.min.js" ></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="/static/webjars/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/static/js/jquery/jquery.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   
-  <script>
-  	var msg="";
-  	function test(){
-  	}
+  <script type="text/javascript">
+  function ajaxReq(obj) {
+		
+	    var test = $(obj).parent('form').parent('div').children(':nth-child(1)').attr('value');
+	    console.log(test);
+	    
+	    $.ajax({
+			type : "POST",
+			url : "/friend/friendRequest",
+			data : {
+				friendId : $(obj).parent('form').parent('div').children(':nth-child(1)').attr('value')
+				},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+  function ajaxAccept(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
+				contents : 1},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+
+function ajaxReject(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
+				contents : 2},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+
+function ajaxOk(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
+				contents : 0},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+  
+function ajaxRequest(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendRequest",
+			data : {
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value')
+				},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
   </script>
 </head>
 
@@ -29,7 +146,7 @@
   <div th:block th:replace="contents/fragments/navigationBar :: navBar">
   </div>
   <!-- Page Content -->
-  <div class="container">
+  	<div class="container" id="result">
 
     <div class="row top-buffer">
 
@@ -40,29 +157,29 @@
         </h1>
 
         <!-- TimeLine Post -->
-        <div class="card mb-4">
+        <div class="card mb-4" >
           
-          <div class="card-body" id="search" th:each=" friend: ${searchResult}">
+          <div class="card-body" th:each=" friend: ${searchResult}">
 	          <div id="test">
+	            <input type="hidden" name="friendId" th:value="${friend.getId()}">
 	            <h2 class="card-title" th:if="${friend.getName()}" th:text="${friend.getName()} +'_'+ ${friend.getId()}">친구1</h2>
 	            <p class="card-text" th:if="${friend.getSchool()}" th:text="'school: '+${friend.getSchool()}"  >학교</p>
 	            <p class="card-text" th:if="${friend.getCity()}" th:text="'city: '+${friend.getCity()}" >지역</p>
 	            <p class="card-text" th:if="${friend.getOffice()}" th:text="'office: '+${friend.getOffice()}">회사</p>
 	            <p class="card-text" th:if="${friend.getBirthday()}" th:text="'birthday: '+${friend.getBirthday()}">생년월일</p>
-	            <input type="button" onClick="test()" value="친구요청"/>
+	            <form>
+	            <button type="button" onClick="ajaxReq(this)" class="btn btn-danger">친구요청</button>
+                </form>
               </div>
           </div>
           
         </div>
 
       </div>
-
-     <!-- Sidebar Widgets Column -->
       <div th:block th:replace="contents/fragments/sideBar :: sideBar">
-      </div>
-    <!-- /.row -->
-
-
+	  </div>
+      
+  </div>
   </div>
 
 

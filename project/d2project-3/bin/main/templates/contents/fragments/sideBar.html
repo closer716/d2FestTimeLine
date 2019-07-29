@@ -40,6 +40,7 @@
                         		<button class="btn btn-danger btn" th:if="${notification.getContent()}==0">거절</button>
                         		<button class="btn btn-danger btn" th:if="${notification.getContent()}==1">확인</button>
                         		<input type="hidden" name="notificationId" th:value="${notification.getNotificationId()}">
+                        		<input type="hidden" name="notificationId" th:value="${notification.getFriendId()}">
                         	</div>
                         </div>
 			        </div>

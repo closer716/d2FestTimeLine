@@ -66,10 +66,10 @@ public class FriendController {
 	@RequestMapping(value="/friendAccept")
 	@ResponseBody
 	public ResponseEntity<Object> friendAccept(@AuthenticationPrincipal User user, Model model,@RequestParam("search") String search,
-			@RequestParam("friendId") String friendId, @RequestParam("contents") boolean contents, @RequestParam("notificationId") String notificationId)throws Exception
+			@RequestParam("friendId") String friendId, @RequestParam("contents") int contents, @RequestParam("notificationId") String notificationId)throws Exception
 	{	
-		if(contents) {
-			//친구 수락 보내기
+		if(contents == 1) {
+			//친구 수락 메시지 보내기
 			Notification notif = new Notification(user.getId(), friendId, 1, new Date());
 			userService.notificationRegister(notif);
 			//친구 추가
@@ -78,8 +78,7 @@ public class FriendController {
 			userService.addFriend(friendA, friendB);
 		}
 		//Id를 가지고 알림 삭제
-		userService.deleteNotification(user.getId(), notificationId);
-		
+		userService.deleteNotification(notificationId);
 		ServiceResponse<String> response = new ServiceResponse<>("success", null);
 		
 	    return new ResponseEntity<Object>(response, HttpStatus.OK);

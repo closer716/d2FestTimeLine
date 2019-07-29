@@ -187,7 +187,7 @@ public class UserService {
 	 * @param notificationId
 	 * @throws Exception
 	 */
-	public void deleteNotification(String id, String notificationId) throws Exception{
+	public void deleteNotification(String notificationId) throws Exception{
 		userMapper.deleteRecord("notification", "notificationId= \""+notificationId+"\"");
 	}
 	

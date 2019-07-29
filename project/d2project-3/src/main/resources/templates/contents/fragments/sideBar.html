@@ -36,8 +36,9 @@
                         	<div style="float:right">
                         		<div th:if="${notification.getContent()}==1"><p th:text="|${notification.getFriendId()}, 님이 친구 요청을 수락하셨습니다.|"></div>
                         		<div th:if="${notification.getContent()}==0"><p th:text="|${notification.getFriendId()}, 님이 친구 요청을 하셨습니다.|"></div>
-                        		<button class="btn btn-primary" >수락</button>
-                        		<button class="btn btn-danger" >거절</button>
+                        		<button class="btn btn-primary btn" th:if="${notification.getContent()}==0">수락</button>
+                        		<button class="btn btn-danger btn" th:if="${notification.getContent()}==0">거절</button>
+                        		<button class="btn btn-danger btn" th:if="${notification.getContent()}==1">확인</button>
                         		<input type="hidden" name="notificationId" th:value="${notification.getNotificationId()}">
                         	</div>
                         </div>
@@ -97,5 +98,4 @@
           </div>
         </div>
       </div>
-    <!-- /.row -->
 </html>

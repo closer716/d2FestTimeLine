@@ -91,7 +91,13 @@ public class homeController{
 	@RequestMapping(value="/register/duplicate")
 	public ResponseEntity<Object> duplicate(@RequestParam("id") String id) throws Exception{
 		User user = userService.getUserById(id);
-		ServiceResponse<User> response = new ServiceResponse<>("success", user);
+		String result="";
+		if(user==null)
+			result="0";
+		else
+			result="1";
+			
+		ServiceResponse<String> response = new ServiceResponse<>("success", result);
 	    return new ResponseEntity<Object>(response, HttpStatus.OK);
 	}
 	

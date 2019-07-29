@@ -110,6 +110,7 @@ public class TestController {
 		for(int i=0 ; i<num ;i++) {
 			int a=(int)(Math.random()*user.size());
 			int b=(int)(Math.random()*user.size());
+			int c=(int)(Math.random()*2);
 			if(a==b){
 				i--; 
 				continue;
@@ -117,7 +118,7 @@ public class TestController {
 				userService.notificationRegister(new Notification(user.get(a).getId(),user.get(b).getId(), 1, new Date()));
 			}
 			else
-				userService.notificationRegister(new Notification(user.get(a).getId(),user.get(b).getId(), 0, new Date()));
+				userService.notificationRegister(new Notification(user.get(a).getId(),user.get(b).getId(), c, new Date()));
 			if(i%100 == 0)
 				System.out.println("Creating notification now "+i);
 		}

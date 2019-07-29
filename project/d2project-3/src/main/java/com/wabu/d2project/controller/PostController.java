@@ -47,11 +47,12 @@ public class PostController {
    }
    
    
-   @PostMapping("/savePost")
+   @PostMapping(value="/savePost")
    public ResponseEntity<Object> savePost(@AuthenticationPrincipal User user, Model model, @RequestBody String contents) throws Exception {
       Date date = new Date();
       SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       String a = formattedDate.format(date);
+      System.out.println(contents+" "+ new String(contents.getBytes("8859_1"),"UTF-8"));
       PostDto post = new PostDto(ObjectId.get(), user.getId(), user.getName(), contents,formattedDate.parse(a));
       postService.addPost(post);
       userService.addPost(post);
@@ -59,10 +60,4 @@ public class PostController {
       return new ResponseEntity<Object>(response, HttpStatus.OK);
    }
    
-   /* 포스트 등록 */
-	@RequestMapping(value="/addPost", method=RequestMethod.GET)
-	public String addPost(@AuthenticationPrincipal User user, Model model, @RequestParam("contents") String contents) throws Exception{
-		util.addPost(user.getId(),user.getName(),contents, userService, postService);
-		return "contents/timeline";
-	}
 }

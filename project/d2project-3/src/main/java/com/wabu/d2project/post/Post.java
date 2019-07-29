@@ -1,5 +1,6 @@
 package com.wabu.d2project.post;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
@@ -27,6 +28,12 @@ public class Post {
         return String.format(
                 "post[id=%s, userId=%s, contents='%s', date='%s']",
                 id, userId, contents, date);
+    }
+    
+    public String getPostDate() {
+    	SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분");
+		String strDate = formattedDate.format(date);
+    	return strDate;
     }
 
 }

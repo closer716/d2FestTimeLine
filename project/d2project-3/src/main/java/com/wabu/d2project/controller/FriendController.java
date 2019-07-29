@@ -58,7 +58,7 @@ public class FriendController {
 	public ResponseEntity<Object> friendRequest(@AuthenticationPrincipal User user, Model model, String friendId, int contents)throws Exception
 	{	
 		//친구요청
-		Notification notif = new Notification(user.getId(), friendId, contents, new Date());
+		Notification notif = new Notification(friendId, user.getId(), contents, new Date());
 		userService.notificationRegister(notif);
 		
 		ServiceResponse<String> response = new ServiceResponse<>("success", null);

@@ -62,7 +62,7 @@ public class UserService {
 		userMapper.createTable("friend",
 				"id VARCHAR(20)," +
 				"friendId VARCHAR(20)," +
-				"foreign key(id)\r\n"+ 
+				"foreign key(id)"+ 
 				"references user(id) on update cascade on delete cascade");	
 		userMapper.insertIntoTable("tables", "tableName", "\"friend\"");
 		userMapper.createTable("notification",
@@ -71,7 +71,7 @@ public class UserService {
 				"friendId VARCHAR(20)," + 
 				"content TINYINT(1)," + 
 				"date DATETIME," +
-				"foreign key(id)\r\n" + 
+				"foreign key(id)" + 
 				"references user(id) on update cascade on delete cascade");
 		userMapper.insertIntoTable("tables", "tableName", "\"notification\"");
 	}
@@ -302,14 +302,23 @@ public class UserService {
 	 * @throws Exception
 	 */
 	public ArrayList<User> getFriendsFriend (String userId, int from, int num) throws Exception{
-		String str="(SELECT fr.friendId ,COUNT(fr.friendId) AS cnt FROM "+ 
-				" (SELECT *  FROM friend WHERE friend.id="+"\""+userId+"\")us " + 
-				"	JOIN friend AS fr " + 
-				"	ON  us.friendId=fr.id AND fr.friendId <> us.id " + 
-				"	GROUP BY fr.friendId " + 
-				" )result JOIN user\r\n " + 
-				" ON user.id=result.friendId " + 
-				" ORDER BY result.cnt DESC " + 
+		String str="(" + 
+				"	SELECT *" + 
+				"	FROM(" + 
+				"		SELECT fr.friendId ,COUNT(fr.friendId) AS cnt" + 
+				"		FROM (" + 
+				"			SELECT *  FROM friend" + 
+				"			WHERE friend.id=\""+userId+"\"" + 
+				"		)us" + 
+				"		JOIN friend AS fr" + 
+				"		ON  us.friendId=fr.id AND fr.friendId <> us.id" + 
+				"		GROUP BY fr.friendId" + 
+				"	)result " + 
+				"	WHERE NOT result.friendId IN (SELECT friendId FROM notification WHERE id=\"+userId+\" AND content=\"0\") " + 
+				" )result2 " + 
+				" JOIN user " + 
+				" ON user.id=result2.friendId " + 
+				" ORDER BY result2.cnt DESC " + 
 				" LIMIT "+from+", "+num;
 		ArrayList<User> user = userMapper.getUserTable("user.id, user.name, user.birthday, user.city, user.school, user.office", str);
 		return user;
@@ -332,11 +341,11 @@ public class UserService {
 				" 	when birthday BETWEEN \""+birthyear+"-01-01\" AND \""+birthyear+"-12-31\" and school=\""+user.getSchool()+"\" then \"4\"" + 
 				" 	when birthday BETWEEN \""+last+"-01-01\" AND \""+next+"-12-31\" and school=\""+user.getSchool()+"\" then \"3\"" + 
 				" 	when birthday BETWEEN \""+last+"-01-01\" AND \""+next+"-12-31\" and city=\""+user.getCity()+"\" then \"2\"" + 
-				" 	when city = \"92\" then \"1\"" + 
+				" 	when city = \""+user.getCity()+"\" then \"1\"" + 
 				" ELSE \"0\" END AS cnt" + 
 				" FROM user" + 
 				" )result" + 
-				" WHERE result.cnt<>\"0\"" + 
+				" WHERE result.cnt<>\"0\" AND result.id not IN (SELECT friendId FROM notification WHERE id=\""+user.getId()+"\" AND content=\"0\") " + 
 				" AND id <> \""+user.getId()+"\""+
 				" LIMIT "+from+", "+num;
 		ArrayList<User> result = userMapper.getUserTable("id, name, birthday, city, school, office", str);

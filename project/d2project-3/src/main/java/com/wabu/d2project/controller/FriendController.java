@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wabu.d2project.ServiceResponse;
 import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
@@ -54,11 +55,37 @@ public class FriendController {
 	@ResponseBody
 	public ResponseEntity<Object> friendRequest(@AuthenticationPrincipal User user, Model model, String friendId, int contents)throws Exception
 	{	
+		//친구요청
 		Notification notif = new Notification(user.getId(), friendId, contents, new Date());
 		userService.notificationRegister(notif);
-		ServiceResponse<List<PostDto>> response = new ServiceResponse<>("success", data);
+		
+		ServiceResponse<String> response = new ServiceResponse<>("success", null);
 	    return new ResponseEntity<Object>(response, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value="/friendAccept")
+	@ResponseBody
+	public ResponseEntity<Object> friendAccept(@AuthenticationPrincipal User user, Model model,@RequestParam("search") String search,
+			@RequestParam("friendId") String friendId, @RequestParam("contents") boolean contents, @RequestParam("notificationId") String notificationId)throws Exception
+	{	
+		if(contents) {
+			//친구 수락 보내기
+			Notification notif = new Notification(user.getId(), friendId, 1, new Date());
+			userService.notificationRegister(notif);
+			//친구 추가
+			Friend friendA = new Friend(user.getId(), friendId);
+			Friend friendB = new Friend(user.getId(), friendId);
+			userService.addFriend(friendA, friendB);
+		}
+		//Id를 가지고 알림 삭제
+		userService.deleteNotification(user.getId(), notificationId);
+		
+		ServiceResponse<String> response = new ServiceResponse<>("success", null);
+		
+	    return new ResponseEntity<Object>(response, HttpStatus.OK);
+	}
+	
+	
 	
 	@RequestMapping(value="/friendSearch", method=RequestMethod.GET)
 	protected String friendSearch(@AuthenticationPrincipal User user, @RequestParam("search") String search, Model model) throws Exception{
@@ -67,9 +94,7 @@ public class FriendController {
 		
 		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, Constant.recommendNum);
 		ArrayList<User> mayFriend = userService.getMayFriend(user, from, Constant.recommendNum);
-		ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), from, Constant.pageNum);
 		
-		model.addAttribute("posts", postService.findBy_id(postId));
 		model.addAttribute("friendsFriend", friendsFriend);
 		model.addAttribute("mayFriend", mayFriend);
 		

@@ -90,7 +90,6 @@ public class FriendController {
 	@RequestMapping(value="/friendSearch", method=RequestMethod.GET)
 	protected String friendSearch(@AuthenticationPrincipal User user, @RequestParam("search") String search, Model model) throws Exception{
 		ArrayList<User> result = userService.getUserTable("id, name, sex, birthday, city, school, office", "user WHERE id LIKE \"%"+search+"%\" OR name LIKE \"%"+search+"%\"");
-		result.get(0).setCity(0);
 		
 		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, Constant.recommendNum);
 		ArrayList<User> mayFriend = userService.getMayFriend(user, from, Constant.recommendNum);

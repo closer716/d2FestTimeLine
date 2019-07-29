@@ -134,27 +134,4 @@ public class Util {
 		postService.addPost(post);
 		userService.addPost(post);
 	}
-	
-	public boolean verifyId(String id) {
-		if(id.length() > 20)
-			return false;
-		for(int i=0 ; i<id.length() ; i++) {
-			char a = id.charAt(i);
-			if( a < 80 || a > 122 )
-				return false;
-			else if( a > 89 && a < 97)
-				return false;
-		}
-		
-		return true;
-	}
-	public boolean verifyPassword(String password) {
-		char[] poss = {'!','@','#','$','%','^','&','*'};
-		if(password.length()>16)
-			return false;
-		for(int i=0 ; i<password.length();i++){
-			char a = password.charAt(i);
-		}
-		return true;
-	}
 }

@@ -29,15 +29,15 @@ public class TestController {
 	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
-		//deleteAllMariaDB();
-		//postService.deleteAll();
-		//userService.createTable();
-		int userNum= 50;
-		int partnerNum= 2000;
-		int notificationNum=100;
-		int postNum= 1000;
-		//User user = new User("yoon3784", "1234", "È«¼®À±", false, "1995-06-01", 1 , 1, 1, new Date());
-        //userService.userRegister(loginService.save(user));
+		deleteAllMariaDB();
+		postService.deleteAll();
+		userService.createTable();
+		int userNum= 20;
+		int partnerNum= 200;
+		int notificationNum=50;
+		int postNum= 500;
+		User user = new User("yoon3784", "1234", "È«¼®À±", false, "1995-06-01", 1 , 1, 1, new Date());
+        userService.userRegister(loginService.save(user));
 		registerUser(userNum);
 		createFriend(partnerNum);
 		createNotification(notificationNum);

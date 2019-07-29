@@ -13,6 +13,7 @@ import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.user.dataContainer.Friend;
 import com.wabu.d2project.user.dataContainer.Notification;
 import com.wabu.d2project.user.dataContainer.Tables;
+import com.wabu.d2project.user.dataContainer.UserPost;
 import com.wabu.d2project.util.Util;
 
 @Service
@@ -84,7 +85,8 @@ public class UserService {
 	public void createPostWithSuffix(String suffix) throws Exception{
 		userMapper.createTable("post_"+suffix,
 				"id VARCHAR(20)," +
-				"postId VARCHAR(25)");
+				"postId VARCHAR(25)," +
+				"date DATETIME");
 		userMapper.insertIntoTable("tables", "tableName", "\""+"post_"+suffix+"\"");
 	}
 	
@@ -109,7 +111,7 @@ public class UserService {
 		
 		for(int i=num; i>0;) {
 			suffix=Integer.toString(100*(year-2000)+month)+id.substring(0,frontIdIndex);
-			tmp = userMapper.getPostId("postId", "post_"+suffix+" where id=\""+id+"\" limit "+from+", "+i);
+			tmp = userMapper.getPostId("postId", "post_"+suffix+" WHERE id=\""+id+"\" ORDER BY date desc LIMIT "+from+", "+i);
 			result.addAll(tmp);
 			i -= tmp.size();
 			if(year==registrationYear && month==registrationMonth)
@@ -166,10 +168,11 @@ public class UserService {
 	 */
 	public void addPost(PostDto mongoPost) throws Exception{
 		String suffix=Util.makeSuffix(mongoPost.getDate());
-		UserPost post = new UserPost(mongoPost.getUserId(), Util.objectIdtoString(mongoPost.getId()));
+		UserPost post = new UserPost(mongoPost.getUserId(), Util.objectIdtoString(mongoPost.getId()), mongoPost.getDate());
 		ArrayList<Friend> friend = getFriendTable("*", "friend WHERE id="+"\""+post.getId()+"\"");
+		friend.add(new Friend(mongoPost.getUserId(), mongoPost.getUserId()));
 		for(int i=0 ; i<friend.size(); i++) {
-			String[] str={friend.get(i).getFriendId(), post.getPostId()};
+			String[] str={friend.get(i).getFriendId(), post.getPostId(), post.getDate()};
 			String tableName = "post_"+suffix+friend.get(i).getFriendId().substring(0,frontIdIndex);
 			if(!isTableExist("d2", tableName)){
 				createPostWithSuffix(suffix+friend.get(i).getFriendId().substring(0,frontIdIndex));

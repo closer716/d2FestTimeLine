@@ -75,7 +75,6 @@ public class FriendController {
 	public ResponseEntity<Object> friendRequest(@AuthenticationPrincipal User user, Model model, @RequestParam("friendId") String friendId)throws Exception
 	{	
 		//친구요청
-		System.out.println(friendId);
 		Notification notif = new Notification(friendId, user.getId(), 0, new Date());
 		userService.notificationRegister(notif);
 		
@@ -109,7 +108,10 @@ public class FriendController {
 	
 	@RequestMapping(value="/friendSearch", method=RequestMethod.GET)
 	protected String friendSearch(@AuthenticationPrincipal User user, @RequestParam("search") String search, Model model) throws Exception{
-		ArrayList<User> result = userService.getUserTable("id, name, sex, birthday, city, school, office", "user WHERE id LIKE \"%"+search+"%\" OR name LIKE \"%"+search+"%\"");
+		ArrayList<User> result = userService.getUserTable("id, name, sex, birthday, city, school, office", "(SELECT id, name, sex, birthday, city, school, office FROM user WHERE id LIKE \"%"+search+"%\" OR name LIKE \"%"+search+"%\")AS result "+
+				" WHERE id not IN (SELECT id FROM notification WHERE (friendId=\""+user.getId()+"\" AND content=\"0\"))" +
+				" AND id not IN (SELECT friendId FROM notification WHERE (id=\""+user.getId()+"\" AND content=\"0\"))" +
+				" AND id <> \""+user.getId()+"\"");
 		
 		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, Constant.recommendNum);
 		ArrayList<User> mayFriend = userService.getMayFriend(user, from, Constant.recommendNum);

@@ -110,11 +110,11 @@ public class homeController{
 	}
 	
 	@PostMapping("register/confirm")
-    public String query(@RequestParam("id") String id, @RequestParam("password") String password,@RequestParam("sex") boolean sex, @RequestParam("name") String name,
+    public String query(@RequestParam("id") String id, @RequestParam("password") String password, @RequestParam("name") String name,
     		@RequestParam("birthday") String birthday, @RequestParam("city") int city, @RequestParam("school") int school, @RequestParam("office") int office
     		) throws Exception{
-		User user = new User(id, password, name, sex, birthday, city, school, office, new Date());
+		User user = new User(id, password, name, false, birthday, city, school, office, new Date());
         userService.userRegister(loginService.save(user));
-        return "contents/test";
+        return "contents/login";
     }
 }

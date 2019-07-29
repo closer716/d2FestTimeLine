@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+.test{
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	width: 65%;
+	float: left;
+	font-size: 14px;
+	flex-direction: column;
+}
+.card-body{
+	float: right;
+	padding: 10px;
+}
+.btn{
+	float:right;
+}
+.input-group-btn{
+width: 20%;
+	float: right;
+}
+.form-control{
+width: 80%;
+float: left;
+}
+.clearfix:before,.clearfix:after { content: " "; display: table; } 
+.clearfix:after { clear:both; }

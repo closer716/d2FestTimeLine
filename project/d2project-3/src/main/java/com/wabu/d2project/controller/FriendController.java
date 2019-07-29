@@ -49,6 +49,23 @@ public class FriendController {
 		ArrayList<User> friends = userService.getUserTable("id, NAME, sex, birthday, city, school, office", 
 				"(SELECT friendId FROM friend WHERE id=\""+user.getId()+"\")fr"+
 				" JOIN user AS us ON fr.friendId=us.id limit 10");
+		
+		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), 0, Constant.recommendNum);
+		ArrayList<User> mayFriend = userService.getMayFriend(user, 0, Constant.recommendNum);
+		ArrayList<Notification> notification = userService.getNotificationTable("user.name AS id, notificationId, content, friendId", "(SELECT friendId, notificationId, content, date FROM "
+				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit 5");
+		for(int i=0 ; i<mayFriend.size(); i++) {
+			if(mayFriend.get(i).getCity()!=user.getCity())
+				mayFriend.get(i).setCity(0);
+			if(mayFriend.get(i).getSchool()!=user.getSchool())
+				mayFriend.get(i).setSchool(0);
+			if(mayFriend.get(i).getOffice()!=user.getOffice())
+				mayFriend.get(i).setOffice(0);
+		}
+		model.addAttribute("notification", notification);
+		model.addAttribute("friendsFriend", friendsFriend);
+		model.addAttribute("mayFriend", mayFriend);
+		
 		model.addAttribute("friends", friends);
 		return "contents/friendList";
 	}
@@ -97,7 +114,17 @@ public class FriendController {
 		
 		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, Constant.recommendNum);
 		ArrayList<User> mayFriend = userService.getMayFriend(user, from, Constant.recommendNum);
-		
+		ArrayList<Notification> notification = userService.getNotificationTable("user.name AS id, notificationId, content, friendId", "(SELECT friendId, notificationId, content, date FROM "
+				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit 5");
+		for(int i=0 ; i<mayFriend.size(); i++) {
+			if(mayFriend.get(i).getCity()!=user.getCity())
+				mayFriend.get(i).setCity(0);
+			if(mayFriend.get(i).getSchool()!=user.getSchool())
+				mayFriend.get(i).setSchool(0);
+			if(mayFriend.get(i).getOffice()!=user.getOffice())
+				mayFriend.get(i).setOffice(0);
+		}
+		model.addAttribute("notification", notification);
 		model.addAttribute("friendsFriend", friendsFriend);
 		model.addAttribute("mayFriend", mayFriend);
 		

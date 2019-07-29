@@ -70,6 +70,7 @@ public class homeController{
 		
 		return "contents/timeline";
 	}
+	
 	@RequestMapping(value="/login", method=RequestMethod.GET)
 	public String loginByGet(Model model,HttpServletRequest req){
 		model.addAttribute("message",req.getServletContext());

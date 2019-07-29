@@ -115,7 +115,6 @@
 			});
   			
   function ajaxAccept(obj) {
-		console.log("ssibal");
 
 		// DO POST
 		$.ajax({
@@ -124,6 +123,54 @@
 			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
 				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
 				contents : 1},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+  
+  function ajaxReject(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
+				contents : 2},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+  
+  function ajaxOk(obj) {
+
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
+				contents : 0},
 			success : function(result) {
 				if (result.status == "success") {
 					console.log("success");

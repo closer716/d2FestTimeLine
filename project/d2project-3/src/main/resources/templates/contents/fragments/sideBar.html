@@ -43,10 +43,14 @@
 										</div>
 										<div class="test2">
 											<form>
-												<button type="submit" value="ssibal" onclick="ajaxAccept(this)"class="btn btn-primary btn" th:if="${notification.getContent()}==0">수락</button>
+												<button type="submit" onclick="ajaxAccept(this)"class="btn btn-primary btn" th:if="${notification.getContent()}==0">수락</button>
 											</form>
-											<button class="btn btn-danger" th:if="${notification.getContent()}==0">거절</button>
-											<button class="btn btn-danger" th:if="${notification.getContent()}==1">확인</button>
+											<form>
+											    <button type="submit" onclick="ajaxReject(this)" class="btn btn-danger" th:if="${notification.getContent()}==0">거절</button>
+											</form>
+											<form>
+											    <button type="submit" onclick="ajaxOk(this)" class="btn btn-danger" th:if="${notification.getContent()}==1">확인</button>
+											</form>
 										</div>
 										<input type="hidden" name="notificationId" th:value="${notification.getNotificationId()}"> 
 										<input type="hidden" name="friendId" th:value="${notification.getFriendId()}">

@@ -21,6 +21,7 @@
   var prevFrom=0;
   var getPost = false;
   var allData={"from" : from};
+  
   $(document).ready(
 			function() {
 
@@ -107,9 +108,38 @@
 					});
 					return false;
 				}
+			
+				
+				
+				
 			});
   			
+  function ajaxAccept(obj) {
+		console.log("ssibal");
 
+		// DO POST
+		$.ajax({
+			type : "POST",
+			url : "/friend/friendAccept",
+			data : {notificationId : $(obj).parent('form').parent('div').children(':nth-child(4)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').children(':nth-child(5)').attr('value'),
+				contents : 1},
+			success : function(result) {
+				if (result.status == "success") {
+					console.log("success");
+				} else {
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!")
+				console.log("ERROR: ", e);
+			}
+		});
+		return false;
+	}
+    
+  
   </script>
 
 <style>

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,12 +65,13 @@ public class FriendController {
 	    return new ResponseEntity<Object>(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/friendAccept")
+	@PostMapping(value="/friendAccept")
 	@ResponseBody
-	public ResponseEntity<Object> friendAccept(@AuthenticationPrincipal User user, Model model,@RequestParam("search") String search,
-			@RequestParam("friendId") String friendId, @RequestParam("contents") int contents, @RequestParam("notificationId") String notificationId)throws Exception
+	public ResponseEntity<Object> friendAccept(@AuthenticationPrincipal User user, Model model,@RequestParam("notificationId") String notificationId, @RequestParam("friendId") String friendId, @RequestParam("contents") String contents)throws Exception
 	{	
-		if(contents == 1) {
+		System.out.println(notificationId);
+		int cont = Integer.parseInt(contents);
+		if(cont == 1) {
 			//친구 수락 메시지 보내기
 			Notification notif = new Notification(user.getId(), friendId, 1, new Date());
 			userService.notificationRegister(notif);

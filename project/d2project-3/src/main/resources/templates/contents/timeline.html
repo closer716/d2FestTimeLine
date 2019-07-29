@@ -121,8 +121,8 @@
 		$.ajax({
 			type : "POST",
 			url : "/friend/friendAccept",
-			data : {notificationId : $(obj).parent('form').parent('div').children(':nth-child(4)').attr('value'),
-				friendId : $(obj).parent('form').parent('div').children(':nth-child(5)').attr('value'),
+			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
+				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
 				contents : 1},
 			success : function(result) {
 				if (result.status == "success") {

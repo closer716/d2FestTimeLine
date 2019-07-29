@@ -67,17 +67,19 @@ public class FriendController {
 	
 	@PostMapping(value="/friendAccept")
 	@ResponseBody
-	public ResponseEntity<Object> friendAccept(@AuthenticationPrincipal User user, Model model,@RequestParam("notificationId") String notificationId, @RequestParam("friendId") String friendId, @RequestParam("contents") String contents)throws Exception
+	public ResponseEntity<Object> friendAccept(@AuthenticationPrincipal User user, Model model,
+			@RequestParam("notificationId") String notificationId, @RequestParam("friendId") String friendId, @RequestParam("contents") String contents)throws Exception
 	{	
-		System.out.println(notificationId);
+		System.out.println(notificationId+" "+ friendId+" "+ contents);
+		
 		int cont = Integer.parseInt(contents);
 		if(cont == 1) {
 			//친구 수락 메시지 보내기
-			Notification notif = new Notification(user.getId(), friendId, 1, new Date());
+			Notification notif = new Notification(friendId, user.getId(), 1, new Date());
 			userService.notificationRegister(notif);
 			//친구 추가
 			Friend friendA = new Friend(user.getId(), friendId);
-			Friend friendB = new Friend(user.getId(), friendId);
+			Friend friendB = new Friend(friendId, user.getId());
 			userService.addFriend(friendA, friendB);
 		}
 		//Id를 가지고 알림 삭제

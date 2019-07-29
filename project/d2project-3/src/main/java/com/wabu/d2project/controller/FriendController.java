@@ -72,10 +72,10 @@ public class FriendController {
 	
 	@RequestMapping(value="/friendRequest")
 	@ResponseBody
-	public ResponseEntity<Object> friendRequest(@AuthenticationPrincipal User user, Model model, String friendId, int contents)throws Exception
+	public ResponseEntity<Object> friendRequest(@AuthenticationPrincipal User user, Model model, @RequestParam("friendId") String friendId)throws Exception
 	{	
 		//친구요청
-		Notification notif = new Notification(friendId, user.getId(), contents, new Date());
+		Notification notif = new Notification(friendId, user.getId(), 0, new Date());
 		userService.notificationRegister(notif);
 		
 		ServiceResponse<String> response = new ServiceResponse<>("success", null);

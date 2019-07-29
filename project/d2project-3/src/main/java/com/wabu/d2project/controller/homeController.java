@@ -56,10 +56,13 @@ public class homeController{
 		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), 0, recommendNum);
 		ArrayList<User> mayFriend = userService.getMayFriend(user, 0, recommendNum);
 		ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), 0, Constant.pageNum);
+		ArrayList<Notification> notification = userService.getNotificationTable("user.name AS id, notificationId, content, friendId", "(SELECT friendId, notificationId, content, date FROM "
+				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit 20");
 		
 		model.addAttribute("posts", postService.findBy_id(postId));
 		model.addAttribute("friendsFriend", friendsFriend);
 		model.addAttribute("mayFriend", mayFriend);
+		model.addAttribute("notification", notification);
 		
 		return "contents/timeline";
 	}

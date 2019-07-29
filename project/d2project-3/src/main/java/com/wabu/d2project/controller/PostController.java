@@ -52,7 +52,6 @@ public class PostController {
       Date date = new Date();
       SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       String a = formattedDate.format(date);
-      System.out.println(contents+" "+ new String(contents.getBytes("8859_1"),"UTF-8"));
       PostDto post = new PostDto(ObjectId.get(), user.getId(), user.getName(), contents,formattedDate.parse(a));
       postService.addPost(post);
       userService.addPost(post);

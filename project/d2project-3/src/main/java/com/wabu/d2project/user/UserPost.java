@@ -2,7 +2,7 @@ package com.wabu.d2project.user;
 
 import java.util.Date;
 
-import com.wabu.d2project.Util;
+import com.wabu.d2project.util.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

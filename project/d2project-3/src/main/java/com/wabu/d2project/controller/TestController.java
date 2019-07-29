@@ -8,12 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.wabu.d2project.LoginUserDetailService;
-import com.wabu.d2project.Util;
 import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
 import com.wabu.d2project.user.dataContainer.Friend;
 import com.wabu.d2project.user.dataContainer.Notification;
+import com.wabu.d2project.util.Util;
 
 @Controller
 @RequestMapping(value="/test")

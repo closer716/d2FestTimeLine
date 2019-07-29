@@ -1,6 +1,6 @@
 package com.wabu.d2project.user.dataContainer;
 
-import com.wabu.d2project.Util;
+import com.wabu.d2project.util.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

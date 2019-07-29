@@ -33,7 +33,7 @@
 					$("#scrollPosition").text(scrollPosition);
 					$("#bottom").text(scrollHeight - scrollPosition);
 
-					if (scrollPosition > scrollHeight - 2500) {			
+					if (scrollPosition > scrollHeight - 1000) {			
 						if(!getPost){
 							getPost=true;
 							ajaxGet();
@@ -74,7 +74,7 @@
 					});
 				}
 				// SUBMIT FORM
-				$("#post").submit(function(event) {
+				$("#posting").submit(function(event) {
 					// Prevent the form from submitting via the browser.
 					event.preventDefault();
 					ajaxPost();
@@ -90,9 +90,9 @@
 						data : contents,
 						success : function(result) {
 							if (result.status == "success") {
-								//$("#mainPOST").replaceWith($('#mainPOST'));
+								$("#mainPOST").replaceWith($('#mainPOST'));
 								allData.from=0;
-								$("mainPOST").html(response);
+								//$("mainPOST").html(response);
 							} else {
 								
 							}
@@ -156,12 +156,12 @@
     <div class="row top-buffer">
 	  
       <!-- Entries Column -->
-      <div name="mainPOST"id ="mainPOST" class="col-md-8">
+      <div class="col-md-8">
       
         <div class= "card mb-4 row top-buffer" id="main">
-			<form name="posting" action="#" th:action="@{/savePost}" method="POST">
+			<form id="posting" name="posting">
 	         <input type="text" id="contents" name="contents" style=" width:95%; height:200px; margin: 10px;" required>
-	         <button type="submit" name ="post" id="post" class="btn btn-success" style=" float: right; width:100px; height:60px; margin: 10px;">Post</button>
+	         <button type="submit" id="post" class="btn btn-success" style=" float: right; width:100px; height:60px; margin: 10px;">Post</button>
 	       </form>
 		</div>
 		

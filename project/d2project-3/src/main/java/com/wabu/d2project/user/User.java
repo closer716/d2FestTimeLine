@@ -11,7 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.wabu.d2project.Util;
+import com.wabu.d2project.util.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

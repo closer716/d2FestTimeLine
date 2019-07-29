@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 
-import com.wabu.d2project.Util;
+import com.wabu.d2project.util.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

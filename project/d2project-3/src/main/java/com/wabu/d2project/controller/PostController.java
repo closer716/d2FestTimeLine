@@ -13,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,26 +24,23 @@ import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
+import com.wabu.d2project.util.Constant;
+import com.wabu.d2project.util.Util;
 
 @RestController
 public class PostController {
 
    List<Post> posting = new ArrayList<>();
-<<<<<<< HEAD
-   public static final int pageNum=20;
-=======
-   private int from=0;
-   public static final int pageNum=10;
->>>>>>> d5935f51f10a69f7487fa06609c73786b1c26adc
-   
+
    @Autowired
    PostService postService;
    @Autowired
    UserService userService;
+   private Util util = new Util();
 
    @GetMapping("/getPosts")
    public ResponseEntity<Object> getPosts(@AuthenticationPrincipal User user, Model model, @RequestParam(value="from") int from) throws Exception{
-      ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), from, pageNum);
+      ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), from, Constant.pageNum);
       ServiceResponse<List<PostDto>> response = new ServiceResponse<>("success", postService.findBy_id(postId));
       return new ResponseEntity<Object>(response, HttpStatus.OK);
    }
@@ -57,5 +56,12 @@ public class PostController {
 	   userService.addPost(post);
 	   ServiceResponse<PostDto> response = new ServiceResponse<>("success", post);
 	   return new ResponseEntity<Object>(response, HttpStatus.OK);
+	}
+   
+   /* 포스트 등록 */
+	@RequestMapping(value="/addPost", method=RequestMethod.GET)
+	public String addPost(@AuthenticationPrincipal User user, Model model, @RequestParam("contents") String contents) throws Exception{
+		util.addPost(user.getId(),user.getName(),contents, userService, postService);
+		return "contents/timeline";
 	}
 }

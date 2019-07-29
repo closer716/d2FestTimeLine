@@ -1,4 +1,4 @@
-package com.wabu.d2project;
+package com.wabu.d2project.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -9,11 +9,11 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wabu.d2project.Util;
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.user.dataContainer.Friend;
 import com.wabu.d2project.user.dataContainer.Notification;
 import com.wabu.d2project.user.dataContainer.Tables;
+import com.wabu.d2project.util.Util;
 
 @Service
 public class UserService {

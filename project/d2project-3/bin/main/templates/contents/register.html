@@ -10,13 +10,30 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   		
   		<script type="text/javascript">
-  		
+  		$(function(){
+  	        $("#alert-success").hide();
+  	        $("#alert-danger").hide();
+  	        $("input").keyup(function(){
+  	            var pwd1=$("#password").val();
+  	            var pwd2=$("#password-confirm").val();
+  	            if(pwd1 != "" || pwd2 != ""){
+  	                if(pwd1 == pwd2){
+  	                    $("#alert-success").show();
+  	                    $("#alert-danger").hide();
+  	                }else{
+  	                    $("#alert-success").hide();
+  	                    $("#alert-danger").show();
+  	                }    
+  	            }
+  	        });
+  	    });
+
   		function dupCheck(){
 	  			// DO POST
 	  			$.ajax({
 	  				type : "POST",
 	  				url : "/register/duplicate",
-	  				data : {id : $("#userId").val()},
+	  				data : {id : $("#id").val()},
 	  				success : function(result) {
 	  					if (result.data == "0") {
 	  						alert("사용가능한 아이디입니다.");
@@ -33,55 +50,34 @@
 	  					console.log("ERROR: ", e);
 	  				}
 	  			});
+	  			return false;
 		}
-			
+
   		$(document).ready(
   				function() {
   					$("#registerButton").attr("disabled", true); //비활성화
 
   					$("#registerButton").click(function() {
   						
-  						if($("#password").val() == $("#password-confirm").val()){
-  							//
-  							if(1<=$("#city").val() && $("#city").val()<=100){
-  								if(1<=$("#school").val() && $("#school").val()<=300){
-  									if(1<=$("#office").val() && $("#office").val()<=500){
-  										
-  										$.ajax({
-  				  	  		  				type : "POST",
-  				  	  		  				url : "/register/confirm",
-		  				  	  		  		data : {id : $("#id").val(),
-		  				  					password : $("#password").val(),
-		  				  					name : $("#name").val(),
-		  				  					birthday : $("#birthday").val(),
-		  				  					city : $("#city").val(),
-		  				  					school : $("#school").val(),
-		  				  					office : $("#office").val()
-		  				  	  		  		},
-  				  	  		  				success : function(result) {
-  				  	  		  					console.log("ssibal");  				  	  		  					
-  				  	  		  				},
-  				  	  		  				error : function(e) {
-  				  	  		  					alert("Error!")
-  				  	  		  					console.log("ERROR: ", e);
-  				  	  		  				}
-  				  	  		  			});
-  		  							}
-  									else{
-  										alert("회사 1~500으로 입력해주세요");
-  									}
-  	  							}
-  								else{
-  									alert("학교 1~300으로 입력해주세요");
-  								}
-  							}
-  							else{
-  								alert("도시 1~100으로 입력해주세요");
-  							}
-  						}
-  						else{
-  							alert("비밀번호가 일치하지 않습니다.");
-  						}
+  						$.ajax({
+				  				type : "POST",
+				  				url : "/register/confirm",
+				  		  		data : {id : $("#id").val(),
+								password : $("#password").val(),
+								name : $("#name").val(),
+								birthday : $("#birthday").val(),
+								city : $("#city").val(),
+								school : $("#school").val(),
+								office : $("#office").val()
+				  		  		},
+				  				success : function(result) {
+				  					alert("회원가입이 완료되었습니다.")  				  	  		  					
+				  				},
+				  				error : function(e) {
+				  					alert("Error!")
+				  					console.log("ERROR: ", e);
+				  				}
+				  			});
   					});
   					
   					$("#userId").change(function(){
@@ -160,6 +156,7 @@
 		            <div class="col-md-3 field-label-responsive">
 		                <label for="password">비밀번호 확인</label>
 		            </div>
+		           
 		            <div class="col-md-6">
 		                <div class="form-group">
 		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
@@ -169,6 +166,12 @@
 		                        <input type="password" name="password-confirmation" class="form-control"
 		                               id="password-confirm" placeholder="Password" required>
 		                    </div>
+		                </div>
+		            </div>
+		            <div class="col-md-3">
+		                <div class="form-control-feedback">
+		                    <div class="alert alert-success" id="alert-success">비밀번호일치</div>
+							<div class="alert alert-danger" id="alert-danger">비밀번호불일치</div>
 		                </div>
 		            </div>
 		        </div>
@@ -203,7 +206,7 @@
 		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
 		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
 		                        <input type="text" id="birthday" name="birthday" class="form-control" 
-		                               placeholder="1995-07-16" required autofocus>
+		                               placeholder="YYYY-MM-DD" required autofocus>
 		                    </div>
 		                </div>
 		            </div>
@@ -224,7 +227,7 @@
 		                <div class="form-group">
 		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
 		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="number" id="city" name="city" class="form-control" 
+		                        <input type="number" min="1" max="100" id="city" name="city" class="form-control" 
 		                               placeholder="1~100 의 숫자를 입력해주세요" required autofocus>
 		                    </div>
 		                </div>
@@ -239,7 +242,7 @@
 		                <div class="form-group">
 		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
 		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="number" id="school" name="school" class="form-control" 
+		                        <input type="number" min="1" max="300" id="school" name="school"  class="form-control" 
 		                               placeholder="1~300 의 숫자를 입력해주세요" required autofocus>
 		                    </div>
 		                </div>
@@ -255,7 +258,7 @@
 		                <div class="form-group">
 		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
 		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="number" id="office" name="office" class="form-control" 
+		                        <input type="number" min="1" max="500" id="office" name="office"  class="form-control" 
 		                               placeholder="1~500 의 숫자를 입력해주세요" required autofocus>
 		                    </div>
 		                </div>

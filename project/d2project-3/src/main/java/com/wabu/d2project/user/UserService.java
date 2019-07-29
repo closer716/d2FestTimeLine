@@ -245,7 +245,6 @@ public class UserService {
 		for(int i=0 ; i<tables.size() ; i++){
 			userMapper.dropTable(tables.get(i).getTableName());
 		}
-		userMapper.dropTable("tables");
 	}
 	
 	/**

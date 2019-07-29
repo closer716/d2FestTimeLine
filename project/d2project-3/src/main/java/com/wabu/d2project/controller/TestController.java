@@ -32,10 +32,10 @@ public class TestController {
 		deleteAllMariaDB();
 		postService.deleteAll();
 		userService.createTable();
-		int userNum= 20;
-		int partnerNum= 200;
-		int notificationNum=50;
-		int postNum= 500;
+		int userNum= 99;
+		int partnerNum= 2000;
+		int notificationNum=3000;
+		int postNum= 1000;
 		User user = new User("yoon3784", "1234", "È«¼®À±", false, "1995-06-01", 1 , 1, 1, new Date());
         userService.userRegister(loginService.save(user));
 		registerUser(userNum);

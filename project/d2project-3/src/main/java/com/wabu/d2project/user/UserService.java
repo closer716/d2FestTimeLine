@@ -320,7 +320,7 @@ public class UserService {
 				"		ON  us.friendId=fr.id AND fr.friendId <> us.id" + 
 				"		GROUP BY fr.friendId" + 
 				"	)result " + 
-				"	WHERE NOT result.friendId IN (SELECT friendId FROM notification WHERE id=\"+userId+\" AND content=\"0\") " + 
+				"	WHERE result.friendId not IN (SELECT id FROM notification WHERE friendId=\""+userId+"\" AND content=\"0\") " + 
 				" )result2 " + 
 				" JOIN user " + 
 				" ON user.id=result2.friendId " + 
@@ -351,7 +351,7 @@ public class UserService {
 				" ELSE \"0\" END AS cnt" + 
 				" FROM user" + 
 				" )result" + 
-				" WHERE result.cnt<>\"0\" AND result.id not IN (SELECT friendId FROM notification WHERE id=\""+user.getId()+"\" AND content=\"0\") " + 
+				" WHERE result.cnt<>\"0\" AND result.id not IN (SELECT id FROM notification WHERE friendId=\""+user.getId()+"\" AND content=\"0\") " + 
 				" AND id <> \""+user.getId()+"\""+
 				" LIMIT "+from+", "+num;
 		ArrayList<User> result = userMapper.getUserTable("id, name, birthday, city, school, office", str);

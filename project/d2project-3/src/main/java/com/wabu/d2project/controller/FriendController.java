@@ -75,6 +75,7 @@ public class FriendController {
 	public ResponseEntity<Object> friendRequest(@AuthenticationPrincipal User user, Model model, @RequestParam("friendId") String friendId)throws Exception
 	{	
 		//친구요청
+		System.out.println(friendId);
 		Notification notif = new Notification(friendId, user.getId(), 0, new Date());
 		userService.notificationRegister(notif);
 		
@@ -105,8 +106,6 @@ public class FriendController {
 		
 	    return new ResponseEntity<Object>(response, HttpStatus.OK);
 	}
-	
-	
 	
 	@RequestMapping(value="/friendSearch", method=RequestMethod.GET)
 	protected String friendSearch(@AuthenticationPrincipal User user, @RequestParam("search") String search, Model model) throws Exception{

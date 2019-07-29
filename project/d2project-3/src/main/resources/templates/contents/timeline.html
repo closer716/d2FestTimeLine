@@ -56,7 +56,7 @@
 											
 											var user = "<div class='card mb-4'>" + "<div class='card-body'>" +
 								            "<h2 class='card-title'>" + post.name + "</h2>" + "<p class='card-text'>" + post.contents +  "</p>" + "</div>"
-								            + "<div class='card-footer text-muted'>" + post.getPostDate() + "</div>"
+								            + "<div class='card-footer text-muted'>" + post.date + "</div>"
 											//"이름 : " + post.name + "<br>" + " contents  = " + post.contents+ "<br>";
 											$('#getResultDiv').append(user)
 										});
@@ -88,6 +88,7 @@
 						type : "POST",
 						url : "savePost",
 						data : contents,
+						contentType : "application/json; charset=UTF-8",
 						success : function(result) {
 							if (result.status == "success") {
 								$('#mainPost').load('#mainPost');
@@ -169,10 +170,10 @@
         <!-- TimeLine Post -->
         <div class="card mb-4" id="post" th:each=" post: ${posts}">
           <div class="card-body">
-            <h2 class="card-title" th:text="${post.getName()}">Post Title</h2>
-            <p class="card-text" th:text="${post.getContents()}">Post Message</p>
+            <h2 class="card-title" th:text="${post.name}">Post Title</h2>
+            <p class="card-text" th:text="${post.contents}">Post Message</p>
           </div>
-          <div class="card-footer text-muted" th:text="${post.getPostDate()}">
+          <div class="card-footer text-muted" th:text="${post.date}">
             Posted on when, 2019 by
           </div>
         </div>

@@ -90,9 +90,8 @@
 						data : contents,
 						success : function(result) {
 							if (result.status == "success") {
-								$("#mainPOST").replaceWith($('#mainPOST'));
+								$('#mainPost').load('#mainPost');
 								allData.from=0;
-								//$("mainPOST").html(response);
 							} else {
 								
 							}
@@ -150,15 +149,14 @@
   </div>
 
   <!-- Page Content -->
-  <div class="container" >
-
-	
+  <div class="container" id="mainPost">
+	<div>
     <div class="row top-buffer">
 	  
       <!-- Entries Column -->
-      <div class="col-md-8">
+      <div class="col-md-8" >
       
-        <div class= "card mb-4 row top-buffer" id="main">
+        <div class= "card mb-4 row top-buffer" >
 			<form id="posting" name="posting">
 	         <input type="text" id="contents" name="contents" style=" width:95%; height:200px; margin: 10px;" required>
 	         <button type="submit" id="post" class="btn btn-success" style=" float: right; width:100px; height:60px; margin: 10px;">Post</button>
@@ -181,14 +179,15 @@
         
         <p id="getResultDiv"></p>
 		
-		
+	  </div>
+	  <!-- Sidebar Widgets Column -->
+      <div th:block th:replace="contents/fragments/sideBar :: sideBar"> </div>	
       </div>
 	  
-      <!-- Sidebar Widgets Column -->
-      <div th:block th:replace="contents/fragments/sideBar :: sideBar"> </div>
-
+      
   </div>
   <!-- /.container -->
+  
   
 </div>
   

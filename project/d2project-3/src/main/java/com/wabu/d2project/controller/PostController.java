@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,16 +48,16 @@ public class PostController {
    
    
    @PostMapping("/savePost")
-	public ResponseEntity<Object> savePost(@AuthenticationPrincipal User user, Model model, @RequestParam String contents) throws Exception {
-	   Date date = new Date();
-	   SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	   String a = formattedDate.format(date);
-	   PostDto post = new PostDto(ObjectId.get(), user.getId(), user.getName(), contents,formattedDate.parse(a));
-	   postService.addPost(post);
-	   userService.addPost(post);
-	   ServiceResponse<PostDto> response = new ServiceResponse<>("success", post);
-	   return new ResponseEntity<Object>(response, HttpStatus.OK);
-	}
+   public ResponseEntity<Object> savePost(@AuthenticationPrincipal User user, Model model, @RequestBody String contents) throws Exception {
+      Date date = new Date();
+      SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      String a = formattedDate.format(date);
+      PostDto post = new PostDto(ObjectId.get(), user.getId(), user.getName(), contents,formattedDate.parse(a));
+      postService.addPost(post);
+      userService.addPost(post);
+      ServiceResponse<PostDto> response = new ServiceResponse<>("success", post);
+      return new ResponseEntity<Object>(response, HttpStatus.OK);
+   }
    
    /* 포스트 등록 */
 	@RequestMapping(value="/addPost", method=RequestMethod.GET)

@@ -277,7 +277,10 @@ public class UserService {
 	 * @throws Exception
 	 */
 	public boolean isTableExist(String dbName, String tableName) throws Exception{
-		if(userMapper.isExist(dbName,tableName)== null) {
+		ArrayList<Tables> tables = userMapper.getTableTable("tableName", 
+				"tables WHERE tableName = \""+tableName+"\"");
+		
+		if(tables.size() == 0) {
 			return false;
 		}
 		return true;

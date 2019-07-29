@@ -41,6 +41,7 @@
             <p class="card-text" th:if="${friend.getCity()}" th:text="'city: '+${friend.getCity()}" >지역</p>
             <p class="card-text" th:if="${friend.getOffice()}" th:text="'office: '+${friend.getOffice()}">회사</p>
             <p class="card-text" th:if="${friend.getBirthday()}" th:text="'birthday: '+${friend.getBirthday()}">생년월일</p>
+            <input type="hidden" name="friendId" th:value="${friend.getId()}">
           </div>
         </div>
 

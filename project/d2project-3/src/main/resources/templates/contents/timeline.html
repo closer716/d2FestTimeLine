@@ -3,18 +3,20 @@
 
 <head>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
 
-  <title>TimeLine</title>
+<title>TimeLine</title>
 
-  <link rel="stylesheet" href="/static/webjars/bootstrap/css/bootstrap.min.css" >
-  <script src="/static/webjars/bootstrap/js/bootstrap.min.js" ></script>
-  <script src="/static/js/jquery/jquery.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript">
+<link rel="stylesheet"
+	href="/static/webjars/bootstrap/css/bootstrap.min.css">
+<script src="/static/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery/jquery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
   var from=10;
   var prevFrom=0;
   var getPost = false;
@@ -109,35 +111,84 @@
   			
 
   </script>
-  
+
 <style>
-  #first {display:none;}
-  #first ~ div:nth-of-type(1) {display: none;}
-  #first ~ div:nth-of-type(1)	{display: block;}
-   			
-  #second {display:none;}
-  #second ~ div:nth-of-type(2) {display: none;}
-  #second ~ div:nth-of-type(2) {display: block;}
-  
-  section.buttons {overflow: hidden;}
-  section.buttons > label{
-  	display:block; float: elft;
-  	width:100px; height: 30px;
-  	line-height: 30px;
-  	text-aign: center;
-  	box-sizing: border-box;
-  	border: 1px solid black;
-  	backgraound: black;
-  	color: white;
-  }
-  #first:checked ~ section.buttons > label:nth-of-type(1){
-  background: white;
-  color: black;
-  }
-  #first:checked ~ section.buttons > label:nth-of-type(1){
-  background: white;
-  color: black;
-  }
+#first {
+	display: none;
+}
+
+#first ~ div:nth-of-type(1) {
+	display: none;
+}
+
+#first ~ div:nth-of-type(1) {
+	display: block;
+}
+
+#second {
+	display: none;
+}
+
+#second ~ div:nth-of-type(2) {
+	display: none;
+}
+
+#second ~ div:nth-of-type(2) {
+	display: block;
+}
+
+section.buttons {
+	overflow: hidden;
+}
+
+section.buttons>label {
+	display: block;
+	float: elft;
+	width: 100px;
+	height: 30px;
+	line-height: 30px;
+	text-aign: center;
+	box-sizing: border-box;
+	border: 1px solid black;
+	backgraound: black;
+	color: white;
+}
+
+#first:checked ~ section.buttons>label:nth-of-type(1) {
+	background: white;
+	color: black;
+}
+
+#first:checked ~ section.buttons>label:nth-of-type(1) {
+	background: white;
+	color: black;
+}
+
+.test{
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	width: 80%;
+	float: left;
+	font-size: 14px;
+	flex-direction: column;
+}
+.card-body{
+	float: right;
+	padding: 10px;
+}
+.btn{
+	float:right;
+}
+.input-group-btn{
+width: 20%;
+	float: right;
+}
+.form-control{
+width: 80%;
+float: left;
+}
+.clearfix:before,.clearfix:after { content: " "; display: table; } 
+.clearfix:after { clear:both; }
 </style>
 </head>
 
@@ -145,53 +196,49 @@
 
 <body>
 
- <!-- Navigation -->
-  <div th:block th:replace="contents/fragments/navigationBar :: navBar">
-  </div>
+	<!-- Navigation -->
+	<div th:block th:replace="contents/fragments/navigationBar :: navBar">
+	</div>
 
-  <!-- Page Content -->
-  <div class="container" id="mainPost">
-	<div>
-    <div class="row top-buffer">
-	  
-      <!-- Entries Column -->
-      <div class="col-md-8" >
-      
-        <div class= "card mb-4 row top-buffer" >
-			<form id="posting" name="posting">
-	         <input type="text" id="contents" name="contents" style=" width:95%; height:200px; margin: 10px;" required>
-	         <button type="submit" id="post" class="btn btn-success" style=" float: right; width:100px; height:60px; margin: 10px;">Post</button>
-	       </form>
+	<!-- Page Content -->
+	<div class="container" id="mainPost">
+		<div>
+			<div class="row top-buffer">
+
+				<!-- Entries Column -->
+				<div class="col-md-8">
+
+					<div class="card mb-4 row top-buffer">
+						<form id="posting" name="posting">
+							<input type="text" id="contents" name="contents"
+								style="width: 95%; height: 200px; margin: 10px;" required>
+							<button type="submit" id="post" class="btn btn-success"
+								style="float: right; width: 100px; height: 60px; margin: 10px;">Post</button>
+						</form>
+					</div>
+
+					<h1 class="my-4"></h1>
+
+					<!-- TimeLine Post -->
+					<div class="card mb-4" id="post" th:each=" post: ${posts}">
+						<div class="card-body">
+							<h2 class="card-title" th:text="${post.name}">Post Title</h2>
+							<p class="card-text" th:text="${post.contents}">Post Message</p>
+						</div>
+						<div class="card-footer text-muted" th:text="${post.date}">
+							Posted on when, 2019 by</div>
+					</div>
+
+					<p id="getResultDiv"></p>
+
+				</div>
+				<!-- Sidebar Widgets Column -->
+				<div th:block th:replace="contents/fragments/sideBar :: sideBar">
+				</div>
+			</div>
 		</div>
-		
-        <h1 class="my-4">
-        </h1>
+	</div>
 
-        <!-- TimeLine Post -->
-        <div class="card mb-4" id="post" th:each=" post: ${posts}">
-          <div class="card-body">
-            <h2 class="card-title" th:text="${post.name}">Post Title</h2>
-            <p class="card-text" th:text="${post.contents}">Post Message</p>
-          </div>
-          <div class="card-footer text-muted" th:text="${post.date}">
-            Posted on when, 2019 by
-          </div>
-        </div>
-        
-        <p id="getResultDiv"></p>
-		
-	  </div>
-	  <!-- Sidebar Widgets Column -->
-      <div th:block th:replace="contents/fragments/sideBar :: sideBar"> </div>	
-      </div>
-	  
-      
-  </div>
-  <!-- /.container -->
-  
-  
-</div>
-  
 </body>
 
 </html>

@@ -1,9 +1,0 @@
-spring:
-  mvc:
-    view:
-     prefix: /contents/
----
-spring:
-  mvc:
-    view:
-      suffix: .jsp

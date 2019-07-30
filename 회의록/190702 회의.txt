@@ -1,9 +1,0 @@
-open jdk 11
--> open소스의 목적 등등 생각, long term jdk
-
-mongoDB
--> nosql(sns등 상관관계가 적은 대량의 데이터 검색 최적화)중 무료버전이고 범용성 넓다
-
-gradle
--> maven 보다 빠른 빌드, gradle wrapper(어떤 환경에서도 gradle이나 자바등을 추가로 설치하거나 환경설정을 할 필요가 없음)
-

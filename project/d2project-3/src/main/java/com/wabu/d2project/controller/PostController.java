@@ -14,8 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +24,6 @@ import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
 import com.wabu.d2project.util.Constant;
-import com.wabu.d2project.util.Util;
 
 @RestController
 public class PostController {
@@ -37,12 +34,15 @@ public class PostController {
    PostService postService;
    @Autowired
    UserService userService;
-   private Util util = new Util();
 
    @GetMapping("/getPosts")
    public ResponseEntity<Object> getPosts(@AuthenticationPrincipal User user, Model model, @RequestParam(value="from") int from) throws Exception{
       ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), from, Constant.pageNum);
-      ServiceResponse<List<PostDto>> response = new ServiceResponse<>("success", postService.findBy_id(postId));
+      ArrayList<PostDto> post= postService.findBy_id(postId);
+      for(int i=0 ; i<post.size(); i++) {
+    	  post.get(i).setPostDate();
+      }
+      ServiceResponse<List<PostDto>> response = new ServiceResponse<>("success", post);
       return new ResponseEntity<Object>(response, HttpStatus.OK);
    }
    

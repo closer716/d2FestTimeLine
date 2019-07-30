@@ -1,270 +1,207 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width", initial-scale="1">
-		<title>D2project</title>
-		<link rel="stylesheet"href="/static/webjars/bootstrap/css/bootstrap.min.css">
-		<script src="/static/webjars/bootstrap/js/bootstrap.min.js"></script>
-		<script src="/static/js/jquery/jquery.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  		
-  		<script type="text/javascript">
-  		$(function(){
-  	        $("#alert-success").hide();
-  	        $("#alert-danger").hide();
-  	        $("input").keyup(function(){
-  	            var pwd1=$("#password").val();
-  	            var pwd2=$("#password-confirm").val();
-  	            if(pwd1 != "" || pwd2 != ""){
-  	                if(pwd1 == pwd2){
-  	                    $("#alert-success").show();
-  	                    $("#alert-danger").hide();
-  	                }else{
-  	                    $("#alert-success").hide();
-  	                    $("#alert-danger").show();
-  	                }    
-  	            }
-  	        });
-  	    });
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width" , initial-scale="1">
+<title>D2project</title>
+<link rel="stylesheet"
+	href="/static/webjars/bootstrap/css/bootstrap.min.css">
+<script src="/static/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery/jquery.js"></script>
+<script src="/static/js/registerFromCheck.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-  		function dupCheck(){
-	  			// DO POST
-	  			$.ajax({
-	  				type : "POST",
-	  				url : "/register/duplicate",
-	  				data : {id : $("#id").val()},
-	  				success : function(result) {
-	  					if (result.data == "0") {
-	  						alert("사용가능한 아이디입니다.");
-	  					    $("#registerButton").attr("disabled", false);
-
-	  					} else if(result.data == "1"){
-	  						alert("존재하는 아이디입니다.");
-	  						$("#registerButton").attr("disabled", true);
-	  					}
-	  					
-	  				},
-	  				error : function(e) {
-	  					alert("Error!")
-	  					console.log("ERROR: ", e);
-	  				}
-	  			});
-	  			return false;
-		}
-
-  		$(document).ready(
-  				function() {
-  					$("#registerButton").attr("disabled", true); //비활성화
-
-  					$("#registerButton").click(function() {
-  						
-  						$.ajax({
-				  				type : "POST",
-				  				url : "/register/confirm",
-				  		  		data : {id : $("#id").val(),
-								password : $("#password").val(),
-								name : $("#name").val(),
-								birthday : $("#birthday").val(),
-								city : $("#city").val(),
-								school : $("#school").val(),
-								office : $("#office").val()
-				  		  		},
-				  				success : function(result) {
-				  					alert("회원가입이 완료되었습니다.")  				  	  		  					
-				  				},
-				  				error : function(e) {
-				  					alert("Error!")
-				  					console.log("ERROR: ", e);
-				  				}
-				  			});
-  					});
-  					
-  					$("#userId").change(function(){
-  						$("#registerButton").attr("disabled", true);
-  					});
-  					
-  					
-  					
-  					
-  		});
-
-  		</script>
-
-	</head>
-	<body>
-<!-- Navigation -->
-  <div th:block th:replace="contents/fragments/navigationBar :: navBar">
-  </div>
+</head>
+<body>
+	<!-- Navigation -->
+	<div th:block th:replace="contents/fragments/navigationBar :: navBar">
+	</div>
 
 
-		<div class="container reg-buffer">
-			
-			<div class="col-md-8">
-		    <form class="form-horizontal" id="reg" method="POST" action="/register/confirm">
-		        <div class="row">
-		            <div class="col-md-3"></div>
-		            <div class="col-md-6 reg-bottom">
-		                <h2>Register</h2>
-		                <hr>
-		            </div>
-		        </div>
-		        
-		        <div class="row">
-		            <div class="col-md-3 field-label-responsive">
-		                <label for="userId">ID</label>
-		            </div>
-		            <div class="col-md-6">
-		                <div class="form-group">
-		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="text" id="id" name="id" class="form-control" placeholder="ID" required autofocus>	                  
-		                        <button onclick="dupCheck()">중복검사</button>
-		                    </div>
-		                </div>
-		            </div>
-		            <div class="col-md-3">
-		                <div class="form-control-feedback">
-		                        <span class="text-danger align-middle">
-		                            <!-- Put name validation error messages here -->
-		                        </span>
-		                </div>
-		            </div>
-		        </div>
-		        <div class="row">
-		            <div class="col-md-3 field-label-responsive">
-		                <label for="user_password">비밀번호</label>
-		            </div>
-		            <div class="col-md-6">
-		                <div class="form-group has-danger">
-		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-key"></i></div>
-		                        <input type="password" id="password" name="password" class="form-control" 
-		                               placeholder="Password" required>
-		                    </div>
-		                </div>
-		            </div>
-		            <div class="col-md-3">
-		                <div class="form-control-feedback">
-		                        <span class="text-danger align-middle">
-		                           <!-- <i class="fa fa-close"> </i> -->
-		                        </span>
-		                </div>
-		            </div>
-		        </div>
-		        <div class="row">
-		            <div class="col-md-3 field-label-responsive">
-		                <label for="password">비밀번호 확인</label>
-		            </div>
-		           
-		            <div class="col-md-6">
-		                <div class="form-group">
-		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-		                        <div class="input-group-addon" style="width: 2.6rem">
-		                            <i class="fa fa-repeat"></i>
-		                        </div>
-		                        <input type="password" name="password-confirmation" class="form-control"
-		                               id="password-confirm" placeholder="Password" required>
-		                    </div>
-		                </div>
-		            </div>
-		            <div class="col-md-3">
-		                <div class="form-control-feedback">
-		                    <div class="alert alert-success" id="alert-success">비밀번호일치</div>
+	<div class="container reg-buffer">
+
+		<div class="col-md-8">
+			<form class="form-horizontal" id="reg" method="POST"
+				action="/register/confirm">
+				<div class="row">
+					<div class="col-md-3"></div>
+					<div class="col-md-6 reg-bottom">
+						<h2>Register</h2>
+						<hr>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-3 field-label-responsive">
+						<label for="userId">ID</label>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+								<div class="input-group-addon" style="width: 2.6rem">
+									<i class="fa fa-user"></i>
+								</div>
+								<input type="text" id="id" name="id" class="form-control"
+									placeholder="4~20자의 영문,숫자를 입력해주세요" required autofocus>
+								
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-control-feedback">
+							<button onclick="dupCheck()">중복검사</button>
+							<p>중복 검사를 해주세요</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3 field-label-responsive">
+						<label for="user_password">6-16자의 영문,숫자를 입력해주세요</label>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group has-danger">
+							<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+								<div class="input-group-addon" style="width: 2.6rem">
+									<i class="fa fa-key"></i>
+								</div>
+								<input type="password" id="password" name="password"
+									class="form-control" placeholder="Password" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-control-feedback">
+							<span class="text-danger align-middle"> <!-- <i class="fa fa-close"> </i> -->
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3 field-label-responsive">
+						<label for="password">비밀번호 확인</label>
+					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+								<div class="input-group-addon" style="width: 2.6rem">
+									<i class="fa fa-repeat"></i>
+								</div>
+								<input type="password" name="password-confirmation"
+									class="form-control" id="password-confirm"
+									placeholder="Password" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-control-feedback">
+							<div class="alert alert-success" id="alert-success">비밀번호일치</div>
 							<div class="alert alert-danger" id="alert-danger">비밀번호불일치</div>
-		                </div>
-		            </div>
-		        </div>
-		        
-		        <div class="row">
-		            <div class="col-md-3 field-label-responsive">
-		                <label for="user_name">이름</label>
-		            </div>
-		            <div class="col-md-6">
-		                <div class="form-group">
-		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="text" id="name" name="name" class="form-control" 
-		                               placeholder="홍길동" required autofocus>
-		                    </div>
-		                </div>
-		            </div>
-		            <div class="col-md-3">
-		                <div class="form-control-feedback">
-		                        <span class="text-danger align-middle">
-		                            <!-- Put name validation error messages here -->
-		                        </span>
-		                </div>
-		            </div>
-		        </div>
-		        <div class="row">
-		            <div class="col-md-3 field-label-responsive">
-		                <label for="birthday">생년월일</label>
-		            </div>
-		            <div class="col-md-6 reg-bottom">
-		                <div class="form-group">
-		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="text" id="birthday" name="birthday" class="form-control" 
-		                               placeholder="YYYY-MM-DD" required autofocus>
-		                    </div>
-		                </div>
-		            </div>
-		            <div class="col-md-3">
-		                <div class="form-control-feedback">
-		                        <span class="text-danger align-middle">
-		                            <!-- Put name validation error messages here -->
-		                        </span>
-		                </div>
-		            </div>
-		        </div>
-		         <!-- city -->
-		        <div class="row">
-		            <div class="col-md-3 field-label-responsive">
-		                <label for="city">도시명</label>
-		            </div>
-		            <div class="col-md-6">
-		                <div class="form-group">
-		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="number" min="1" max="100" id="city" name="city" class="form-control" 
-		                               placeholder="1~100 의 숫자를 입력해주세요" required autofocus>
-		                    </div>
-		                </div>
-		            </div>
-		        </div>
-		        <!-- school -->
-		        <div class="row">
-		            <div class="col-md-3 field-label-responsive">
-		                <label for="school">학교명</label>
-		            </div>
-		            <div class="col-md-6">
-		                <div class="form-group">
-		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="number" min="1" max="300" id="school" name="school"  class="form-control" 
-		                               placeholder="1~300 의 숫자를 입력해주세요" required autofocus>
-		                    </div>
-		                </div>
-		            </div>
-		            
-		        </div>
-		        <!-- office -->
-		        <div class="row">
-		            <div class="col-md-3 field-label-responsive">
-		                <label for="office">회사명</label>
-		            </div>
-		            <div class="col-md-6">
-		                <div class="form-group">
-		                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-		                        <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-		                        <input type="number" min="1" max="500" id="office" name="office"  class="form-control" 
-		                               placeholder="1~500 의 숫자를 입력해주세요" required autofocus>
-		                    </div>
-		                </div>
-		            </div>
-		        </div>
-		        <!--
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-3 field-label-responsive">
+						<label for="user_name">이름</label>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+								<div class="input-group-addon" style="width: 2.6rem">
+									<i class="fa fa-user"></i>
+								</div>
+								<input type="text" id="name" name="name" class="form-control"
+									placeholder="홍길동" required autofocus>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-control-feedback">
+							<span class="text-danger align-middle"> <!-- Put name validation error messages here -->
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3 field-label-responsive">
+						<label for="birthday">생년월일</label>
+					</div>
+					<div class="col-md-6 reg-bottom">
+						<div class="form-group">
+							<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+								<div class="input-group-addon" style="width: 2.6rem">
+									<i class="fa fa-user"></i>
+								</div>
+								<input type="text" id="birthday" name="birthday"
+									class="form-control" placeholder="YYYY-MM-DD" required
+									autofocus>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-control-feedback">
+							<span class="text-danger align-middle"> <!-- Put name validation error messages here -->
+							</span>
+						</div>
+					</div>
+				</div>
+				<!-- city -->
+				<div class="row">
+					<div class="col-md-3 field-label-responsive">
+						<label for="city">도시명</label>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+								<div class="input-group-addon" style="width: 2.6rem">
+									<i class="fa fa-user"></i>
+								</div>
+								<input type="number" min="1" max="50" id="city" name="city"
+									class="form-control" placeholder="1~50 의 숫자를 입력해주세요" required
+									autofocus>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- school -->
+				<div class="row">
+					<div class="col-md-3 field-label-responsive">
+						<label for="school">학교명</label>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+								<div class="input-group-addon" style="width: 2.6rem">
+									<i class="fa fa-user"></i>
+								</div>
+								<input type="number" min="1" max="150" id="school" name="school"
+									class="form-control" placeholder="1~150 의 숫자를 입력해주세요" required
+									autofocus>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<!-- office -->
+				<div class="row">
+					<div class="col-md-3 field-label-responsive">
+						<label for="office">회사명</label>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+								<div class="input-group-addon" style="width: 2.6rem">
+									<i class="fa fa-user"></i>
+								</div>
+								<input type="number" min="1" max="200" id="office" name="office"
+									class="form-control" placeholder="1~200 의 숫자를 입력해주세요" required
+									autofocus>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--
 		        <div class="row">
 		            <div class="col-md-3 field-label-responsive">
 		                <label for="email">Email</label>
@@ -287,15 +224,17 @@
 		            </div>
 		        </div>
 		    	-->
-		        <div class="row">
-		            <div class="col-md-3"></div>
-		            <div class="col-md-6">
-		                <button id = "registerButton" type="submit" class="btn btn-success"><i class="fa fa-user-plus"></i> Register</button>
-		            </div>
-		        </div>
-		    </form>
-			</div>
+				<div class="row">
+					<div class="col-md-3"></div>
+					<div class="col-md-6">
+						<button id="registerButton" type="submit" class="btn btn-success">
+							<i class="fa fa-user-plus"></i> Register
+						</button>
+					</div>
+				</div>
+			</form>
 		</div>
+	</div>
 </body>
 
 </html>

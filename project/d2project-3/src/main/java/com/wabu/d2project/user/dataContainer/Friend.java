@@ -25,4 +25,6 @@ public class Friend {
     	String[] str = {id, friendId};
     	return Util.makeValues(str);
     }
+    
+    
 }

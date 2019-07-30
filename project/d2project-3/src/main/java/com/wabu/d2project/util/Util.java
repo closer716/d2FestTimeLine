@@ -6,19 +6,14 @@ import java.util.Date;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
-import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
 
-@Service
 public class Util {
 	
-	public String generateUserId(){
+	public static String generateUserId(){
 		int count = (int)(Math.random()*13+8);
 		String result = new String();
 		String[] valid = new String[] {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
@@ -28,17 +23,19 @@ public class Util {
 			result+=valid[(int)(Math.random()*length)];
 		return result;
 	}
-	public String generatePassword() {
+	
+	public static String generatePassword() {
 		int count = (int)(Math.random()*8+9);
 		String result = new String();
 		String[] valid = new String[] {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-				"0","1","2","3","4","5","6","7","8","9","!","@","#","$","%","^","&","*"};
+				"0","1","2","3","4","5","6","7","8","9"};
 		int length = valid.length;
 		for(int i=0 ; i<count ; i++)
 			result+=valid[(int)(Math.random()*length)];
 		return result;
 	}
-	public String generateBirthday() throws Exception{
+	
+	public static String generateBirthday() throws Exception{
 		String result=new String();
 		int year = (int)(Math.random()*120+1899);
 		result+=Integer.toString(year);
@@ -59,7 +56,7 @@ public class Util {
 	}
 	
 	
-	public String generateKoreanName() {
+	public static String generateKoreanName() {
 		String[] lastName = new String[]{"김", "이", "박", "최", "정", "강", "조", "윤", "장", "임", "한", "오", "서", "신", "권", "황", "안",
 	            "송", "류", "전", "홍", "고", "문", "양", "손", "배", "조", "백", "허", "유", "남", "심", "노", "정", "하", "곽", "성", "차", "주",
 	            "우", "구", "신", "임", "나", "전", "민", "유", "진", "지", "엄", "채", "원", "천", "방", "공", "강", "현", "함", "변", "염", "양",
@@ -82,7 +79,7 @@ public class Util {
 	    	return lastName[(int)(Math.random()*lastName.length)] + firstName[(int)(Math.random()*firstName.length)] + firstName[(int)(Math.random()*firstName.length)];
 	}
 
-	public String generatePostContent() {
+	public static String generatePostContent() {
 		int count = (int)(Math.random()*900+100);
 		String content = RandomStringUtils.random(count);
 		return content;
@@ -102,6 +99,7 @@ public class Util {
 		}
 		return result;
 	}
+	
 	public static String makeSuffix(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
@@ -126,7 +124,7 @@ public class Util {
 		return new String(chars);
 	}	
 	
-	public void addPost(String id, String name, String contents, UserService userService, PostService postService) throws Exception{
+	public static void addPost(String id, String name, String contents, UserService userService, PostService postService) throws Exception{
 		Date date = new Date();
 		SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String a = formattedDate.format(date);

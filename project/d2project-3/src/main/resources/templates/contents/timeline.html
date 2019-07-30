@@ -16,202 +16,8 @@
 <script src="/static/webjars/bootstrap/js/bootstrap.min.js"></script>
 <script src="/static/js/jquery/jquery.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript">
-  var from=10;
-  var prevFrom=0;
-  var getPost = false;
-  var allData={"from" : from};
-  
-  $(document).ready(
-			function() {
-				
-				// GET REQUEST				
-				$(window).on("scroll", function() {
-					var scrollHeight = $(document).height();
-					var scrollPosition = $(window).height() + $(window).scrollTop();		
-
-					$("#scrollHeight").text(scrollHeight);
-					$("#scrollPosition").text(scrollPosition);
-					$("#bottom").text(scrollHeight - scrollPosition);
-
-					if (scrollPosition > scrollHeight - 1000) {			
-						if(!getPost){
-							getPost=true;
-							ajaxGet();
-						}
-					}
-				});
-				
-				// DO GET
-				function ajaxGet() {
-					$.ajax({
-						type : "GET",
-						url : "getPosts",
-						data : allData,
-						success : function(result, data) {
-							if (result.status == "success") {
-								allData.from +=10;
-								var custList = "";
-								$.each(result.data,
-										function(i, post) {
-											
-											var user = "<div class='card mb-4'>" + "<div class='card-body'>" +
-								            "<h2 class='card-title'>" + post.name + "</h2>" + "<p class='card-text'>" + post.contents +  "</p>" + "</div>"
-								            + "<div class='card-footer text-muted'>" + post.date + "</div>"
-											//"이름 : " + post.name + "<br>" + " contents  = " + post.contents+ "<br>";
-											$('#getResultDiv').append(user)
-										});
-								console.log("Success: ", result);
-								getPost=false;
-							} else {
-								$("#getResultDiv").html("<strong>Error</strong>");
-								console.log("Fail: ", result);
-							}
-						},
-						error : function(e) {
-							          
-							console.log("ERROR: ", e);
-						}
-					});
-				}
-				// SUBMIT FORM
-				$("#posting").submit(function(event) {
-					// Prevent the form from submitting via the browser.
-					event.preventDefault();
-					ajaxPost();
-				});
-
-				function ajaxPost() {
-					var contents = $("#contents").val()
-						
-					// DO POST
-					$.ajax({
-						type : "POST",
-						url : "savePost",
-						data : contents,
-						contentType : "application/json; charset=UTF-8",
-						success : function(result) {
-							if (result.status == "success") {
-								$('#mainPost').load('#mainPost');
-								allData.from=0;
-							} else {
-								
-							}
-							console.log(result);
-						},
-						error : function(e) {
-							alert("Error!")
-							console.log("ERROR: ", e);
-						}
-					});
-					return false;
-				}
-			
-				
-				
-				
-			});
-  			
-  function ajaxAccept(obj) {
-
-		// DO POST
-		$.ajax({
-			type : "POST",
-			url : "/friend/friendAccept",
-			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
-				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
-				contents : 1},
-			success : function(result) {
-				if (result.status == "success") {
-					console.log("success");
-					$('#mainPost').load('#mainPost');
-				} else {
-				}
-				console.log(result);
-			},
-			error : function(e) {
-				alert("Error!")
-				console.log("ERROR: ", e);
-			}
-		});
-		return false;
-	}
-  
-  function ajaxReject(obj) {
-
-		// DO POST
-		$.ajax({
-			type : "POST",
-			url : "/friend/friendAccept",
-			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
-				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
-				contents : 2},
-			success : function(result) {
-				if (result.status == "success") {
-					console.log("success");
-					$('#mainPost').load('#mainPost');
-				} else {
-				}
-				console.log(result);
-			},
-			error : function(e) {
-				alert("Error!")
-				console.log("ERROR: ", e);
-			}
-		});
-		return false;
-	}
-  
-  function ajaxOk(obj) {
-
-		// DO POST
-		$.ajax({
-			type : "POST",
-			url : "/friend/friendAccept",
-			data : {notificationId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value'),
-				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(4)').attr('value'),
-				contents : 0},
-			success : function(result) {
-				if (result.status == "success") {
-					console.log("success");
-					$('#mainPost').load('#mainPost');
-				} else {
-				}
-				console.log(result);
-			},
-			error : function(e) {
-				alert("Error!")
-				console.log("ERROR: ", e);
-			}
-		});
-		return false;
-	}
-    
-  function ajaxRequest(obj) {
-
-		// DO POST
-		$.ajax({
-			type : "POST",
-			url : "/friend/friendRequest",
-			data : {
-				friendId : $(obj).parent('form').parent('div').parent('div').children(':nth-child(3)').attr('value')
-				},
-			success : function(result) {
-				if (result.status == "success") {
-					console.log("success");
-					$('#mainPost').load('#mainPost');
-				} else {
-				}
-				console.log(result);
-			},
-			error : function(e) {
-				alert("Error!")
-				console.log("ERROR: ", e);
-			}
-		});
-		return false;
-	}
-  </script>
+<script src="/static/js/timeLine.js"></script>
+<script src="/static/js/sideBar.js"></script>
 
 <style>
 #first {
@@ -264,8 +70,6 @@ section.buttons>label {
 	background: white;
 	color: black;
 }
-
-
 </style>
 </head>
 
@@ -299,10 +103,10 @@ section.buttons>label {
 					<!-- TimeLine Post -->
 					<div class="card mb-4" id="post" th:each=" post: ${posts}">
 						<div class="card-body">
-							<h2 class="card-title" th:text="${post.name}">Post Title</h2>
-							<p class="card-text" th:text="${post.contents}">Post Message</p>
+							<h2 class="card-title" th:text="${post.getName()}">Post Title</h2>
+							<p class="card-text" th:text="${post.getContents()}">Post Message</p>
 						</div>
-						<div class="card-footer text-muted" th:text="${post.date}">
+						<div class="card-footer text-muted" th:text="${post.getPostDate()}">
 							Posted on when, 2019 by</div>
 					</div>
 

@@ -1,8 +1,7 @@
 package com.wabu.d2project.post;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.ArrayList;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,28 +17,19 @@ public class PostService {
 	@Autowired
 	private PostRepository repository;
 	
-	public List<Post> findByUserId(String userId) {
+	public ArrayList<Post> findByUserId(String userId) {
 		return repository.findByUserId(userId);
-	}
-	
-	
-	public List<PostDto> findLast2ByUserId(String userId) {
-		return repository.findLast2ByUserId(userId);
-	}
-	
-	public void printDB() {
-		System.out.println(repository.findAll().toString());
 	}
 	
 	public Post addPost(PostDto PostDto) {
 		return repository.save(PostDto.toEntity());
 	}
 	
-	public List<PostDto> findByUserIdAndDateBetween(List<String> userId, Date to, Date from){
+	public ArrayList<PostDto> findByUserIdAndDateBetween(ArrayList<String> userId, Date to, Date from){
 		return findByUserIdAndDateBetween(userId, to, from);
 	}
 	
-	public List<PostDto> findBy_id(ArrayList<String> _id) {
+	public ArrayList<PostDto> findBy_id(ArrayList<String> _id) {
 		return repository.findBy_id(_id);
 	}
 	
@@ -49,9 +39,5 @@ public class PostService {
 	
 	public void deleteAll() {
 		repository.deleteAll();
-	}
-	
-	public List<Post> findAll(){
-		return repository.findAll();
 	}
 }

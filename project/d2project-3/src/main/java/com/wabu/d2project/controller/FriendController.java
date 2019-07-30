@@ -10,20 +10,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wabu.d2project.ServiceResponse;
-import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
 import com.wabu.d2project.user.dataContainer.Friend;
 import com.wabu.d2project.user.dataContainer.Notification;
 import com.wabu.d2project.util.Constant;
-import com.wabu.d2project.util.Util;
 
 @Controller
 @RequestMapping(value="/friend")
@@ -31,12 +28,6 @@ public class FriendController {
 	
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private PostService postService;
-	private Util util = new Util();
-	
-	public static int from = 0;
-	
 	
 	@RequestMapping(value="/register")
 	public String addFriend(@RequestParam("id") String id, @RequestParam("friendId") String friendId) throws Exception{
@@ -53,7 +44,7 @@ public class FriendController {
 		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), 0, Constant.recommendNum);
 		ArrayList<User> mayFriend = userService.getMayFriend(user, 0, Constant.recommendNum);
 		ArrayList<Notification> notification = userService.getNotificationTable("user.name AS id, notificationId, content, friendId", "(SELECT friendId, notificationId, content, date FROM "
-				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit 5");
+				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit "+Constant.notificationNum);
 		for(int i=0 ; i<mayFriend.size(); i++) {
 			if(mayFriend.get(i).getCity()!=user.getCity())
 				mayFriend.get(i).setCity(0);
@@ -113,10 +104,11 @@ public class FriendController {
 				" AND id not IN (SELECT friendId FROM notification WHERE (id=\""+user.getId()+"\" AND content=\"0\"))" +
 				" AND id <> \""+user.getId()+"\"");
 		
-		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), from, Constant.recommendNum);
-		ArrayList<User> mayFriend = userService.getMayFriend(user, from, Constant.recommendNum);
+		ArrayList<User> friendsFriend = userService.getFriendsFriend(user.getId(), 0, Constant.recommendNum);
+		ArrayList<User> mayFriend = userService.getMayFriend(user, 0, Constant.recommendNum);
 		ArrayList<Notification> notification = userService.getNotificationTable("user.name AS id, notificationId, content, friendId", "(SELECT friendId, notificationId, content, date FROM "
-				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit 5");
+				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit "+Constant.notificationNum);
+		
 		for(int i=0 ; i<mayFriend.size(); i++) {
 			if(mayFriend.get(i).getCity()!=user.getCity())
 				mayFriend.get(i).setCity(0);

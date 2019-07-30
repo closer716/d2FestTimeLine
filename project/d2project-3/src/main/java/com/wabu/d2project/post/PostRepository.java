@@ -15,20 +15,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends MongoRepository<Post, String> {
 
-	public List<Post> findByUserId(String userId);
+	ArrayList<Post> findByUserId(String userId);
     
 
     //db.post.find().limit(2);
     @Query()
-    List<PostDto> findLast2ByUserId(String userId);
+    ArrayList<PostDto> findLast2ByUserId(String userId);
     
     @Query(value="{'_id':{'$in':?0}}", sort="{date:-1}")
-    List<PostDto> findBy_id(List<String> _id);
+    ArrayList<PostDto> findBy_id(List<String> _id);
     
     @Query("{'userId': ?0}")
     void deleteByUserId(String userId);
      
     @DeleteQuery("{'_id': ?0}")
-    List<Post> findBy_id(ObjectId _id);
-
+    ArrayList<PostDto> deleteBy_id(ObjectId _id);
 }

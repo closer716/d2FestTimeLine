@@ -1,29 +1,21 @@
 package com.wabu.d2project.controller;
 
-import java.security.Principal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wabu.d2project.LoginUserDetailService;
 import com.wabu.d2project.ServiceResponse;
@@ -31,10 +23,8 @@ import com.wabu.d2project.post.PostDto;
 import com.wabu.d2project.post.PostService;
 import com.wabu.d2project.user.User;
 import com.wabu.d2project.user.UserService;
-import com.wabu.d2project.user.dataContainer.Friend;
 import com.wabu.d2project.user.dataContainer.Notification;
 import com.wabu.d2project.util.Constant;
-import com.wabu.d2project.util.Util;
 
 @Controller
 @RequestMapping(value="/")
@@ -45,7 +35,6 @@ public class homeController{
 	private PostService postService;
 	@Autowired
 	private LoginUserDetailService loginService;
-	private Util util = new Util();
 
 	@RequestMapping(value="/timeline")
 	protected String home(@AuthenticationPrincipal User user, Model model) throws Exception{
@@ -53,7 +42,13 @@ public class homeController{
 		ArrayList<User> mayFriend = userService.getMayFriend(user, 0, Constant.recommendNum);
 		ArrayList<String> postId = userService.getPostId(user.getId(), user.getRegistrationDate(), 0, Constant.pageNum);
 		ArrayList<Notification> notification = userService.getNotificationTable("user.name AS id, notificationId, content, friendId", "(SELECT friendId, notificationId, content, date FROM "
-				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit 5");
+				+ "notification where id=\""+user.getId()+"\") as result JOIN user WHERE result.friendId = user.id ORDER BY result.date desc limit "+Constant.notificationNum);
+		ArrayList<PostDto> post= postService.findBy_id(postId);
+		
+		for(int i=0 ; i<post.size(); i++) {
+			post.get(i).setPostDate();
+		}
+		
 		for(int i=0 ; i<mayFriend.size(); i++) {
 			if(mayFriend.get(i).getCity()!=user.getCity())
 				mayFriend.get(i).setCity(0);
@@ -62,11 +57,11 @@ public class homeController{
 			if(mayFriend.get(i).getOffice()!=user.getOffice())
 				mayFriend.get(i).setOffice(0);
 		}
-		model.addAttribute("posts", postService.findBy_id(postId));
+		
+		model.addAttribute("posts", post);
 		model.addAttribute("notification", notification);
 		model.addAttribute("friendsFriend", friendsFriend);
 		model.addAttribute("mayFriend", mayFriend);
-		
 		
 		return "contents/timeline";
 	}
@@ -109,6 +104,7 @@ public class homeController{
     public String query(@RequestParam("id") String id, @RequestParam("password") String password, @RequestParam("name") String name,
     		@RequestParam("birthday") String birthday, @RequestParam("city") int city, @RequestParam("school") int school, @RequestParam("office") int office
     		) throws Exception{
+		System.out.println("왜 들어와 씨발련아");
 		User user = new User(id, password, name, false, birthday, city, school, office, new Date());
         userService.userRegister(loginService.save(user));
         return "contents/login";

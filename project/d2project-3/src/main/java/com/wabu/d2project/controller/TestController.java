@@ -24,26 +24,25 @@ public class TestController {
 	private PostService postService;
 	@Autowired
 	private LoginUserDetailService loginService;
-	private Util util = new Util();
 	
 	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
-		deleteAllMariaDB();
-		postService.deleteAll();
-		userService.createTable();
+		//deleteAllMariaDB();
+		//postService.deleteAll();
+		//userService.createTable();
 		int userNum= 99;
 		int partnerNum= 2000;
 		int notificationNum=3000;
 		int postNum= 1000;
-		User user = new User("yoon3784", "1234", "È«¼®À±", false, "1995-06-01", 1 , 1, 1, new Date());
-        userService.userRegister(loginService.save(user));
-		registerUser(userNum);
-		createFriend(partnerNum);
-		createNotification(notificationNum);
+		//User user = new User("yoon3784", "1234", "È«¼®À±", false, "1995-06-01", 1 , 1, 1, new Date());
+        //userService.userRegister(loginService.save(user));
+		//registerUser(userNum);
+		//createFriend(partnerNum);
+		//createNotification(notificationNum);
 		createPosts(postNum);
-		//util.postService.deleteAll();
-		//util.deleteAllMariaDB();
+		//Util.postService.deleteAll();
+		//Util.deleteAllMariaDB();
 		return "contents/test";
 	}
 	
@@ -51,9 +50,9 @@ public class TestController {
 	
 	public void registerUser(int num) throws Exception{
 		for(int i=0 ; i<num ; i++) {
-			String id = util.generateUserId(); 
+			String id = Util.generateUserId(); 
 			if(userService.getUserById(id)!=null) {i--;continue;}
-			User user = new User(id , util.generatePassword(), util.generateKoreanName(), true,util.generateBirthday(), 
+			User user = new User(id , Util.generatePassword(), Util.generateKoreanName(), true,Util.generateBirthday(), 
 					(int)(Math.random()*100+1),(int)(Math.random()*300+1),(int)(Math.random()*500+1), new Date());
 			loginService.save(user);
 			userService.userRegister(user);
@@ -68,7 +67,7 @@ public class TestController {
 		ArrayList<User> user = userService.getUserTable("id, name", "user");
 		for(int i=0 ; i<num ; i++){
 			int a=(int)(Math.random()*user.size());
-			util.addPost(user.get(a).getId(), user.get(a).getName(), util.generatePostContent(), userService, postService);
+			Util.addPost(user.get(a).getId(), user.get(a).getName(), Util.generatePostContent(), userService, postService);
 			if(i%500 == 0)
 				System.out.println("creating posts now "+i);
 		}

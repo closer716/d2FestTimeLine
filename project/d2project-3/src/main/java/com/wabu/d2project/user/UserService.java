@@ -54,7 +54,6 @@ public class UserService {
 				"id VARCHAR(20) PRIMARY KEY," +
 				"password VARCHAR(70)," +
 				"name VARCHAR(20)," +
-				"sex TINYINT(1)," +
 				"birthday DATE," +
 				"city INT," +
 				"school INT," +

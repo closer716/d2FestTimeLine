@@ -30,8 +30,6 @@ public class User implements UserDetails{
     
     private String name;
     
-    private boolean sex;
-    
     private String birthday;
     
     private int city;
@@ -52,16 +50,12 @@ public class User implements UserDetails{
     public String toValues() {
     	String strSex;
     	SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd");
-    	if(sex=true)
-    		strSex="1";
-    	else
-    		strSex="0";
-    	String[] str = {id, password, name, strSex, birthday.toString(), Integer.toString(city), Integer.toString(school), Integer.toString(office), formattedDate.format(registrationDate)};
+    	String[] str = {id, password, name, birthday.toString(), Integer.toString(city), Integer.toString(school), Integer.toString(office), formattedDate.format(registrationDate)};
     	return Util.makeValues(str);
     }
     
     public String toColumns() {
-    	return "id, password, name, sex, birthday, city, school, office, registrationDate";
+    	return "id, password, name, birthday, city, school, office, registrationDate";
     }
 
     @Override

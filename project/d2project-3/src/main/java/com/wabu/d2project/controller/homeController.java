@@ -104,8 +104,7 @@ public class homeController{
     public String query(@RequestParam("id") String id, @RequestParam("password") String password, @RequestParam("name") String name,
     		@RequestParam("birthday") String birthday, @RequestParam("city") int city, @RequestParam("school") int school, @RequestParam("office") int office
     		) throws Exception{
-		System.out.println("왜 들어와 씨발련아");
-		User user = new User(id, password, name, false, birthday, city, school, office, new Date());
+		User user = new User(id, password, name, birthday, city, school, office, new Date());
         userService.userRegister(loginService.save(user));
         return "contents/login";
     }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -25,25 +26,28 @@ public class TestController {
 	@Autowired
 	private LoginUserDetailService loginService;
 	
-	
 	@RequestMapping(value="/generateTestCases")
 	public String generateTestCases() throws Exception{
-		//deleteAllMariaDB();
-		//postService.deleteAll();
-		//userService.createTable();
-		int userNum= 99;
-		int partnerNum= 2000;
-		int notificationNum=3000;
+		deleteAllMariaDB();
+		postService.deleteAll();
+		userService.createTable();
+		
+		int userNum= 98;
+		int partnerNum= 1000;
+		int notificationNum=500;
 		int postNum= 1000;
-		//User user = new User("yoon3784", "1234", "È«¼®À±", false, "1995-06-01", 1 , 1, 1, new Date());
-        //userService.userRegister(loginService.save(user));
-		//registerUser(userNum);
-		//createFriend(partnerNum);
-		//createNotification(notificationNum);
+		
+		User userA = new User("testA", "1234", "È«±æµ¿", "2000-06-01", 1 , 1, 1, new Date());
+		User userB = new User("testB", "1234", "±èÃ¶¼ö", "1997-04-23", 4 , 100, 404, new Date());
+        userService.userRegister(loginService.save(userA));
+        userService.userRegister(loginService.save(userB));
+        
+		registerUser(userNum);
+		createFriend(partnerNum);
+		createNotification(notificationNum);
 		createPosts(postNum);
-		//Util.postService.deleteAll();
-		//Util.deleteAllMariaDB();
-		return "contents/test";
+
+		return "contents/timeline";
 	}
 	
 /* Local functions to make test case */
@@ -52,8 +56,8 @@ public class TestController {
 		for(int i=0 ; i<num ; i++) {
 			String id = Util.generateUserId(); 
 			if(userService.getUserById(id)!=null) {i--;continue;}
-			User user = new User(id , Util.generatePassword(), Util.generateKoreanName(), true,Util.generateBirthday(), 
-					(int)(Math.random()*100+1),(int)(Math.random()*300+1),(int)(Math.random()*500+1), new Date());
+			User user = new User(id , Util.generatePassword(), Util.generateKoreanName(), Util.generateBirthday(), 
+					(int)(Math.random()*50+1),(int)(Math.random()*150+1),(int)(Math.random()*200+1), new Date());
 			loginService.save(user);
 			userService.userRegister(user);
 			if(i%100 == 0)

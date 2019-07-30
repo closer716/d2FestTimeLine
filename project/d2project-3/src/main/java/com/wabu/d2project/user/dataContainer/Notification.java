@@ -38,6 +38,8 @@ public class Notification {
     public String toColumns() {
     	return "id, friendId, content, date";
     }
+    
+    
     public String toValues() {
 		SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String strDate = formattedDate.format(date);

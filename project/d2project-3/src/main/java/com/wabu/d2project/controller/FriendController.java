@@ -37,7 +37,7 @@ public class FriendController {
 	
 	@RequestMapping(value="/friendList", method=RequestMethod.GET)
 	public String friendList(@AuthenticationPrincipal User user, Model model)throws Exception{
-		ArrayList<User> friends = userService.getUserTable("id, NAME, sex, birthday, city, school, office", 
+		ArrayList<User> friends = userService.getUserTable("id, NAME, birthday, city, school, office", 
 				"(SELECT friendId FROM friend WHERE id=\""+user.getId()+"\")fr"+
 				" JOIN user AS us ON fr.friendId=us.id limit 10");
 		
@@ -99,7 +99,7 @@ public class FriendController {
 	
 	@RequestMapping(value="/friendSearch", method=RequestMethod.GET)
 	protected String friendSearch(@AuthenticationPrincipal User user, @RequestParam("search") String search, Model model) throws Exception{
-		ArrayList<User> result = userService.getUserTable("id, name, sex, birthday, city, school, office", "(SELECT id, name, sex, birthday, city, school, office FROM user WHERE id LIKE \"%"+search+"%\" OR name LIKE \"%"+search+"%\")AS result "+
+		ArrayList<User> result = userService.getUserTable("id, name, birthday, city, school, office", "(SELECT id, name, birthday, city, school, office FROM user WHERE id LIKE \"%"+search+"%\" OR name LIKE \"%"+search+"%\")AS result "+
 				" WHERE id not IN (SELECT id FROM notification WHERE (friendId=\""+user.getId()+"\" AND content=\"0\"))" +
 				" AND id not IN (SELECT friendId FROM notification WHERE (id=\""+user.getId()+"\" AND content=\"0\"))" +
 				" AND id <> \""+user.getId()+"\"");
